@@ -161,75 +161,58 @@ def _fallback_neural_metrics(
 # Radar chart helpers
 # ---------------------------------------------------------------------------
 
-def _radar_axes(n: int) -> np.ndarray:
-    """Evenly-spaced angles for n axes, closing the polygon."""
-    angles = np.linspace(0, 2 * np.pi, n, endpoint=False)
-    return np.concatenate([angles, [angles[0]]])
-
-
 def _plot_radar(
     ax,
     categories: list[str],
-    models: dict[str, list[float]],  # model → values (same length as categories)
+    models: dict[str, list[float]],
     r_min: float = 0.0,
     r_max: float = 1.0,
-    n_rings: int = 5,
-    legend_fontsize: int = 8,
+    n_rings: int = 4,
 ) -> None:
+    """Draw a radar chart on a polar axes `ax`."""
     N = len(categories)
-    angles = _radar_axes(N)
+    angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
 
-    # Grid rings
+    # --- Configure polar axes ---
+    ax.set_theta_offset(np.pi / 2)   # first spoke points up
+    ax.set_theta_direction(-1)        # clockwise
+
+    # Axis bounds and ring ticks
     ring_vals = np.linspace(r_min, r_max, n_rings + 1)[1:]
-    for rv in ring_vals:
-        ax.plot(
-            np.concatenate([np.cos(angles[:-1]) * rv, [np.cos(angles[0]) * rv]]),  # not used
-            color="grey", linewidth=0.4, zorder=0,
-        )
-    for rv in ring_vals:
-        ring_x = np.cos(angles[:-1]) * rv
-        ring_y = np.sin(angles[:-1]) * rv
-        ax.fill(ring_x, ring_y, alpha=0, zorder=0)
-        ax.plot(
-            np.append(ring_x, ring_x[0]),
-            np.append(ring_y, ring_y[0]),
-            color="#cccccc", linewidth=0.4, zorder=0,
-        )
+    ax.set_ylim(r_min, r_max)
+    ax.set_yticks(ring_vals)
+    ax.set_yticklabels(
+        [f"{v:.2f}" for v in ring_vals],
+        fontsize=6.5, color="#666666",
+    )
+    ax.yaxis.set_tick_params(pad=1)
 
-    # Axis spokes and labels
-    for i, (angle, cat) in enumerate(zip(angles[:-1], categories)):
-        ax.plot([0, np.cos(angle) * r_max], [0, np.sin(angle) * r_max],
-                color="#999999", linewidth=0.5, zorder=0)
-        pad = 0.07
-        ax.text(
-            np.cos(angle) * (r_max + pad),
-            np.sin(angle) * (r_max + pad),
-            cat, ha="center", va="center", fontsize=8, fontweight="bold",
-        )
+    # Move ring labels off the first spoke so they don't collide with the
+    # category label. Place them on the second spoke.
+    ax.set_rlabel_position(360 / N * 1.5)
 
-    # Tick labels on one spoke
-    for rv in ring_vals:
-        ax.text(
-            np.cos(angles[0]) * rv,
-            np.sin(angles[0]) * rv - 0.04,
-            f"{rv:.2f}", ha="center", va="top", fontsize=6.5, color="#666666",
-        )
+    # Category labels at spoke tips
+    ax.set_thetagrids(
+        [a * 180 / np.pi for a in angles],
+        labels=categories,
+        fontsize=8,
+        fontweight="bold",
+    )
 
-    # Model polygons
+    # Faint circular grid lines
+    ax.set_rgrids(ring_vals, labels=[], angle=0)
+    ax.yaxis.grid(True, color="#cccccc", linewidth=0.5)
+    ax.xaxis.grid(True, color="#cccccc", linewidth=0.5)
+    ax.spines["polar"].set_visible(False)
+
+    # Plot each model
     for model_name, values in models.items():
-        # Normalise to [0, r_max]
-        norm = [(v - r_min) / (r_max - r_min) * r_max for v in values]
-        norm_closed = norm + [norm[0]]
-        xs = [np.cos(a) * r for a, r in zip(angles, norm_closed)]
-        ys = [np.sin(a) * r for a, r in zip(angles, norm_closed)]
+        vals_closed = values + [values[0]]
+        angs_closed = angles + [angles[0]]
         color = MODEL_COLORS.get(model_name, "#aaaaaa")
-        ax.plot(xs, ys, color=color, linewidth=1.4, label=model_name)
-        ax.fill(xs[:-1], ys[:-1], color=color, alpha=0.08)
-
-    ax.set_xlim(-1.3, 1.3)
-    ax.set_ylim(-1.3, 1.3)
-    ax.set_aspect("equal")
-    ax.axis("off")
+        ax.plot(angs_closed, vals_closed, color=color, linewidth=1.5,
+                label=model_name)
+        ax.fill(angs_closed, vals_closed, color=color, alpha=0.07)
 
 
 # ---------------------------------------------------------------------------
@@ -281,48 +264,48 @@ def main(legend_fontsize: int = 9) -> None:
         print("Computing Task 2 (ETC) metrics (no cached results found) …")
         t2_metrics = _compute_task2_metrics()
 
+    # RNN is omitted from the radar chart: macro-F1=0.142 is a degenerate
+    # outlier that wrecks the axis scale.  It is documented in paper Table 3.
+    T2_RADAR_EXCLUDE = {"RNN"}
     t2_models = {
         m: [vals[k] for k in metrics_t2]
         for m, vals in t2_metrics.items()
+        if m not in T2_RADAR_EXCLUDE
     }
 
-    # Print final Task 2 summary
-    print("\nTask 2 results:")
+    # Print summary
+    print("\nTask 2 results (radar):")
     for m, vals in t2_models.items():
         print(f"  {m:20s}  Macro-F1={vals[0]:.3f}  Weighted-F1={vals[1]:.3f}  Acc={vals[2]:.3f}")
 
-    # --- Determine unified axis bounds --------------------------------------
-    all_t13_vals = [v for d in (t1_models, t3_models) for vals in d.values() for v in vals]
-    all_t2_vals  = [v for vals in t2_models.values() for v in vals]
-
-    def _nice_bounds(vals, margin=0.05, n_ticks=5):
+    # --- Determine axis bounds per task ------------------------------------
+    def _nice_bounds(vals, margin=0.05):
         lo = max(0.0, math.floor((min(vals) - margin) * 20) / 20)
         hi = min(1.0, math.ceil( (max(vals) + margin) * 20) / 20)
         return lo, hi
 
+    all_t13_vals = [v for d in (t1_models, t3_models) for vs in d.values() for v in vs]
+    all_t2_vals  = [v for vs in t2_models.values() for v in vs]
+
     t13_lo, t13_hi = _nice_bounds(all_t13_vals)
     t2_lo,  t2_hi  = _nice_bounds(all_t2_vals)
 
-    # --- Build figure -------------------------------------------------------
-    fig, axes = plt.subplots(1, 3, figsize=(11, 3.8))
+    # --- Build figure with polar subplots ----------------------------------
+    fig = plt.figure(figsize=(11, 4.0))
+    ax1 = fig.add_subplot(131, polar=True)
+    ax2 = fig.add_subplot(132, polar=True)
+    ax3 = fig.add_subplot(133, polar=True)
 
-    titles = [
-        "Task 1: CVE Linkage Retrieval",
-        "Task 2: Exploit Type Classification",
-        "Task 3: Temporal Generalization",
+    panels = [
+        (ax1, t1_models, metrics_t13, t13_lo, t13_hi, "Task 1: CVE Linkage Retrieval"),
+        (ax2, t2_models, metrics_t2,  t2_lo,  t2_hi,  "Task 2: Exploit Type Classification"),
+        (ax3, t3_models, metrics_t13, t13_lo, t13_hi, "Task 3: Temporal Generalization"),
     ]
-    data   = [
-        (t1_models, metrics_t13, t13_lo, t13_hi),
-        (t2_models, metrics_t2,  t2_lo,  t2_hi),
-        (t3_models, metrics_t13, t13_lo, t13_hi),
-    ]
+    for ax, models, cats, lo, hi, title in panels:
+        _plot_radar(ax, cats, models, r_min=lo, r_max=hi)
+        ax.set_title(title, fontsize=9, fontweight="bold", pad=18)
 
-    for ax, (models, cats, lo, hi), title in zip(axes, data, titles):
-        _plot_radar(ax, cats, models, r_min=lo, r_max=hi, legend_fontsize=legend_fontsize)
-        ax.set_title(title, fontsize=9, fontweight="bold", pad=14)
-
-    # --- Shared legend at bottom --------------------------------------------
-    # Collect all unique model names across all three tasks
+    # --- Shared legend at bottom -------------------------------------------
     all_model_names = list(dict.fromkeys(
         list(t1_models) + list(t2_models) + list(t3_models)
     ))
@@ -334,18 +317,18 @@ def main(legend_fontsize: int = 9) -> None:
         handles=legend_handles,
         loc="lower center",
         ncol=7,
-        fontsize=legend_fontsize,   # ← this is the knob: bigger value = bigger legend text
+        fontsize=legend_fontsize,
         frameon=True,
         framealpha=0.9,
         edgecolor="#cccccc",
-        bbox_to_anchor=(0.5, -0.01),
+        bbox_to_anchor=(0.5, -0.02),
         handlelength=1.2,
         handleheight=0.9,
         columnspacing=1.0,
         borderpad=0.5,
     )
 
-    plt.subplots_adjust(bottom=0.20, wspace=0.35)
+    plt.subplots_adjust(bottom=0.22, wspace=0.45)
     fig.savefig(OUT_PDF, dpi=300, bbox_inches="tight")
     fig.savefig(OUT_PNG, dpi=150, bbox_inches="tight")
     print(f"\nSaved → {OUT_PDF}")
