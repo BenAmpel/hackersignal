@@ -188,7 +188,7 @@ Past research indicates that hacker community platforms vary in content, such as
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/domain_overlap.pdf}
+\includegraphics[width=0.8\linewidth]{figures/domain_overlap.pdf}
 \caption{Pairwise vocabulary overlap across 46 hacker community forums (5\% deterministic token sample, hierarchically clustered).}
 \label{fig:domain-overlap}
 \end{figure}
@@ -245,7 +245,7 @@ Hybrid BM25+mpnet & 0.486 & 0.675 & 0.736 & 0.567 \\
 \vspace{-4pt}
 \end{wraptable}
 
-We select baselines that span the three prevailing paradigms for dense retrieval. \textbf{BM25} is the unsupervised lexical baseline, providing an exact-match ceiling. For dense bi-encoders, we chose four models that differ in pre-training objective and architecture: (1) \textbf{MiniLM-L6-v2} (knowledge-distilled 6-layer model optimized for speed), (2) \textbf{all-mpnet-base-v2} (mean-pooled MPNet trained with a contrastive objective on 1B+ pairs), (3) \textbf{BGE-base-v1.5} (instruction-tuned bi-encoder from BAAI with strong zero-shot transfer), and (4) \textbf{E5-base-v2} (weakly-supervised contrastive model trained on large-scale text pairs with task-specific prompts). Together, these cover distilled vs.\ full-size architectures and supervised vs.\ weakly-supervised training, allowing us to assess whether pre-training strategy matters for CVE retrieval. Finally, \textbf{Hybrid BM25+mpnet} fuses lexical and dense scores via reciprocal rank fusion (RRF; $k{=}60$), testing whether the two signal types are complementary. We calculate the standard retrieval metrics of Recall@$k$ ($k \in \{1, 5, 10\}$) and MRR for our comparisons. Results are shown in Table~\ref{tab:task1-results}.
+We choose baselines across three dense retrieval paradigms. BM25 is an unsupervised lexical baseline, serving as an exact-match ceiling. For dense bi-encoders, we selected four models differing in pre-training and architecture: (1) MiniLM-L6-v2 (speed-optimized, distilled 6-layer), (2) all-mpnet-base-v2 (mean-pooled MPNet with contrastive training on 1B+ pairs), (3) BGE-base-v1.5 (instruction-tuned bi-encoder from BAAI for zero-shot transfer), and (4) E5-base-v2 (weakly-supervised contrastive model with task-specific prompts). These span distilled vs. full-size and supervised vs. weakly supervised training, helping assess the impact of pre-training on CVE retrieval. Hybrid BM25+mpnet combines lexical and dense scores via reciprocal rank fusion ($ k=60$), testing their complementarity. We measure Recall@$k$ ($ k= {10}$) and MRR, with results in Table~\ref{tab:task1-results}.
 
 The standard bi-encoders (MiniLM, mpnet, BGE) cluster tightly(MRR 0.530-0.540), comparable to BM25. E5-base-v2 substantially outperforms all other models, including the hybrid (MRR~0.587 vs 0.567), likely due to its asymmetric query/passage prefix design, which better separates the retrieval roles. The hybrid combination (normalized BM25 + dense cosine, $\alpha{=}0.7$) reranks BM25 top-100 candidates and outperforms symmetric bi-encoders but not the prefix-trained E5.
 
@@ -281,7 +281,7 @@ We use a temporal out-of-distribution split (train $<$2020, val 2020-2022, test 
 \end{tabular}
 \end{table}
 
-The best bag-of-words baseline (SVM) reaches macro-F1 of 0.799, while BiLSTM hits 0.871, a 9-point gain from sequential representations. The vanilla RNN fails (macro-F1=0.142), showing long exploit texts need gated architectures. GRU and LSTM perform similarly (0.826), with bidirectional models boosting results. SecBERT (0.846) beats GRU/LSTM but underperforms BiLSTM, indicating that domain-specific pretraining offers modest benefits and that bidirectionality is vital. However, the 15K-sample fine-tuning may limit SecBERT's gains. The hardest classes (information disclosure, memory corruption, authentication/access) show genuine overlap. For instance, information disclosure exploits often involve injection techniques (SSRF, XXE), while privilege escalation and authentication bypass share patterns with RCE. Decision Tree drops to macro-F1=0.708, with information disclosure at 0.46. Lexical classes like XSS and injection are easier (F1 > 0.82), showing exploit type signals are partly lexical. Temporal splits add difficulty as exploit naming and vulnerability patterns change over time, preventing models from memorizing era-specific details.
+The best bag-of-words baseline (SVM) attains macro-F1 of 0.799, while BiLSTM reaches 0.871, a 9\% increase over sequential representations. The vanilla RNN performs poorly (macro-F1=0.142), indicating that long exploit texts require more advanced architectures. GRU and LSTM are similar (0.826), with bidirectional models improving results. SecBERT (0.846) surpasses GRU/LSTM but underperforms BiLSTM, suggesting that domain-specific pre-training offers modest benefits, and that bidirectionality is key. The hard classes (information disclosure, memory corruption, authentication/access) have substantial overlap. For example, disclosure exploits often involve injection (SSRF, XXE), while privilege escalation and authentication share patterns with RCE. Decision Tree drops to macro-F1=0.708, with disclosure at 0.46. Lexical classes such as XSS and injection are easier (F1 > 0.82), indicating that exploit signals are partly lexical. Temporal splits make it harder as exploit names and vulnerability patterns evolve, preventing models from memorizing era-specific features.
 
 \subsection{Task 3: Temporal Generalization (TG)}
 \label{sec:task3}
@@ -317,13 +317,13 @@ Under CVE-disjoint evaluation, E5-base (MRR~0.602) exceeds both the hybrid and a
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/baseline_results_summary.pdf}
-\caption{Radar chart summary of baseline performance across all three tasks. Task~1 and Task~3 report R@1, R@5, R@10, and MRR. Task~2 reports macro-F1, weighted-F1, and accuracy for 8-class exploit type classification.}
+\caption{Radar chart summary of baseline performance across all three tasks.}
 \label{fig:baselines-summary}
 \end{figure}
 
 \subsection{Audit Artifacts and Error Analysis}
 
-Following~\citet{kapoor2023leakage}, we explicitly audit for temporal and source leakage because benchmark claims are otherwise too easy to inflate.  The CVE-disjointness of Task~3 is verified programmatically: $|C_{\text{train}} \cap C_{\text{test}}| = 0$. Full details are in Appendix~\ref{app:audit-reliability}.
+Following~\citet{kapoor2023leakage}, we explicitly audit for temporal and source leakage because benchmark claims are otherwise too easy to inflate. The CVE-disjointness of Task~3 is verified programmatically: $|C_{\text{train}} \cap C_{\text{test}}| = 0$. Full details are in Appendix~\ref{app:audit-reliability}.
 
 Among the Hybrid model's Task~1 errors (queries where the target CVE does not appear in the top-10), we identify three recurring failure patterns: (1)~\emph{Generic exploit descriptions} matching multiple CVEs sharing a common vulnerability class; (2)~\emph{Version-specific queries} referencing product versions absent from the NVD description; and (3)~\emph{Alias mismatches} where queries use informal names (e.g., "Log4Shell") while the NVD entry uses only formal identifiers. E5-base-v2's strong performance (MRR~0.587, exceeding even the hybrid) demonstrates that asymmetric query/passage encoding is well-suited to CVE grounding.
 
