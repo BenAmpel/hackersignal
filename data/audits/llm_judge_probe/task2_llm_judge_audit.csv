@@ -1,0 +1,17 @@
+audit_id,task,split,source,record_id,cve_id,title,text,cve_link_correct,annotator_confidence,needs_second_review,notes,cti_triage_status,cti_triage_confidence,cti_triage_needs_human_review,cti_triage_error_type,cti_triage_rationale,cti_triage_cve_link_correct,vuln_research_status,vuln_research_confidence,vuln_research_needs_human_review,vuln_research_error_type,vuln_research_rationale,vuln_research_cve_link_correct,llm_consensus,llm_disagreement,audit_mode
+CVE-0001,task2_cve_linkage,train,cvefixes,c7f2331252d279aa5688,CVE-2021-32437,CVE-2021-32437,"CVE: CVE-2021-32437
+
+[{'lang': 'en', 'value': 'The gf_hinter_finalize function in GPAC 1.0.1 allows attackers to cause a denial of service (NULL pointer dereference) via a crafted file in the MP4Box command.'}]
+
+Fix commit: fixed #1770 (fuzz)",,,,,ok,high,False,none,The text explicitly mentions CVE-2021-32437 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-32437 and describes the affected function and vulnerability in GPAC 1.0.1.,True,True,False,llm_assisted_not_human
+CVE-0002,task2_cve_linkage,val,cisa_kev,CVE-2019-10149,CVE-2019-10149,Exim Mail Transfer Agent (MTA) Improper Input Validation,"Exim Mail Transfer Agent (MTA) Improper Input Validation
+
+Affected: Exim Mail Transfer Agent (MTA)
+
+Improper validation of recipient address in deliver_message() function in /src/deliver.c may lead to remote command execution.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-78
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-10149 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2019-10149 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human

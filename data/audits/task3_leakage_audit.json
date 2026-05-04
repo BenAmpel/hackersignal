@@ -1,0 +1,36 @@
+{
+  "task": "task3_severity",
+  "blocking_policy": "strict sanitized hits must be zero",
+  "strict_sanitized_hits": 0,
+  "warning_sanitized_hits": 10,
+  "strict_raw_hits": 29836,
+  "by_split": {
+    "train": {
+      "rows": 6797,
+      "strict_sanitized_hits": 0,
+      "warning_sanitized_hits": 0,
+      "strict_raw_hits": 6499,
+      "pattern_counts": {}
+    },
+    "val": {
+      "rows": 12836,
+      "strict_sanitized_hits": 0,
+      "warning_sanitized_hits": 1,
+      "strict_raw_hits": 12130,
+      "pattern_counts": {
+        "severity_word_phrase": 1
+      }
+    },
+    "test": {
+      "rows": 11711,
+      "strict_sanitized_hits": 0,
+      "warning_sanitized_hits": 9,
+      "strict_raw_hits": 11207,
+      "pattern_counts": {
+        "severity_word_phrase": 9
+      }
+    }
+  },
+  "examples": [],
+  "passed": true
+}

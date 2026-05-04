@@ -1,0 +1,85 @@
+{
+  "audit_mode": "llm_assisted_not_human",
+  "sources": [
+    {
+      "source": "cisa_kev",
+      "rows": 43,
+      "consensus": 41,
+      "correct": 38,
+      "disagree": 2,
+      "needs_review": 2,
+      "llm_consensus_precision": 0.9268,
+      "risk_band": "low"
+    },
+    {
+      "source": "cvefixes",
+      "rows": 28,
+      "consensus": 28,
+      "correct": 28,
+      "disagree": 0,
+      "needs_review": 0,
+      "llm_consensus_precision": 1.0,
+      "risk_band": "low"
+    },
+    {
+      "source": "dtl_exploits",
+      "rows": 14,
+      "consensus": 14,
+      "correct": 13,
+      "disagree": 0,
+      "needs_review": 0,
+      "llm_consensus_precision": 0.9286,
+      "risk_band": "low"
+    },
+    {
+      "source": "github_advisory",
+      "rows": 43,
+      "consensus": 43,
+      "correct": 0,
+      "disagree": 0,
+      "needs_review": 0,
+      "llm_consensus_precision": 0.0,
+      "risk_band": "high"
+    },
+    {
+      "source": "hackerone",
+      "rows": 42,
+      "consensus": 39,
+      "correct": 28,
+      "disagree": 3,
+      "needs_review": 5,
+      "llm_consensus_precision": 0.7179,
+      "risk_band": "medium"
+    },
+    {
+      "source": "vulnlab",
+      "rows": 14,
+      "consensus": 14,
+      "correct": 0,
+      "disagree": 0,
+      "needs_review": 10,
+      "llm_consensus_precision": 0.0,
+      "risk_band": "high"
+    },
+    {
+      "source": "zeroday",
+      "rows": 14,
+      "consensus": 14,
+      "correct": 0,
+      "disagree": 0,
+      "needs_review": 0,
+      "llm_consensus_precision": 0.0,
+      "risk_band": "high"
+    },
+    {
+      "source": "zeroscience",
+      "rows": 42,
+      "consensus": 40,
+      "correct": 8,
+      "disagree": 2,
+      "needs_review": 3,
+      "llm_consensus_precision": 0.2,
+      "risk_band": "high"
+    }
+  ]
+}

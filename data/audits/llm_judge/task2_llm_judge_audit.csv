@@ -1,0 +1,1439 @@
+audit_id,task,split,source,record_id,cve_id,title,text,cve_link_correct,annotator_confidence,needs_second_review,notes,cti_triage_status,cti_triage_confidence,cti_triage_needs_human_review,cti_triage_error_type,cti_triage_rationale,cti_triage_cve_link_correct,vuln_research_status,vuln_research_confidence,vuln_research_needs_human_review,vuln_research_error_type,vuln_research_rationale,vuln_research_cve_link_correct,llm_consensus,llm_disagreement,audit_mode
+CVE-0001,task2_cve_linkage,train,cvefixes,c7f2331252d279aa5688,CVE-2021-32437,CVE-2021-32437,"CVE: CVE-2021-32437
+
+[{'lang': 'en', 'value': 'The gf_hinter_finalize function in GPAC 1.0.1 allows attackers to cause a denial of service (NULL pointer dereference) via a crafted file in the MP4Box command.'}]
+
+Fix commit: fixed #1770 (fuzz)",,,,,ok,high,False,none,The text explicitly mentions CVE-2021-32437 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-32437 and describes the affected function and vulnerability in GPAC 1.0.1.,True,True,False,llm_assisted_not_human
+CVE-0002,task2_cve_linkage,val,cisa_kev,CVE-2019-10149,CVE-2019-10149,Exim Mail Transfer Agent (MTA) Improper Input Validation,"Exim Mail Transfer Agent (MTA) Improper Input Validation
+
+Affected: Exim Mail Transfer Agent (MTA)
+
+Improper validation of recipient address in deliver_message() function in /src/deliver.c may lead to remote command execution.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-78
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-10149 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2019-10149 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0003,task2_cve_linkage,val,hackerone,02c5e9e7a8855cd59cd2,CVE-2022-41040,mail.acronis.com is vulnerable to zero day vulnerability CVE-2022-41040 (Server-Side Request Forgery (SSRF)),"[Server-Side Request Forgery (SSRF)] mail.acronis.com is vulnerable to zero day vulnerability CVE-2022-41040
+
+Hello Acronis team,
+
+Please run
+
+curl -ksL -m5  -o /dev/null -I -w ""%{http_code}"" ""https://mail.acronis.com/autodiscover/autodiscover.json?Email=autodiscover/autodiscover.json@outlook.com&Protocol=ActiveSync""
+curl -ksL -m5 ""https://mail.acronis.com/autodiscover/autodiscover.json?Email=autodiscover/autodiscover.json@outlook.com&Protocol=ActiveSync"" | grep Protocol
+
+
+and get following outp",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-41040 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-41040 and describes the affected product and vulnerability type.,True,True,False,llm_assisted_not_human
+CVE-0004,task2_cve_linkage,val,zeroscience,1c494758e317641d19f3,CVE-2023-53966,SOUND4 LinkAndShare Transmitter 1.1.2 Format String Stack Buffer Overflow,"SOUND4 LinkAndShare Transmitter 1.1.2 Format String Stack Buffer Overflow
+
+Severity: high",,,,,ok,high,False,none,The text explicitly mentions the affected product and describes the same vulnerability as the CVE.,True,ok,high,False,none,"The text explicitly mentions the affected product and describes the vulnerability, aligning with CVE-2023-53966.",True,True,False,llm_assisted_not_human
+CVE-0005,task2_cve_linkage,train,cvefixes,d002c08cd731f51222b4,CVE-2014-8125,CVE-2014-8125,"CVE: CVE-2014-8125
+
+[{'lang': 'en', 'value': 'XML external entity (XXE) vulnerability in Drools and jBPM before 6.2.0 allows remote attackers to read arbitrary files or possibly have other unspecified impact via a crafted BPMN2 file.'}]
+
+Fix commit: BZ-1169553 - (CVE-2014-8125) EMBARGOED CVE-2014-8125 jBPM: BPMN2 file processing XXE in Process Execution",,,,,ok,high,False,none,The text explicitly mentions CVE-2014-8125 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2014-8125 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0006,task2_cve_linkage,val,cisa_kev,CVE-2023-28252,CVE-2023-28252,Microsoft Windows Common Log File System (CLFS) Driver Privilege Escalation Vulnerability,"Microsoft Windows Common Log File System (CLFS) Driver Privilege Escalation Vulnerability
+
+Affected: Microsoft Windows
+
+Microsoft Windows Common Log File System (CLFS) driver contains an unspecified vulnerability that allows for privilege escalation.
+
+Required Action: Apply updates per vendor instructions.
+
+Ransomware: Known
+
+CWE(s): CWE-122
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2023-28252 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0007,task2_cve_linkage,train,cvefixes,0100b3aa568f479e6355,CVE-2015-7613,CVE-2015-7613,"CVE: CVE-2015-7613
+
+[{'lang': 'en', 'value': 'Race condition in the IPC object implementation in the Linux kernel through 4.2.3 allows local users to gain privileges by triggering an ipc_addid call that leads to uid and gid comparisons against uninitialized data, related to msg.c, shm.c, and util.c.'}]
+
+Fix commit: Initialize msg/shm IPC objects before doing ipc_addid()
+
+As reported by Dmitry Vyukov, we really shouldn't do ipc_addid() before
+having initialized the IPC object state.  Yes, we init",,,,,ok,high,False,none,The text explicitly mentions CVE-2015-7613 and describes the affected product and vulnerability in detail.,True,ok,high,False,none,The text explicitly mentions CVE-2015-7613 and describes the affected product and vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0008,task2_cve_linkage,test,github_advisory,GHSA-cpm7-mv33-jwf8,CVE-2025-3644,Moodle's AJAX section delete does not respect course_can_delete_section(),,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0009,task2_cve_linkage,val,github_advisory,GHSA-xwv6-v7qx-f5jc,CVE-2022-25337,Code injection in ezsystems/ezpublish-kernel,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the CVE.,False,ok,high,False,wrong_cve,The provided text does not mention CVE-2022-25337 and lacks relevant context linking it to the specified vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0010,task2_cve_linkage,train,github_advisory,GHSA-fhv8-fx5f-7fxf,CVE-2021-39227,Prototype Pollution in the merge and clone helper methods,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0011,task2_cve_linkage,val,github_advisory,GHSA-p6hw-wm59-3g5g,CVE-2023-38686,Sydent does not verify email server certificates,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0012,task2_cve_linkage,train,zeroscience,51c17fcc087f91ecd109,CVE-2020-36906,P5 FNIP-8x16A/FNIP-4xSH CSRF Stored Cross-Site Scripting,"P5 FNIP-8x16A/FNIP-4xSH CSRF Stored Cross-Site Scripting
+
+Severity: medium",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2020-36906 and describes a different vulnerability.,False,ok,medium,False,wrong_cve,The text does not mention CVE-2020-36906 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0013,task2_cve_linkage,val,cvefixes,8b7c63c2709c9aad9932,CVE-2020-25427,CVE-2020-25427,"CVE: CVE-2020-25427
+
+[{'lang': 'en', 'value': 'A Null pointer dereference vulnerability exits in MP4Box - GPAC version 0.8.0-rev177-g51a8ef874-master via the gf_isom_get_track_id function, which causes a denial of service.'}]
+
+Fix commit: fixed potential crash - cf #1406",,,,,ok,high,False,none,The text explicitly mentions CVE-2020-25427 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2020-25427 and describes the affected product and vulnerability details.,True,True,False,llm_assisted_not_human
+CVE-0014,task2_cve_linkage,train,zeroscience,9fd03e6bd8d47d40e4c1,CVE-2011-1100,Pixelpost 1.7.3 Multiple POST Variables SQL Injection Vulnerability,"Pixelpost 1.7.3 Multiple POST Variables SQL Injection Vulnerability
+
+Severity: high",,,,,ok,medium,False,too_vague,The text does not provide sufficient details to confirm a direct linkage to CVE-2011-1100.,False,ok,high,False,wrong_cve,The text does not mention CVE-2011-1100 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0015,task2_cve_linkage,train,cvefixes,75c37e49e202c73ad36e,CVE-2020-15211,CVE-2020-15211,"CVE: CVE-2020-15211
+
+[{'lang': 'en', 'value': ""In TensorFlow Lite before versions 1.15.4, 2.0.3, 2.1.2, 2.2.1 and 2.3.1, saved models in the flatbuffer format use a double indexing scheme: a model has a set of subgraphs, each subgraph has a set of operators and each operator has a set of input/output tensors. The flatbuffer format uses indices for the tensors, indexing into an array of tensors that is owned by the subgraph. This results in a pattern of double array indexing when trying to get th",,,,,ok,high,False,none,The text explicitly mentions CVE-2020-15211 and describes the affected product and vulnerability.,True,ok,high,False,none,"The text explicitly mentions CVE-2020-15211 and describes the affected product, TensorFlow Lite, along with the specific versions impacted.",True,True,False,llm_assisted_not_human
+CVE-0016,task2_cve_linkage,test,vulnlab,8db247f863f0e0e8bdf7,CVE-2017-15946,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0017,task2_cve_linkage,train,cisa_kev,CVE-2021-26855,CVE-2021-26855,Microsoft Exchange Server Remote Code Execution Vulnerability,"Microsoft Exchange Server Remote Code Execution Vulnerability
+
+Affected: Microsoft Exchange Server
+
+Microsoft Exchange Server contains an unspecified vulnerability that allows for remote code execution. This vulnerability is part of the ProxyLogon exploit chain.
+
+Required Action: Apply updates per vendor instructions.
+
+Ransomware: Known
+
+CWE(s): CWE-918
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-26855 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0018,task2_cve_linkage,test,cisa_kev,CVE-2025-20333,CVE-2025-20333,Cisco Secure Firewall Adaptive Security Appliance (ASA) and Secure Firewall Threat Defense (FTD) Buffer Overflow Vulnerability,"Cisco Secure Firewall Adaptive Security Appliance (ASA) and Secure Firewall Threat Defense (FTD) Buffer Overflow Vulnerability
+
+Affected: Cisco Secure Firewall Adaptive Security Appliance and Secure Firewall Threat Defense
+
+Cisco Secure Firewall Adaptive Security (ASA) Appliance and Secure Firewall Threat Defense (FTD) Software VPN Web Server contain a buffer overflow vulnerability that allows for remote code execution. This vulnerability could be chained with CVE-2025-20362.
+
+Required Action: T",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE-2025-20333 and describes the affected products and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0019,task2_cve_linkage,val,hackerone,3095b69f91d2d8255da6,CVE-2023-32001,[curl] CVE-2023-32001: fopen race condition (Time-of-check Time-of-use (TOCTOU) Race Condition),"[Time-of-check Time-of-use (TOCTOU) Race Condition] [curl] CVE-2023-32001: fopen race condition
+
+Hello, I'm reporting for CVE-2023-32001 on curl which was resolved in last Wednesday's curl release.
+
+### Vulnerability explanation: 
+As we can see in the following curl code (line 59-61 https://github.com/curl/curl/blob/fb802b521af997230b65174a559f5c419520e142/lib/fopen.c ): 
+```C
+  if(stat(filename, &sb) == -1 || !S_ISREG(sb.st_mode)) {
+    /* a non-regular file, fallback to direct fopen() */
+    *",,,,,ok,high,False,none,The text explicitly mentions CVE-2023-32001 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2023-32001 and describes the affected product and vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0020,task2_cve_linkage,test,cisa_kev,CVE-2025-8876,CVE-2025-8876,N-able N-Central Command Injection Vulnerability,"N-able N-Central Command Injection Vulnerability
+
+Affected: N-able N-Central
+
+N-able N-Central contains a command injection vulnerability via improper sanitization of user input.
+
+Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0021,task2_cve_linkage,train,zeroscience,fd798243e3575eaf5114,CVE-2011-5039,Infoproject Biznis Heroj (login.php) Authentication Bypass Vulnerability,"Infoproject Biznis Heroj (login.php) Authentication Bypass Vulnerability
+
+Severity: medium",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2011-5039 or provide evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not explicitly mention CVE-2011-5039 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0022,task2_cve_linkage,train,github_advisory,GHSA-ccw8-7688-vqx4,CVE-2021-37219,HashiCorp Consul Privilege Escalation Vulnerability,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2021-37219 or provide relevant details about the vulnerability or affected product.,False,False,False,llm_assisted_not_human
+CVE-0023,task2_cve_linkage,test,hackerone,2acb8466d4eeaa888855,CVE-2024-2466,CVE-2024-2466: TLS certificate check bypass with mbedTLS (reward request) (Improper Certificate Validation),"[Improper Certificate Validation] CVE-2024-2466: TLS certificate check bypass with mbedTLS (reward request)
+
+For reward request.
+
+Please refer to this report issue from curl:
+https://hackerone.com/reports/2416725
+
+And already published at here:
+https://curl.se/docs/CVE-2024-2466.html
+
+## Impact
+
+Reference from above.",,,,,ok,high,False,none,The text explicitly mentions CVE-2024-2466 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2024-2466 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0024,task2_cve_linkage,train,cisa_kev,CVE-2021-42292,CVE-2021-42292,Microsoft Excel Security Feature Bypass,"Microsoft Excel Security Feature Bypass
+
+Affected: Microsoft Office
+
+A security feature bypass vulnerability in Microsoft Excel would allow a local user to perform arbitrary code execution.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-357
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE ID and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0025,task2_cve_linkage,val,cisa_kev,CVE-2022-4135,CVE-2022-4135,Google Chromium GPU Heap Buffer Overflow Vulnerability,"Google Chromium GPU Heap Buffer Overflow Vulnerability
+
+Affected: Google Chromium GPU
+
+Google Chromium GPU contains a heap buffer overflow vulnerability that allows a remote attacker, who has compromised the renderer process, to potentially perform a sandbox escape via a crafted HTML page. This vulnerability could affect multiple web browsers that utilize Chromium, including, but not limited to, Google Chrome, Microsoft Edge, and Opera.
+
+Required Action: Apply updates per vendor instructions.
+
+C",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0026,task2_cve_linkage,train,github_advisory,GHSA-g5vf-v6wf-7w2r,CVE-2020-8929,Ciphertext Malleability Issue in Tink Java,,,,,,ok,high,False,too_vague,The provided text does not contain any information to establish a clear linkage to CVE-2020-8929.,False,ok,high,False,wrong_cve,The text does not mention CVE-2020-8929 or provide relevant details about the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0027,task2_cve_linkage,train,hackerone,f104931cffe6a48f0f4e,CVE-2019-11542,Potential pre-auth RCE on Twitter VPN (OS Command Injection),"[OS Command Injection] Potential pre-auth RCE on Twitter VPN
+
+Hi, we(Orange Tsai and Meh Chang) are the security research team from DEVCORE. Recently, we are doing a research about SSL VPN security, and found several critical vulnerabilities on Pulse Secure SSL VPN! We have reported to vendor and [patches](https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44101) have been released on `2019/4/25`. Since that, we keep monitoring numerous large corporations using Pulse Secure and we n",,,,,ok,high,False,wrong_cve,"The text discusses vulnerabilities in Pulse Secure SSL VPN, which is unrelated to CVE-2019-11542, which pertains to Twitter VPN.",False,ok,high,False,wrong_cve,"The text discusses vulnerabilities in Pulse Secure SSL VPN, which is not related to CVE-2019-11542, which pertains to Twitter VPN.",False,False,False,llm_assisted_not_human
+CVE-0028,task2_cve_linkage,test,zeroscience,55b9a3a0a4fbcf79377f,CVE-2025-10127,Daikin Security Gateway v214 Remote Password Reset,"Daikin Security Gateway v214 Remote Password Reset
+
+Severity: critical",,,,,ok,high,False,wrong_cve,The text does not mention CVE-2025-10127 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2025-10127 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0029,task2_cve_linkage,train,zeroscience,5ac7ddd7277ede99acb5,CVE-2019-15827,WordPress Plugin OneSignal 1.17.5 Persistent Cross-Site Scripting,"WordPress Plugin OneSignal 1.17.5 Persistent Cross-Site Scripting
+
+Severity: medium",,,,,ok,high,False,wrong_cve,The text does not explicitly mention CVE-2019-15827 and lacks specific evidence linking it to the described vulnerability.,False,ok,medium,False,too_vague,The text does not explicitly mention CVE-2019-15827 or provide sufficient details linking it to the specific vulnerability described.,False,False,False,llm_assisted_not_human
+CVE-0030,task2_cve_linkage,val,github_advisory,GHSA-83x4-9cwr-5487,CVE-2021-4133,Improper Authorization in Keycloak,,,,,,ok,high,False,too_vague,The text does not provide any information to establish a clear linkage to CVE-2021-4133.,False,ok,high,False,too_vague,The provided text does not contain any information or context to establish a linkage to CVE-2021-4133.,False,False,False,llm_assisted_not_human
+CVE-0031,task2_cve_linkage,train,zeroscience,d18e0006ab43855b6818,CVE-2020-21994,AVE DOMINAplus <=1.10.x Credentials Disclosure Exploit,"AVE DOMINAplus <=1.10.x Credentials Disclosure Exploit
+
+Severity: critical",,,,,ok,high,False,wrong_cve,The text does not explicitly mention CVE-2020-21994 and lacks specific evidence linking it to the described exploit.,False,ok,high,False,wrong_cve,The text does not mention CVE-2020-21994 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0032,task2_cve_linkage,val,cvefixes,dfd8009c4106b6d494ec,CVE-2022-25907,CVE-2022-25907,"CVE: CVE-2022-25907
+
+[{'lang': 'en', 'value': 'The package ts-deepmerge before 2.0.2 are vulnerable to Prototype Pollution due to missing sanitization of the merge function.'}]
+
+Fix commit: prevent against prototype pollution",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-25907 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-25907 and describes the affected package and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0033,task2_cve_linkage,test,zeroscience,fa5423af80803603bdc8,CVE-2024-51542,ABB Cylon Aspect 3.08.02 Unauthenticated Configuration Disclosure,"ABB Cylon Aspect 3.08.02 Unauthenticated Configuration Disclosure
+
+Severity: critical",,,,,ok,high,False,wrong_cve,The text does not explicitly mention CVE-2024-51542 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2024-51542 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0034,task2_cve_linkage,train,github_advisory,GHSA-m7p8-9w66-9frm,CVE-2017-17718,net-ldap Improper Certificate Validation vulnerability,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2017-17718 and lacks relevant context linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not mention the CVE or provide any context regarding the vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0035,task2_cve_linkage,test,hackerone,decdf246858ca8823e8d,CVE-2024-2398,CVE-2024-2398: HTTP/2 push headers memory-leak (Uncontrolled Resource Consumption),"[Uncontrolled Resource Consumption] CVE-2024-2398: HTTP/2 push headers memory-leak
+
+## Summary:
+For each incoming `PUSH_PROMISE` header a new `name:value` string is allocated 
+and the pointer to that string is stored in the `stream->push_headers` array.
+
+```
+h = aprintf(""%s:%s"", name, value);
+    if(h)
+      stream->push_headers[stream->push_headers_used++] = h;
+```
+
+Libcurl will reject `PUSH_PROMISE` frames with too many headers.
+When the number of headers exceeds some threshold, `on_header` re",,,,,ok,high,False,none,The text explicitly mentions CVE-2024-2398 and describes the same vulnerability related to HTTP/2 push headers.,True,ok,high,False,none,The text explicitly mentions CVE-2024-2398 and describes the affected vulnerability related to HTTP/2 push headers memory-leak.,True,True,False,llm_assisted_not_human
+CVE-0036,task2_cve_linkage,val,cisa_kev,CVE-2023-36033,CVE-2023-36033,Microsoft Windows Desktop Window Manager (DWM) Core Library Privilege Escalation Vulnerability,"Microsoft Windows Desktop Window Manager (DWM) Core Library Privilege Escalation Vulnerability
+
+Affected: Microsoft Windows
+
+Microsoft Windows Desktop Window Manager (DWM) Core Library contains an unspecified vulnerability that allows for privilege escalation.
+
+Required Action: Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.
+
+CWE(s): CWE-822
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2023-36033 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0037,task2_cve_linkage,val,zeroscience,cc0497dc551ecd09ab7f,CVE-2023-28654,Osprey Pump Controller 1.0.1 Administrator Backdoor Access,"Osprey Pump Controller 1.0.1 Administrator Backdoor Access
+
+Severity: critical",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2023-28654 or provide evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2023-28654 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0038,task2_cve_linkage,val,zeroscience,33aafe89e6267dc3395d,CVE-2023-27886,Osprey Pump Controller 1.0.1 (pseudonym) Semi-blind Command Injection,"Osprey Pump Controller 1.0.1 (pseudonym) Semi-blind Command Injection
+
+Severity: critical",,,,,ok,medium,False,too_vague,The text does not explicitly mention CVE-2023-27886 or provide sufficient details to confirm the linkage.,False,ok,high,False,too_vague,The text does not explicitly mention CVE-2023-27886 or provide sufficient details linking it to the vulnerability described.,False,False,False,llm_assisted_not_human
+CVE-0039,task2_cve_linkage,train,github_advisory,GHSA-h72c-w3q3-55qq,CVE-2020-13388,OS Command Injection in jw.util,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2020-13388 or provide relevant details about the OS Command Injection vulnerability in jw.util.,False,False,False,llm_assisted_not_human
+CVE-0040,task2_cve_linkage,test,vulnlab,4a33106583d814d62ac4,CVE-2019-13475,===============,"===============
+
+Class: ====================",,,,,ok,high,False,too_vague,The provided text lacks any specific information or context related to CVE-2019-13475.,False,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0041,task2_cve_linkage,test,zeroscience,d148b415ab5c88c1e7c9,CVE-2024-48839,ABB Cylon Aspect 3.08.02 (bbmdUpdate.php) Remote Code Execution,"ABB Cylon Aspect 3.08.02 (bbmdUpdate.php) Remote Code Execution
+
+Severity: critical",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0042,task2_cve_linkage,test,github_advisory,GHSA-xc3p-28hw-q24g,CVE-2022-21702,Grafana proxy Cross-site Scripting,,,,,,ok,high,False,too_vague,The text does not provide any information to establish a clear linkage to CVE-2022-21702.,False,ok,high,False,wrong_cve,The text does not mention CVE-2022-21702 and is unrelated to the Grafana proxy Cross-site Scripting vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0043,task2_cve_linkage,val,cvefixes,084770ecd6343f4f16b5,CVE-2022-0638,CVE-2022-0638,"CVE: CVE-2022-0638
+
+[{'lang': 'en', 'value': 'Cross-Site Request Forgery (CSRF) in Packagist microweber/microweber prior to 1.2.11.'}]
+
+Fix commit: Update UserLogoutController.php",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-0638 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-0638 and describes the affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0044,task2_cve_linkage,train,zeroday,0day-ID-22829,CVE-2014-6039,ManageEngine EventLog Analyzer SQL / Credential Disclosure,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text does not contain any information or context related to CVE-2014-6039.,False,False,False,llm_assisted_not_human
+CVE-0045,task2_cve_linkage,test,vulnlab,7da5dbbc7437b8d88c79,CVE-2017-16636,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,True,too_vague,The provided text lacks specific details about the CVE and does not mention the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0046,task2_cve_linkage,test,github_advisory,GHSA-25xr-qj8w-c4vf,CVE-2025-53506,Apache Tomcat Coyote vulnerable to Denial of Service via excessive HTTP/2 streams,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0047,task2_cve_linkage,train,hackerone,8d88bf3c7a1fbb8f10be,CVE-2016-5157,CVE-2016-5157 OpenJPEG opj_dwt_interleave_v Out-of-Bounds Write Vulnerability (Memory Corruption - Generic),"[Memory Corruption - Generic] CVE-2016-5157 OpenJPEG opj_dwt_interleave_v Out-of-Bounds Write Vulnerability
+
+# OpenJPEG opj_dwt_interleave_v Out-of-Bounds Write Vulnerability
+
+## 1. About OpenJPEG
+OpenJPEG is an open-source JPEG 2000 codec written in C language. It's widely used in lots of Linux OSes such as Ubuntu, RedHat, Debian, Fedora, and so on. The official repository of the OpenJPEG project is available at [GitHub](https://github.com/uclouvain/openjpeg).
+
+## 2. Credit
+This vulnerability w",,,,,ok,high,False,none,The text explicitly mentions CVE-2016-5157 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2016-5157 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0048,task2_cve_linkage,train,dtl_exploits,PACKETSTORM:144604,CVE-2017-15287,DreamBox BouquetEditor 2.0.0 Cross Site Scripting,"DreamBox BouquetEditor 2.0.0 Cross Site Scripting
+
+`# Exploit Title: Vulnerability XSS - Dreambox  
+# Shodan Dork: Dreambox 200   
+# Date: 12/10/2017  
+# Exploit Author: Thiago ""THX"" Sena  
+# Vendor Homepage: https://www.dreamboxupdate.com  
+# Version: 2.0.0  
+# Tested on: kali linux, windows 7, 8.1, 10  
+# CVE : CVE-2017-15287  
+  
+Vulnerabilty: Cross-site scripting (XSS) in plugin BouquetEditor  
+  
+---------------------------------------------------------------  
+  
+PoC:   
+  
+- First you go ",,,,,ok,high,False,none,The text explicitly mentions CVE-2017-15287 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2017-15287 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0049,task2_cve_linkage,train,github_advisory,GHSA-xwhf-g6j5-j5gc,CVE-2020-15266,Float cast overflow undefined behavior,,,,,,ok,high,False,too_vague,The text is empty and does not provide any evidence linking to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0050,task2_cve_linkage,test,vulnlab,301f647dde6d5c444e78,CVE-2014-9600,===============,"===============
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,False,too_vague,The provided text lacks specific details about the CVE and does not mention the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0051,task2_cve_linkage,test,vulnlab,54098df0b93e4921175a,CVE-2018-3688,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,low,True,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0052,task2_cve_linkage,val,zeroscience,b62b8999cd82a0e1bdb1,CVE-2023-6928,EuroTel ETL3100 Transmitter Default Credentials,"EuroTel ETL3100 Transmitter Default Credentials
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2023-6928 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2023-6928 and describes a different issue related to default credentials without specific linkage.,False,False,False,llm_assisted_not_human
+CVE-0053,task2_cve_linkage,test,zeroscience,4654572b51e9c55409fe,CVE-2026-40041,Pachno 1.0.6 Cross-Site Request Forgery,"Pachno 1.0.6 Cross-Site Request Forgery
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2026-40041 and describes a different vulnerability type.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-40041 and describes a different vulnerability unrelated to the provided CVE.,False,False,False,llm_assisted_not_human
+CVE-0054,task2_cve_linkage,val,hackerone,ae4e9b1ca95d310e4f32,CVE-2022-27776,Credential leak on redirect (Insufficiently Protected Credentials),"[Insufficiently Protected Credentials] Credential leak on redirect
+
+## Summary:
+[add summary of the vulnerability]
+
+Curl can be coaxed to leak user credentials to third-party host by issuing HTTP redirect , like the Proxy-Authorization 、x-auth-token header. It is a bypass of fix https://hackerone.com/reports/1547048 , CVE-2022-27776 .
+
+## Steps To Reproduce:
+[add details for how we can reproduce the issue]
+
+  1. Create a 302.php file, such as:
+```
+<?php
+header(""Location: http://a.com:8000"");
+?>
+",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-27776 and describes the same affected product/vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-27776 and describes the same affected product and vulnerability related to credential leakage.,True,True,False,llm_assisted_not_human
+CVE-0055,task2_cve_linkage,train,cvefixes,536d5c1d77dad8b8fed5,CVE-2016-5769,CVE-2016-5769,"CVE: CVE-2016-5769
+
+[{'lang': 'en', 'value': 'Multiple integer overflows in mcrypt.c in the mcrypt extension in PHP before 5.5.37, 5.6.x before 5.6.23, and 7.x before 7.0.8 allow remote attackers to cause a denial of service (heap-based buffer overflow and application crash) or possibly have unspecified other impact via a crafted length value, related to the (1) mcrypt_generic and (2) mdecrypt_generic functions.'}]
+
+Fix commit: Fix bug #72455:  Heap Overflow due to integer overflows",,,,,ok,high,False,none,The text explicitly mentions CVE-2016-5769 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2016-5769 and describes the affected product and vulnerability details accurately.,True,True,False,llm_assisted_not_human
+CVE-0056,task2_cve_linkage,test,cisa_kev,CVE-2025-53770,CVE-2025-53770,Microsoft SharePoint Deserialization of Untrusted Data Vulnerability,"Microsoft SharePoint Deserialization of Untrusted Data Vulnerability
+
+Affected: Microsoft SharePoint
+
+Microsoft SharePoint Server on-premises contains a deserialization of untrusted data vulnerability that could allow an unauthorized attacker to execute code over a network. This vulnerability could be chained with CVE-2025-53771. CVE-2025-53770 is a patch bypass for CVE-2025-49704, and the updates for CVE-2025-53770 include more robust protection than those for CVE-2025-49704.
+
+Required Action: ",,,,,ok,high,False,none,The text explicitly mentions CVE-2025-53770 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2025-53770 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0057,task2_cve_linkage,test,github_advisory,GHSA-43x4-g22p-3hrq,CVE-2026-32046,OpenClaw: Chrome --no-sandbox disabled OS-level browser sandbox in sandbox browser container,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2026-32046 and describes a different issue unrelated to the CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-32046 and describes a different vulnerability related to Chrome's sandboxing feature.,False,False,False,llm_assisted_not_human
+CVE-0058,task2_cve_linkage,val,hackerone,0b7ce8eff15daacc0fd3,CVE-2022-30190,Unrestricted File Upload on reddit.secure.force.com (Unknown),"[Unknown] Unrestricted File Upload on reddit.secure.force.com
+
+## Summary:
+Reddit.secure.force.com is Reddit SalesForce instance. Attacker is able to send attachments of disallowed filetypes to this server. The attacker is able to send malicious documents such as CVE-2022-30190 Follina to the victim.
+
+## Impact:
+Attacker can send malicious files to whoever handles the form behind https://reddit.secure.force.com/adhelp
+
+## Steps To Reproduce:
+  1. Go to https://reddit.secure.force.com/adhelp 
+  2",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-30190 and describes an affected product and vulnerability related to it.,True,ok,high,False,none,The text explicitly mentions CVE-2022-30190 and describes an affected product and vulnerability related to unrestricted file upload.,True,True,False,llm_assisted_not_human
+CVE-0059,task2_cve_linkage,train,cvefixes,381fe9e17e15f7aa0089,CVE-2016-7412,CVE-2016-7412,"CVE: CVE-2016-7412
+
+[{'lang': 'en', 'value': 'ext/mysqlnd/mysqlnd_wireprotocol.c in PHP before 5.6.26 and 7.x before 7.0.11 does not verify that a BIT field has the UNSIGNED_FLAG flag, which allows remote MySQL servers to cause a denial of service (heap-based buffer overflow) or possibly have unspecified other impact via crafted field metadata.'}]
+
+Fix commit: Fix bug #72293 - Heap overflow in mysqlnd related to BIT fields",,,,,ok,high,False,none,The text explicitly mentions CVE-2016-7412 and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2016-7412 and describes the affected component and vulnerability details accurately.,True,True,False,llm_assisted_not_human
+CVE-0060,task2_cve_linkage,test,zeroscience,eaef69fb5efa18dc3160,CVE-2026-26369,eNet SMART HOME server 2.3.1 (setUserGroup) Remote Privilege Escalation,"eNet SMART HOME server 2.3.1 (setUserGroup) Remote Privilege Escalation
+
+Severity: high",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,"The text explicitly mentions the affected product and vulnerability, aligning with the provided CVE.",True,True,False,llm_assisted_not_human
+CVE-0061,task2_cve_linkage,train,zeroday,0day-ID-23029,CVE-1999-0502,Varnish Cache CLI Interface Remote Code Execution Exploit,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-1999-0502 and appears to describe a different vulnerability.,False,ok,high,False,wrong_cve,The provided text does not mention CVE-1999-0502 and appears unrelated to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0062,task2_cve_linkage,val,cisa_kev,CVE-2009-4324,CVE-2009-4324,Adobe Acrobat and Reader Use-After-Free Vulnerability,"Adobe Acrobat and Reader Use-After-Free Vulnerability
+
+Affected: Adobe Acrobat and Reader
+
+Use-after-free vulnerability in Adobe Acrobat and Reader allows remote attackers to execute code via a crafted PDF file.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-399
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2009-4324 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0063,task2_cve_linkage,val,cisa_kev,CVE-2013-5223,CVE-2013-5223,D-Link DSL-2760U Gateway Cross-Site Scripting Vulnerability,"D-Link DSL-2760U Gateway Cross-Site Scripting Vulnerability
+
+Affected: D-Link DSL-2760U
+
+A cross-site scripting (XSS) vulnerability exists in the D-Link DSL-2760U gateway, allowing remote authenticated users to inject arbitrary web script or HTML.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-79
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions CVE-2013-5223 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2013-5223 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0064,task2_cve_linkage,train,cvefixes,3c3f326acb6664b80209,CVE-2019-9841,CVE-2019-9841,"CVE: CVE-2019-9841
+
+[{'lang': 'en', 'value': 'Vesta Control Panel 0.9.8-23 allows XSS via a crafted URL.'}]
+
+Fix commit: setting content type to fix possible XSS attack vector",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-9841 and describes the affected product and vulnerability.,True,ok,high,False,none,"The text explicitly mentions CVE-2019-9841 and describes the affected product and vulnerability, providing clear evidence of linkage.",True,True,False,llm_assisted_not_human
+CVE-0065,task2_cve_linkage,test,hackerone,d7c7c2e5b1bd535257e1,CVE-2024-27351,CVE-2024-27351: Potential regular expression denial-of-service in django.utils.text.Truncator.words() (Uncontrolled Resource Consumption),"[Uncontrolled Resource Consumption] CVE-2024-27351: Potential regular expression denial-of-service in django.utils.text.Truncator.words()
+
+# TL;DR
+
+**CVE-2024-27351**: Potential regular expression denial-of-service in `django.utils.text.Truncator.words()`
+
+# Details:
+
+`django.utils.text.Truncator.words()` method (with `html=True`) and `truncatewords_html` template filter were subject to a potential regular expression denial-of-service attack using a suitably crafted string (follow up to CVE-2019",,,,,ok,high,False,none,The text explicitly mentions CVE-2024-27351 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2024-27351 and describes the affected product and vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0066,task2_cve_linkage,val,hackerone,ecdcc4f4c1deac295a80,CVE-2018-6389,DoS at ████████ (CVE-2018-6389) (Uncontrolled Resource Consumption),"[Uncontrolled Resource Consumption] DoS at ████████ (CVE-2018-6389)
+
+Hi DoD Team!
+
+##Description
+
+Unauthenticated attackers can cause a denial of service (resource consumption) by using the large list of registered .js files (from wp-includes/script-loader.php) to construct a series of requests to load every file many times.
+
+The vulnerability is registered as [CVE-2018-6389](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-6389).
+
+WordPress allows users to load multiple JS files and CSS ",,,,,ok,high,False,none,The text explicitly mentions CVE-2018-6389 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2018-6389 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0067,task2_cve_linkage,val,github_advisory,GHSA-8xv4-c7rq-j577,CVE-2020-1037,ChakraCore Remote Code Execution Vulnerability,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2020-1037 or provide relevant context linking it to the advisory.,False,ok,high,False,wrong_cve,The text does not mention CVE-2020-1037 and lacks relevant context linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0068,task2_cve_linkage,train,hackerone,586a6a32ef5c0ea081f1,CVE-2018-6389,scripts loader (denial of service) vulnerability (Uncontrolled Resource Consumption),"[Uncontrolled Resource Consumption] scripts loader (denial of service) vulnerability
+
+1) vulnerability description
+
+WordPress allows users to load multiple JS files and CSS files through load-scripts.php files at once. For example, https://wpwebsite.com/wp-admin/load-scripts.php?c=1&load[]=jquery-ui-core,editor&ver=4.9.1, file load-scripts.php will load jquery-ui-core and editor files automatically and return the contents of the file.
+
+However, the number and size of files are not restricted in ",,,,,ok,high,False,none,The text explicitly describes a vulnerability related to the same affected product and context as CVE-2018-6389.,True,ok,high,False,none,The text explicitly describes the vulnerability related to CVE-2018-6389 and provides specific details about the affected component and its behavior.,True,True,False,llm_assisted_not_human
+CVE-0069,task2_cve_linkage,val,hackerone,024ee216ec85fff74232,CVE-2023-27531,[CVE-2023-27531] Possible Deserialization of Untrusted Data vulnerability in Kredis JSON (Deserialization of Untrusted Data),"[Deserialization of Untrusted Data] [CVE-2023-27531] Possible Deserialization of Untrusted Data vulnerability in Kredis JSON
+
+I made a report and patch at https://hackerone.com/reports/1702859 .
+
+https://discuss.rubyonrails.org/t/cve-2023-27531-possible-deserialization-of-untrusted-data-vulnerability-in-kredis-json/82467
+
+> There is a deserialization of untrusted data vulnerability in the Kredis JSON deserialization code. This vulnerability has been assigned the CVE identifier CVE-2023-27531.
+
+#",,,,,ok,high,False,none,The text explicitly mentions CVE-2023-27531 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2023-27531 and describes the same affected vulnerability in Kredis JSON.,True,True,False,llm_assisted_not_human
+CVE-0070,task2_cve_linkage,train,cvefixes,280fde46d25ae45dae00,CVE-2016-7537,CVE-2016-7537,"CVE: CVE-2016-7537
+
+[{'lang': 'en', 'value': 'MagickCore/memory.c in ImageMagick allows remote attackers to cause a denial of service (out-of-bounds access) via a crafted PDB file.'}]
+
+Fix commit: https://github.com/ImageMagick/ImageMagick/issues/143",,,,,ok,high,False,none,The text explicitly mentions CVE-2016-7537 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2016-7537 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0071,task2_cve_linkage,test,github_advisory,GHSA-w66h-j855-qr72,CVE-2025-21621,GeoServer has a Reflected Cross-Site Scripting (XSS) vulnerability in its WMS GetFeatureInfo HTML format,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2025-21621 and describes a different vulnerability.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0072,task2_cve_linkage,train,dtl_exploits,EDB-ID:41760,CVE-2016-2856,Ubuntu < 15.10 - PT Chown Arbitrary PTs Access Via UserNamespace Privilege Escalation,"Ubuntu < 15.10 - PT Chown Arbitrary PTs Access Via UserNamespace Privilege Escalation
+
+Ubuntu < 15.10 - PT Chown Arbitrary PTs Access Via UserNamespace Privilege Escalation. CVE-2016-2856. Local exploit for Linux platform
+
+Source: http://www.halfdog.net/Security/2015/PtChownArbitraryPtsAccessViaUserNamespace/
+
+## Introduction
+
+Problem description: With Ubuntu Wily and earlier, /usr/lib/pt_chown was used to change ownership of slave pts devices in /dev/pts to the same uid holding the master f",,,,,ok,high,False,none,The text explicitly mentions CVE-2016-2856 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2016-2856 and describes the affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0073,task2_cve_linkage,test,cisa_kev,CVE-2025-47813,CVE-2025-47813,Wing FTP Server Information Disclosure Vulnerability,"Wing FTP Server Information Disclosure Vulnerability
+
+Affected: Wing FTP Server Wing FTP Server
+
+Wing FTP Server contains a generation of error message containing sensitive information vulnerability when using a long value in the UID cookie.
+
+Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.
+
+CWE(s): CWE-209
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0074,task2_cve_linkage,train,cvefixes,9c4d09b9e0b423939f6d,CVE-2020-11494,CVE-2020-11494,"CVE: CVE-2020-11494
+
+[{'lang': 'en', 'value': 'An issue was discovered in slc_bump in drivers/net/can/slcan.c in the Linux kernel 3.16 through 5.6.2. It allows attackers to read uninitialized can_frame data, potentially containing sensitive information from kernel stack memory, if the configuration lacks CONFIG_INIT_STACK_ALL, aka CID-b9258a2cece4.'}]
+
+Fix commit: slcan: Don't transmit uninitialized stack data in padding
+
+struct can_frame contains some padding which is not explicitly zeroed in
+s",,,,,ok,high,False,none,The text explicitly mentions CVE-2020-11494 and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2020-11494 and describes the affected component and vulnerability details.,True,True,False,llm_assisted_not_human
+CVE-0075,task2_cve_linkage,train,github_advisory,GHSA-934w-hvj4-7fr6,CVE-2020-7762,Path Traversal in jsreport-chrome-pdf,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2020-7762 and lacks relevant details about the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0076,task2_cve_linkage,val,hackerone,7eb1468b340859393e63,CVE-2018-18862,Leaks of username and password leads to CVE-2018-18862 exploitation (Improper Access Control - Generic),"[Improper Access Control - Generic] Leaks of username and password leads to CVE-2018-18862 exploitation
+
+Hi DoD Team, 
+I hope you are doing good today.
+
+This is a follow-up from my  November 15th 2022 report number #1775217 (https://hackerone.com/reports/1775217)
+In all respect and to be clear, I don't want to push too hard or be annoying on this and feel free to tell me if you don't want or need to take action on this.
+
+Since my report #1775217 was left un-answered I felt I should open a new on",,,,,ok,high,False,none,The text explicitly mentions CVE-2018-18862 and describes an exploitation scenario related to it.,True,ok,high,False,none,The text explicitly mentions CVE-2018-18862 and describes an exploitation scenario related to it.,True,True,False,llm_assisted_not_human
+CVE-0077,task2_cve_linkage,val,cvefixes,ffeb309fdb20ab494143,CVE-2022-28389,CVE-2022-28389,"CVE: CVE-2022-28389
+
+[{'lang': 'en', 'value': 'mcba_usb_start_xmit in drivers/net/can/usb/mcba_usb.c in the Linux kernel through 5.17.1 has a double free.'}]
+
+Fix commit: can: mcba_usb: mcba_usb_start_xmit(): fix double dev_kfree_skb in error path
+
+There is no need to call dev_kfree_skb() when usb_submit_urb() fails
+because can_put_echo_skb() deletes original skb and
+can_free_echo_skb() deletes the cloned skb.
+
+Fixes: 51f3baad7de9 (""can: mcba_usb: Add support for Microchip CAN BUS Analyzer"")
+Lin",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-28389 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-28389 and describes the affected component and the fix related to the vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0078,task2_cve_linkage,train,zeroscience,7183a4582a740160abba,CVE-2018-25149,Microhard Systems 3G/4G Cellular Ethernet and Serial Gateway CSRF Vulnerabilities,"Microhard Systems 3G/4G Cellular Ethernet and Serial Gateway CSRF Vulnerabilities
+
+Severity: medium",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2018-25149 or provide evidence linking it to the described vulnerabilities.,False,ok,high,False,wrong_cve,The text does not mention CVE-2018-25149 and lacks specific details linking it to the described vulnerabilities.,False,False,False,llm_assisted_not_human
+CVE-0079,task2_cve_linkage,train,cvefixes,c23a089bf01807769beb,CVE-2013-7019,CVE-2013-7019,"CVE: CVE-2013-7019
+
+[{'lang': 'en', 'value': 'The get_cox function in libavcodec/jpeg2000dec.c in FFmpeg before 2.1 does not properly validate the reduction factor, which allows remote attackers to cause a denial of service (out-of-bounds array access) or possibly have unspecified other impact via crafted JPEG2000 data.'}]
+
+Fix commit: avcodec/jpeg2000dec: fix context consistency with too large lowres
+
+Fixes out of array accesses
+Fixes Ticket2898
+
+Signed-off-by: Michael Niedermayer <michaelni@gm",,,,,ok,high,False,none,The text explicitly mentions CVE-2013-7019 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2013-7019 and describes the affected component and vulnerability details.,True,True,False,llm_assisted_not_human
+CVE-0080,task2_cve_linkage,test,cisa_kev,CVE-2024-53197,CVE-2024-53197,Linux Kernel Out-of-Bounds Access Vulnerability,"Linux Kernel Out-of-Bounds Access Vulnerability
+
+Affected: Linux Kernel
+
+Linux Kernel contains an out-of-bounds access vulnerability in the USB-audio driver that allows an attacker with physical access to the system to use a malicious USB device to potentially manipulate system memory, escalate privileges, or execute arbitrary code.
+
+Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigation",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0081,task2_cve_linkage,test,vulnlab,b4a29a775d95e05c6976,CVE-2017-15949,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,low,True,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0082,task2_cve_linkage,val,zeroscience,ee96297b6894da682b97,CVE-2023-53967,Screen SFT DAB 600/C Authentication Bypass Admin Password Change Exploit,"Screen SFT DAB 600/C Authentication Bypass Admin Password Change Exploit
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2023-53967 and appears to describe a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2023-53967 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0083,task2_cve_linkage,test,vulnlab,b2f0a693ecdd3aee7de1,CVE-2018-5283,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,low,True,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0084,task2_cve_linkage,train,zeroscience,7c978f3115c0add6f247,CVE-2019-25244,Legrand BTicino Driver Manager F454 1.0.51 CSRF Change Password Exploit,"Legrand BTicino Driver Manager F454 1.0.51 CSRF Change Password Exploit
+
+Severity: medium",,,,,ok,medium,False,too_vague,The text does not explicitly mention CVE-2019-25244 or provide sufficient context linking it to the described exploit.,False,ok,medium,False,too_vague,The text does not explicitly mention CVE-2019-25244 or provide sufficient details linking it to the specific vulnerability described.,False,False,False,llm_assisted_not_human
+CVE-0085,task2_cve_linkage,val,github_advisory,GHSA-mf7c-35mq-75pj,CVE-2016-6811,Insecure Inherited Permissions in  Apache Hadoop,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2016-6811 and appears to refer to a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2016-6811 and is unrelated to the specific vulnerability described.,False,False,False,llm_assisted_not_human
+CVE-0086,task2_cve_linkage,train,zeroscience,2db08e6e5818471f53bb,CVE-2017-20221,Telesquare SKT LTE Router SDT-CS3B1 CSRF System Command Execution,"Telesquare SKT LTE Router SDT-CS3B1 CSRF System Command Execution
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2017-20221 and lacks specific evidence linking it to the described vulnerability.,False,ok,medium,False,too_vague,The text does not provide specific details linking it to CVE-2017-20221 beyond the product name and vulnerability type.,False,False,False,llm_assisted_not_human
+CVE-0087,task2_cve_linkage,train,dtl_exploits,EDB-ID:21956,CVE-2002-1958,KMMail 1.0 E-Mail HTML Injection Vulnerability,"KMMail 1.0 E-Mail HTML Injection Vulnerability
+
+KMMail 1.0 E-Mail HTML Injection Vulnerability. CVE-2002-1958. Webapps exploit for php platform
+
+source: http://www.securityfocus.com/bid/6013/info
+
+kmMail does not sufficiently sanitize HTML and script code from the body of e-mail messages. As a result, an attacker may send a malicious message to a user of kmMail that includes arbitrary HTML and script code.
+
+This may allow an attacker to steal cookie-based authentication credentials from user",,,,,ok,high,False,none,The text explicitly mentions CVE-2002-1958 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2002-1958 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0088,task2_cve_linkage,val,cvefixes,ae7fa344e0432e4ef3f2,CVE-2022-29212,CVE-2022-29212,"CVE: CVE-2022-29212
+
+[{'lang': 'en', 'value': 'TensorFlow is an open source platform for machine learning. Prior to versions 2.9.0, 2.8.1, 2.7.2, and 2.6.4, certain TFLite models that were created using TFLite model converter would crash when loaded in the TFLite interpreter. The culprit is that during quantization the scale of values could be greater than 1 but code was always assuming sub-unit scaling. Thus, since code was calling `QuantizeMultiplierSmallerThanOneExp`, the `TFLITE_CHECK_LT` as",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-29212 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-29212 and describes the affected product and vulnerability details.,True,True,False,llm_assisted_not_human
+CVE-0089,task2_cve_linkage,test,github_advisory,GHSA-246p-xmg8-wmcq,CVE-2024-29194,OneUptime Vulnerable to a Privilege Escalation via Local Storage Key Manipulation,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2024-29194 and appears to refer to a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2024-29194 and appears to reference a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0090,task2_cve_linkage,test,github_advisory,GHSA-7p94-766c-hgjp,CVE-2025-14009,NLTK has a Zip Slip Vulnerability,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2025-14009 and is unrelated to the provided CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2025-14009 and lacks relevant details about the vulnerability or affected product.,False,False,False,llm_assisted_not_human
+CVE-0091,task2_cve_linkage,val,zeroscience,6187ad0b95a2a85f9cfd,CVE-2023-46663,Sielco PolyEco Digital FM Transmitter 2.0.6 Radio Data System POST Manipulation,"Sielco PolyEco Digital FM Transmitter 2.0.6 Radio Data System POST Manipulation
+
+Severity: high",,,,,ok,medium,False,too_vague,The text does not explicitly mention CVE-2023-46663 or provide sufficient details to confirm the linkage.,False,ok,high,False,wrong_cve,The text does not mention CVE-2023-46663 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0092,task2_cve_linkage,train,hackerone,fd582d1527904e4eeb57,CVE-2018-6797,CVE-2018-6797:  A crafted regular expression can cause a heap buffer write overflow in Perl 5 giving a remote attacker control over bytes written (Heap Overflow),"[Heap Overflow] CVE-2018-6797:  A crafted regular expression can cause a heap buffer write overflow in Perl 5 giving a remote attacker control over bytes written
+
+An attacker supplies a regular expression containing one or more `\xDF` characters after an escape putting the regexp into unicode matching mode, such as a `\N{}` escape.  Each `\xDF` character adds one byte of overflow, and any other text in the regular expression is written in order, providing the attacker control over the bytes writ",,,,,ok,high,False,none,The text explicitly mentions CVE-2018-6797 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2018-6797 and describes the same affected vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0093,task2_cve_linkage,val,cvefixes,49c573c5d53bda3b1ac0,CVE-2022-0528,CVE-2022-0528,"CVE: CVE-2022-0528
+
+[{'lang': 'en', 'value': 'Exposure of Sensitive Information to an Unauthorized Actor in GitHub repository transloadit/uppy prior to 3.3.1.'}]
+
+Fix commit: replace debug
+
+remove debug flag
+instead add allowLocalUrls (COMPANION_ALLOW_LOCAL_URLS)
+which defaults to false
+this fixes https://huntr.dev/bounties/8b060cc3-2420-468e-8293-b9216620175b/
+
+also don't allow localhost for any providers getURLMeta",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-0528 and describes the affected product and vulnerability.,True,ok,high,False,none,"The text explicitly mentions CVE-2022-0528 and describes the affected product and vulnerability, along with a fix commit related to the CVE.",True,True,False,llm_assisted_not_human
+CVE-0094,task2_cve_linkage,val,github_advisory,GHSA-xj5f-qv37-r9jc,CVE-2018-16854,Moodle Login CSRF vulnerability in login form,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2018-16854 and lacks relevant context linking it to the specified CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2018-16854 and lacks relevant details about the vulnerability or affected product.,False,False,False,llm_assisted_not_human
+CVE-0095,task2_cve_linkage,test,github_advisory,GHSA-w87r-vg9q-crqm,CVE-2025-13437,zx Uses Incorrectly-Resolved Name or Reference,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2025-13437 and appears unrelated to the provided CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2025-13437 and lacks relevant context linking it to the advisory.,False,False,False,llm_assisted_not_human
+CVE-0096,task2_cve_linkage,val,cisa_kev,CVE-2021-25394,CVE-2021-25394,Samsung Mobile Devices Race Condition Vulnerability,"Samsung Mobile Devices Race Condition Vulnerability
+
+Affected: Samsung Mobile Devices
+
+Samsung mobile devices contain a race condition vulnerability within the MFC charger driver that leads to a use-after-free allowing for a write given a radio privilege is compromised.
+
+Required Action: Apply updates per vendor instructions or discontinue use of the product if updates are unavailable
+
+CWE(s): CWE-416
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0097,task2_cve_linkage,train,zeroscience,9f3ca3ac9c3ad5c5fa6e,CVE-2016-1606,Micro Focus Rumba+ v9.4 Multiple Stack Buffer Overflow Vulnerabilities,"Micro Focus Rumba+ v9.4 Multiple Stack Buffer Overflow Vulnerabilities
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2016-1606 and lacks specific evidence linking it to the described vulnerabilities.,False,ok,high,False,wrong_cve,The text does not mention CVE-2016-1606 and lacks specific details linking it to the vulnerabilities described.,False,False,False,llm_assisted_not_human
+CVE-0098,task2_cve_linkage,train,cisa_kev,CVE-2021-30632,CVE-2021-30632,Google Chromium V8 Out-of-Bounds Write Vulnerability,"Google Chromium V8 Out-of-Bounds Write Vulnerability
+
+Affected: Google Chromium V8
+
+Google Chromium V8 Engine contains an out-of-bounds write vulnerability that allows a remote attacker to potentially exploit heap corruption via a crafted HTML page. This vulnerability could affect multiple web browsers that utilize Chromium, including, but not limited to, Google Chrome, Microsoft Edge, and Opera.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-122
+
+[Source: CISA Known Explo",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-30632 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0099,task2_cve_linkage,train,dtl_exploits,EDB-ID:6122,"CVE-2008-1447', 'CVE-2008-4194",BIND 9.4.1-9.4.2 - Remote DNS Cache Poisoning Flaw Exploit meta,"BIND 9.4.1-9.4.2 - Remote DNS Cache Poisoning Flaw Exploit meta
+
+BIND 9.4.1-9.4.2 Remote DNS Cache Poisoning Flaw Exploit (meta). CVE-2008-1447,CVE-2008-4194. Remote exploits for multiple platform
+
+____      ____     __    __
+                     /    \    /    \   |  |  |  |
+        ----====####/  /\__\##/  /\  \##|  |##|  |####====----
+                   |  |      |  |__|  | |  |  |  |
+                   |  |  ___ |   __   | |  |  |  |
+  ------======######\  \/  /#|  |##|  |#|  |##|  |######==",,,,,ok,medium,False,multiple_cves,The text mentions multiple CVEs but does not provide clear evidence linking to a specific one.,False,ok,high,False,multiple_cves,The text references multiple CVEs (CVE-2008-1447 and CVE-2008-4194) without clear linkage to a specific vulnerability or product context.,False,False,False,llm_assisted_not_human
+CVE-0100,task2_cve_linkage,train,cisa_kev,CVE-2019-0193,CVE-2019-0193,Apache Solr DataImportHandler Code Injection Vulnerability,"Apache Solr DataImportHandler Code Injection Vulnerability
+
+Affected: Apache Solr
+
+The optional Apache Solr module DataImportHandler contains a code injection vulnerability.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-94
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-0193 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2019-0193 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0101,task2_cve_linkage,train,cisa_kev,CVE-2019-9082,CVE-2019-9082,ThinkPHP Remote Code Execution Vulnerability,"ThinkPHP Remote Code Execution Vulnerability
+
+Affected: ThinkPHP ThinkPHP
+
+ThinkPHP contains an unspecified vulnerability that allows for remote code execution via public//?s=index/\think\app/invokefunction&function=call_user_func_array&vars[0]=system&vars[1][]= followed by the command.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-306, CWE-94
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-9082 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2019-9082 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0102,task2_cve_linkage,train,cisa_kev,CVE-2020-12812,CVE-2020-12812,Fortinet FortiOS SSL VPN Improper Authentication Vulnerability,"Fortinet FortiOS SSL VPN Improper Authentication Vulnerability
+
+Affected: Fortinet FortiOS
+
+Fortinet FortiOS SSL VPN contains an improper authentication vulnerability that may allow a user to login successfully without being prompted for the second factor of authentication (FortiToken) if they change the case in their username.
+
+Required Action: Apply updates per vendor instructions.
+
+Ransomware: Known
+
+CWE(s): CWE-178, CWE-287
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2020-12812 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0103,task2_cve_linkage,test,zeroscience,2a8113101ef48f7160e7,CVE-2024-39376,TELSAT marKoni FM Transmitter 1.9.5 Insecure Access Control Change Password,"TELSAT marKoni FM Transmitter 1.9.5 Insecure Access Control Change Password
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2024-39376 or provide evidence linking it to the described vulnerability.,False,ok,medium,False,too_vague,The text does not provide sufficient details linking it explicitly to CVE-2024-39376.,False,False,False,llm_assisted_not_human
+CVE-0104,task2_cve_linkage,test,cisa_kev,CVE-2024-9680,CVE-2024-9680,Mozilla Firefox Use-After-Free Vulnerability,"Mozilla Firefox Use-After-Free Vulnerability
+
+Affected: Mozilla Firefox
+
+Mozilla Firefox and Firefox ESR contain a use-after-free vulnerability in Animation timelines that allows for code execution in the content process.
+
+Required Action: Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.
+
+Ransomware: Known
+
+CWE(s): CWE-416
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0105,task2_cve_linkage,val,zeroscience,0d0a4339b836dbb2de29,CVE-2022-29732,Delta Controls enteliTOUCH 3.40.3935 Cross-Site Scripting (XSS),"Delta Controls enteliTOUCH 3.40.3935 Cross-Site Scripting (XSS)
+
+Severity: medium",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0106,task2_cve_linkage,train,hackerone,faaf7e3a520be9755b5f,CVE-2019-3462,IPv4 only clusters susceptible to MitM attacks via IPv6 rogue router advertisements (Man-in-the-Middle),"[Man-in-the-Middle] IPv4 only clusters susceptible to MitM attacks via IPv6 rogue router advertisements
+
+This bug report mostly concerns the default CNI plugins (https://github.com/containernetworking/plugins) but I believe affects many K8S clusters.
+Because the CNI team still doesn’t provide an explicit way to report security bugs, I hope the K8S security team doesn’t mind doing the coordination job again as was done for CVE-2019-9946.
+I understand this is out of scope for this bounty, and I un",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2019-3462 and discusses a different issue related to CVE-2019-9946.,False,ok,medium,True,wrong_cve,The text discusses a vulnerability related to MitM attacks but does not explicitly link to CVE-2019-3462 or provide sufficient context to confirm the linkage.,False,False,False,llm_assisted_not_human
+CVE-0107,task2_cve_linkage,train,hackerone,1b3d1623b20493e092fa,CVE-2019-16219,Version problem in wordpress leads to the many vulnearability (Unknown),"[Unknown] Version problem in wordpress leads to the many vulnearability
+
+##Title: WordPress 3.9-5.1 - Comment Cross-Site Scripting (XSS)
+    Reference: https://wpvulndb.com/vulnerabilities/9230
+    Reference: https://github.com/WordPress/WordPress/commit/0292de60ec78c5a44956765189403654fe4d080b
+    Reference: https://wordpress.org/news/2019/03/wordpress-5-1-1-security-and-maintenance-release/
+    Reference: https://blog.ripstech.com/2019/wordpress-csrf-to-rce/
+    Reference: https://cve.mitre.or",,,,,ok,medium,True,wrong_cve,The text does not explicitly mention CVE-2019-16219 and discusses vulnerabilities in a broader context without clear linkage.,False,ok,medium,True,wrong_cve,The text discusses vulnerabilities in WordPress but does not explicitly mention CVE-2019-16219 or provide specific evidence linking to it.,False,False,False,llm_assisted_not_human
+CVE-0108,task2_cve_linkage,train,cisa_kev,CVE-2021-1870,CVE-2021-1870,"Apple iOS, iPadOS, and macOS WebKit Remote Code Execution Vulnerability","Apple iOS, iPadOS, and macOS WebKit Remote Code Execution Vulnerability
+
+Affected: Apple iOS, iPadOS, and macOS
+
+Apple iOS, iPadOS, and macOS WebKit contain an unspecified logic vulnerability that allows a remote attacker to execute code. This vulnerability could impact HTML parsers that use WebKit, including but not limited to Apple Safari and non-Apple products which rely on WebKit for HTML processing.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-1173
+
+[Source: CISA Kn",,,,,ok,high,False,none,The text explicitly mentions CVE-2021-1870 and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2021-1870 and describes the affected products and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0109,task2_cve_linkage,train,zeroday,0day-ID-31601,CVE-2018-18774,CentOS Web Panel 0.9.8.740 - Cross-Site Request Forgery / Cross-Site Scripting Vulnerabilities,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0110,task2_cve_linkage,train,zeroday,0day-ID-29355,CVE-2018-3810,WordPress Smart Google Code Inserter Plugin < 3.5 - Authentication Bypass / SQL Injection,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0111,task2_cve_linkage,train,hackerone,c1c51b28a91715463ea6,CVE-2019-11040,Out of Bounds Memory Read in php_jpg_get16 (Buffer Over-read),"[Buffer Over-read] Out of Bounds Memory Read in php_jpg_get16
+
+I have found and reported an out of bounds memory read in PHP [php_jpg_get16]
+When PHP EXIF extension is parsing EXIF information from an image, e.g. via exif_read_data() function, in PHP versions 7.1.x below 7.1.30, 7.2.x below 7.2.19 and 7.3.x below 7.3.6 it is possible to supply it with data what will cause it to read past the allocated buffer.
+This has been fixed and assigned CVE-2019-11040
+The bug report is here: https://bugs.ph",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-11040 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2019-11040 and describes the affected product and vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0112,task2_cve_linkage,val,hackerone,a45b1043f0434fa1154a,CVE-2019-7639,A vulnerability classified as critical has been found in gsi-openssh-server 7.9p1 on Fedora (Connectivity Software) on server (http://95.217.64.181:22 (Unknown),"[Unknown] A vulnerability classified as critical has been found in gsi-openssh-server 7.9p1 on Fedora (Connectivity Software) on server (http://95.217.64.181:22
+
+## Summary:
+"" hello ""
+vulnerability:
+GSI-OPENSSH-SERVER 7.9P1 ON FEDORA /ETC/GSISSH/SSHD_CONFIG CREDENTIALS MANAGEMENT
+Description of problem:
+A vulnerability classified as critical has been found in gsi-openssh-server 7.9p1 on Fedora (Connectivity Software) on server (http://95.217.64.181:22). This affects some unknown functionality of",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2019-7639 and describes a different vulnerability related to gsi-openssh-server.,False,ok,medium,False,wrong_cve,The text describes a vulnerability in gsi-openssh-server but does not explicitly link to CVE-2019-7639 or provide sufficient context to confirm the linkage.,False,False,False,llm_assisted_not_human
+CVE-0113,task2_cve_linkage,train,github_advisory,GHSA-qx2f-477c-35rq,CVE-2017-16136,method-override ReDoS when untrusted user input passed into X-HTTP-Method-Override header,,,,,,ok,high,False,too_vague,The text does not provide any information to establish a clear linkage to the CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0114,task2_cve_linkage,train,dtl_exploits,EDB-ID:27529,CVE-2013-4211,OpenX Backdoor PHP Code Execution,"OpenX Backdoor PHP Code Execution
+
+OpenX Backdoor PHP Code Execution. CVE-2013-4211. Remote exploit for php platform
+
+##
+# This file is part of the Metasploit Framework and may be subject to
+# redistribution and commercial restrictions. Please see the Metasploit
+# web site for more information on licensing and terms of use.
+#   http://metasploit.com/
+##
+
+require 'msf/core'
+
+class Metasploit3 < Msf::Exploit::Remote
+  Rank = ExcellentRanking
+
+  include Msf::Exploit::Remote::HttpClient
+",,,,,ok,high,False,none,The text explicitly mentions CVE-2013-4211 and describes a remote exploit related to the affected product.,True,ok,high,False,none,The text explicitly mentions CVE-2013-4211 and describes a remote exploit related to the affected product.,True,True,False,llm_assisted_not_human
+CVE-0115,task2_cve_linkage,train,zeroday,0day-ID-29634,CVE-2018-4088,WebKitGTK+ Memory Corruption / Spoofing / Code Execution Vulnerabilities,,,,,,ok,high,False,too_vague,The provided text does not contain any specific information linking it to CVE-2018-4088.,False,ok,high,False,too_vague,The provided text does not contain any specific details or context linking it to CVE-2018-4088.,False,False,False,llm_assisted_not_human
+CVE-0116,task2_cve_linkage,test,vulnlab,b193fbd72937be823676,CVE-2017-8710,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,low,True,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0117,task2_cve_linkage,test,zeroscience,f5782e42d9cada4ac6b0,CVE-2026-26340,Tattile Cameras 1.181.5 Unauthenticated RTSP Stream Disclosure,"Tattile Cameras 1.181.5 Unauthenticated RTSP Stream Disclosure
+
+Severity: medium",,,,,ok,high,False,wrong_cve,The text does not mention CVE-2026-26340 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-26340 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0118,task2_cve_linkage,val,hackerone,8d1896c4a0e5cc587cdd,CVE-2022-27776,CVE-2022-27776: Auth/cookie leak on redirect (Insufficiently Protected Credentials),"[Insufficiently Protected Credentials] CVE-2022-27776: Auth/cookie leak on redirect
+
+## Summary:
+Curl can be coaxed to leak Authorisation / Cookie headers by redirecting request to http:// URL on the same host. Successful exploitation requires that the attacker can either Man-in-the-Middle the connection or can access the traffic at the recipient side (for example by redirecting to a non-privileged port such as 9999 on the same host).
+
+## Steps To Reproduce:
+
+1. Configure for example Apache2 to ",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-27776 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-27776 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0119,task2_cve_linkage,test,hackerone,faec348c23a134a5924c,CVE-2020-3580,reflected xss [CVE-2020-3580] (Cross-site Scripting (XSS) - Reflected),"[Cross-site Scripting (XSS) - Reflected] reflected xss [CVE-2020-3580]
+
+Hey Security Team
+It was observed that the application is vulnerable to cross-site scripting (XSS). XSS is a type of attack that involves running a malicious scripts on a victim’s browser.
+website: ███████ attached
+When the user clicks submit, his information will be stolen
+
+## Impact
+
+Cookie Stealing - A malicious user can steal cookies and use them to gain access to the application.
+Arbitrary requests - An attacker can use",,,,,ok,high,False,none,"The text explicitly mentions the CVE-2020-3580 and describes a vulnerability related to reflected XSS, which aligns with the CVE details.",True,ok,high,False,none,The text explicitly mentions CVE-2020-3580 and describes a reflected XSS vulnerability affecting the application.,True,True,False,llm_assisted_not_human
+CVE-0120,task2_cve_linkage,train,hackerone,ec3ca99be25160131010,CVE-2017-18024,XSS on https://fax.pbx.itsendless.org/ (CVE-2017-18024) (Cross-site Scripting (XSS) - Generic),"[Cross-site Scripting (XSS) - Generic] XSS on https://fax.pbx.itsendless.org/ (CVE-2017-18024)
+
+## Summary:
+
+Hello Endless Hosting,
+
+I found an XSS on https://fax.pbx.itsendless.org/ . This domain running an AvantFax software 3.3.6
+However, the exploit of CVE-2017-18024 for version 3.3.3 is working on that version.
+
+Here is the exploit code of CVE-2017-18024
+
+`<html>
+   <body>
+   <script>history.pushState('', '', '/')</script>
+     <form action=""https://fax.pbx.itsendless.org/"" method=""POST"">
+  ",,,,,ok,high,False,none,The text explicitly mentions CVE-2017-18024 and describes an XSS vulnerability related to the affected product.,True,ok,high,False,none,"The text explicitly mentions CVE-2017-18024 and describes an XSS vulnerability on the affected product, providing clear evidence of linkage.",True,True,False,llm_assisted_not_human
+CVE-0121,task2_cve_linkage,train,cvefixes,eec1f23cc0122a38a139,CVE-2019-20172,CVE-2019-20172,"CVE: CVE-2019-20172
+
+[{'lang': 'en', 'value': 'Kernel/VM/MemoryManager.cpp in SerenityOS before 2019-12-30 does not reject syscalls with pointers into the kernel-only virtual address space, which allows local users to gain privileges by overwriting a return address that was found on the kernel stack.'}]
+
+Fix commit: Kernel: User pointer validation should reject kernel-only addresses
+
+We were happily allowing syscalls with pointers into kernel-only
+regions (virtual address >= 0xc0000000).
+
+This p",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-20172 and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2019-20172 and describes the affected component and vulnerability details accurately.,True,True,False,llm_assisted_not_human
+CVE-0122,task2_cve_linkage,test,github_advisory,GHSA-mg36-wvcr-m75h,CVE-2026-34405,Nuxt OG Image is vulnerable to reflected XSS via query parameter injection into HTML attributes,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2026-34405 and describes a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-34405 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0123,task2_cve_linkage,train,zeroday,0day-ID-30670,CVE-2018-9998,OX App Suite 7.8.4 XSS / XML Injection / Information Disclosure Vulnerabilities,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0124,task2_cve_linkage,val,cisa_kev,CVE-2018-8453,CVE-2018-8453,Microsoft Win32k Privilege Escalation Vulnerability,"Microsoft Win32k Privilege Escalation Vulnerability
+
+Affected: Microsoft Win32k
+
+Microsoft Windows Win32k contains a vulnerability that allows an attacker to escalate privileges.
+
+Required Action: Apply updates per vendor instructions.
+
+Ransomware: Known
+
+CWE(s): CWE-404
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2018-8453 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0125,task2_cve_linkage,test,hackerone,a54f9d09c6c145bd1c1d,CVE-2024-22243,Incorrect Type Conversion in interpreting IPv4-mapped IPv6 addresses and below `curl` results in indeterminate SSRF vulnerabilities. (Type Confusion),"[Type Confusion] Incorrect Type Conversion in interpreting IPv4-mapped IPv6 addresses and below `curl` results in indeterminate SSRF vulnerabilities.
+
+## Summary:
+Octal Type Handling of Errors in IPv4 Mapped IPv6 Addresses in curl  allows unauthenticated remote attackers to perform indeterminate SSRF, RFI, and LFI attacks on many programs that rely on curl. 
+
+[RFC 4291](https://datatracker.ietf.org/doc/html/rfc4291#section-2-5-5) defines ways to embed an IPv4 address into IPv6 addresses. One of ",,,,,ok,medium,False,wrong_cve,The text describes a vulnerability related to curl but does not explicitly link to CVE-2024-22243.,False,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,,True,llm_assisted_not_human
+CVE-0126,task2_cve_linkage,train,zeroday,0day-ID-27528,CVE-2017-7447,HelpDEZK 1.1.1 - Cross-Site Request Forgery / Code Execution Vulnerabilities,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2017-7447 and appears to refer to a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2017-7447 and lacks relevant details about the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0127,task2_cve_linkage,test,zeroscience,2bce2464bc8ffaada50d,CVE-2026-26368,eNet SMART HOME server 2.3.1 (resetUserPassword) Account Takeover,"eNet SMART HOME server 2.3.1 (resetUserPassword) Account Takeover
+
+Severity: high",,,,,ok,high,False,wrong_cve,The text does not mention CVE-2026-26368 and appears to describe a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-26368 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0128,task2_cve_linkage,val,cisa_kev,CVE-2010-2572,CVE-2010-2572,Microsoft PowerPoint Buffer Overflow Vulnerability,"Microsoft PowerPoint Buffer Overflow Vulnerability
+
+Affected: Microsoft PowerPoint
+
+Microsoft PowerPoint contains a buffer overflow vulnerability that alllows for remote code execution.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-119
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2010-2572 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0129,task2_cve_linkage,test,cisa_kev,CVE-2023-0386,CVE-2023-0386,Linux Kernel Improper Ownership Management Vulnerability,"Linux Kernel Improper Ownership Management Vulnerability
+
+Affected: Linux Kernel
+
+Linux Kernel contains an improper ownership management vulnerability, where unauthorized access to the execution of the setuid file with capabilities was found in the Linux kernel’s OverlayFS subsystem in how a user copies a capable file from a nosuid mount into another mount. This uid mapping bug allows a local user to escalate their privileges on the system.
+
+Required Action: Apply mitigations per vendor instruct",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2023-0386 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0130,task2_cve_linkage,test,github_advisory,GHSA-63x8-x938-vx33,CVE-2026-40323,SP1 V6 Recursion Circuit Row-Count Binding Gap,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2026-40323 or provide relevant context linking it to the advisory.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-40323 and lacks relevant details about the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0131,task2_cve_linkage,test,zeroscience,4717ed68516bd68d2a27,CVE-2025-34519,Ilevia EVE X1/X5 Server 4.7.18.0.eden Insecure Hashing Algorithm,"Ilevia EVE X1/X5 Server 4.7.18.0.eden Insecure Hashing Algorithm
+
+Severity: medium",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2025-34519 and lacks specific evidence linking it to the CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2025-34519 and describes a different vulnerability unrelated to the provided CVE.,False,False,False,llm_assisted_not_human
+CVE-0132,task2_cve_linkage,val,hackerone,2fea3ce8f3647a8a28e7,CVE-2023-38546,CVE-2023-38546: cookie injection with none file (External Control of File Name or Path),"[External Control of File Name or Path] CVE-2023-38546: cookie injection with none file
+
+When `curl_easy_duphandle()` is used to duplicate an easy handle it is possible to inject cookies 
+into that duplicated handle if a file `none` exists in the current working directory.
+
+## PoC / Steps to reproduce:
+1. Open 2 terminals
+1. compile  F2699218
+1. in terminal 1: 
+    `nc -l -p 8888 127.0.0.1`
+1. in terminal 2: 
+	* `echo -e ""127.0.0.1\tTRUE\t/\tFALSE\t0\tname\tvalue"" > none`
+	* `/path/to/poc_cookie",,,,,ok,high,False,none,The text explicitly mentions CVE-2023-38546 and describes the vulnerability related to cookie injection.,True,ok,high,False,none,The text explicitly mentions CVE-2023-38546 and describes the vulnerability and proof-of-concept related to cookie injection.,True,True,False,llm_assisted_not_human
+CVE-0133,task2_cve_linkage,val,github_advisory,GHSA-r8pr-83cc-ccv7,CVE-2022-22691,Umbraco Persistent Password Reset Poison,,,,,,ok,high,False,too_vague,The provided text does not contain any information to establish a clear linkage to the specified CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2022-22691 and is unrelated to the Umbraco Persistent Password Reset Poison vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0134,task2_cve_linkage,test,cisa_kev,CVE-2023-46805,CVE-2023-46805,Ivanti Connect Secure and Policy Secure Authentication Bypass Vulnerability,"Ivanti Connect Secure and Policy Secure Authentication Bypass Vulnerability
+
+Affected: Ivanti Connect Secure and Policy Secure
+
+Ivanti Connect Secure (ICS, formerly known as Pulse Connect Secure) and Ivanti Policy Secure gateways contain an authentication bypass vulnerability in the web component that allows an attacker to access restricted resources by bypassing control checks. This vulnerability can be leveraged in conjunction with CVE-2024-21887, a command injection vulnerability.
+
+Required A",,,,,ok,high,False,wrong_cve,The text mentions a different CVE (CVE-2024-21887) and does not provide clear evidence linking to CVE-2023-46805.,False,ok,high,False,wrong_cve,The text mentions a different CVE (CVE-2024-21887) and does not provide a direct link to CVE-2023-46805.,False,False,False,llm_assisted_not_human
+CVE-0135,task2_cve_linkage,val,github_advisory,GHSA-m7m4-4vm8-55wg,CVE-2015-8549,PyAMF vulnerable to XML external entity (XXE),,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2015-8549 and appears to refer to a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2015-8549 and lacks relevant context linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0136,task2_cve_linkage,val,zeroscience,95ed325c90f8df40f122,CVE-2023-49523,OctoberCMS v3.4.0 (Author) Stored Cross-Site Scripting Vulnerability,"OctoberCMS v3.4.0 (Author) Stored Cross-Site Scripting Vulnerability
+
+Severity: medium",,,,,ok,high,False,wrong_cve,The text does not explicitly mention CVE-2023-49523 and lacks evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not provide a direct link to CVE-2023-49523 and lacks specific details about the vulnerability or affected components.,False,False,False,llm_assisted_not_human
+CVE-0137,task2_cve_linkage,val,github_advisory,GHSA-pmg2-rph8-p8r6,CVE-2022-45969,Alist vulnerable to Path Traversal,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2022-45969 and lacks relevant context linking it to the advisory.,False,ok,high,False,wrong_cve,The text does not mention CVE-2022-45969 and is unrelated to the provided CVE.,False,False,False,llm_assisted_not_human
+CVE-0138,task2_cve_linkage,train,zeroday,0day-ID-22210,CVE-2014-0094,Apache Struts ClassLoader Manipulation Remote Code Execution Exploit,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2014-0094 and appears to refer to a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2014-0094 and appears unrelated to the specific vulnerability described.,False,False,False,llm_assisted_not_human
+CVE-0139,task2_cve_linkage,test,github_advisory,GHSA-hc5x-x2vx-497g,CVE-2024-6827,Gunicorn HTTP Request/Response Smuggling vulnerability,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2024-6827 and lacks relevant context linking it to the specified CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2024-6827 and is unrelated to the Gunicorn vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0140,task2_cve_linkage,test,zeroscience,7b7d67c95d71ef1fb54d,CVE-2024-39374,TELSAT marKoni FM Transmitter 1.9.5 Backdoor Account,"TELSAT marKoni FM Transmitter 1.9.5 Backdoor Account
+
+Severity: critical",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2024-39374 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2024-39374 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0141,task2_cve_linkage,val,hackerone,45c01c0bfe288f87c5a2,CVE-2022-32221,CVE-2023-28322: more POST-after-PUT confusion (Expected Behavior Violation),"[Expected Behavior Violation] CVE-2023-28322: more POST-after-PUT confusion
+
+## Summary:
+CVE-2022-32221 fixes is insufficient.
+In CVE-2022-32221, only CURLOPT_POST was corrected.
+However, CURLOPT_POST is not necessarily used when sending data with the POST method.
+CURLOPT_POST is not used in the CURLOPT_POSTFIELDS usage example on the official website.
+```
+CURL *curl = curl_easy_init();
+if(curl) {
+  const char *data = ""data to send"";
+ 
+  curl_easy_setopt(curl, CURLOPT_URL, ""https://example.com"")",,,,,ok,high,False,wrong_cve,The text references CVE-2023-28322 instead of the provided CVE-2022-32221.,False,ok,high,False,wrong_cve,The text references CVE-2023-28322 instead of the provided CVE-2022-32221.,False,False,False,llm_assisted_not_human
+CVE-0142,task2_cve_linkage,train,dtl_exploits,0day-ID-21994,CVE-2014-2206,GetGo Download Manager 4.9.0.1982 - HTTP Response Header Buffer Overflow,"GetGo Download Manager 4.9.0.1982 - HTTP Response Header Buffer Overflow
+
+Exploit for windows platform in category local exploits
+
+#!/usr/bin/python
+# Exploit Title: GetGo Download Manager HTTP Response Header Buffer Overflow Remote Code Execution
+# Version:       v4.9.0.1982
+# CVE:           CVE-2014-2206
+# Date:          2014-03-09
+# Author:        Julien Ahrens (@MrTuxracer)
+# Homepage:      http://www.rcesecurity.com
+# Software Link: http://www.getgosoft.com
+# Tested on:     WinXP SP",,,,,ok,high,False,none,The text explicitly mentions CVE-2014-2206 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2014-2206 and describes the affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0143,task2_cve_linkage,test,hackerone,62f7c44fb53195b57fbf,CVE-2024-2398,CVE-2024-2398: HTTP/2 push headers memory-leak (Unknown),"[Unknown] CVE-2024-2398: HTTP/2 push headers memory-leak
+
+A memory leak was found in libcurl in handling HTTP/2 push headers, which could lead to a denial of service due to memory exhaustion.
+Original report: https://hackerone.com/reports/2402845
+
+## Impact
+
+denial of service",,,,,ok,high,False,none,The text explicitly mentions CVE-2024-2398 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2024-2398 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0144,task2_cve_linkage,train,github_advisory,GHSA-chj8-5xgw-wcvj,CVE-2016-8750,Moderate severity vulnerability that affects org.apache.karaf:apache-karaf,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2016-8750 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2016-8750 and appears to refer to a different CVE.,False,False,False,llm_assisted_not_human
+CVE-0145,task2_cve_linkage,train,hackerone,504bf626990b6b3203d2,CVE-2016-7961,"Buffer overflow in HTTP parse_hostinfo(), parse_userinfo() and parse_scheme() (Memory Corruption - Generic)","[Memory Corruption - Generic] Buffer overflow in HTTP parse_hostinfo(), parse_userinfo() and parse_scheme()
+
+Since the original report is still marked as private in the PHP bug tracker please find the copy & pasted bug report below (edited for readability and to include correct bug tracker id). See the references section for a link to the issue in the PHP bug tracker!
+
+The maintainer already fixed the issue in the public git repo using the proposed patch included in the original report. Fixed ve",,,,,ok,high,False,none,The text explicitly describes a buffer overflow vulnerability related to CVE-2016-7961 and mentions the fix in the public git repository.,True,ok,high,False,none,The text explicitly mentions the buffer overflow vulnerability related to CVE-2016-7961 and provides context about the fix and references to the PHP bug tracker.,True,True,False,llm_assisted_not_human
+CVE-0146,task2_cve_linkage,train,cisa_kev,CVE-2021-31755,CVE-2021-31755,Tenda AC11 Router Stack Buffer Overflow Vulnerability,"Tenda AC11 Router Stack Buffer Overflow Vulnerability
+
+Affected: Tenda AC11 Router
+
+Tenda AC11 devices contain a stack buffer overflow vulnerability in /goform/setmac which allows attackers to execute code via a crafted post request.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-787
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0147,task2_cve_linkage,test,github_advisory,GHSA-wh2j-26j7-9728,CVE-2026-2473,Google Cloud Vertex AI has a a vulnerability involving predictable bucket naming,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2026-2473 and appears to refer to a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-2473 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0148,task2_cve_linkage,train,dtl_exploits,PACKETSTORM:102595,CVE-2010-1681,Microsoft Office Visio VISIODWG.DLL DXF File Handling Vulnerability,"Microsoft Office Visio VISIODWG.DLL DXF File Handling Vulnerability
+
+`##  
+# $Id: visio_dxf_bof.rb 13034 2011-06-26 16:09:53Z sinn3r $  
+##  
+  
+##  
+# This file is part of the Metasploit Framework and may be subject to  
+# redistribution and commercial restrictions. Please see the Metasploit  
+# Framework web site for more information on licensing and terms of use.  
+# http://metasploit.com/framework/##  
+  
+require 'msf/core'  
+  
+class Metasploit3 < Msf::Exploit::Remote  
+Rank = GoodRanking  ",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product/vulnerability.,True,ok,high,False,none,"The text explicitly mentions the CVE and describes a vulnerability in Microsoft Office Visio, which is consistent with CVE-2010-1681.",True,True,False,llm_assisted_not_human
+CVE-0149,task2_cve_linkage,val,zeroscience,e99c85185a6115b60497,CVE-2023-54163,NLB mKlik Makedonija 3.3.12 SQL Injection,"NLB mKlik Makedonija 3.3.12 SQL Injection
+
+Severity: medium",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2023-54163 and appears to refer to a different vulnerability.,False,ok,medium,False,wrong_cve,The text does not mention CVE-2023-54163 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0150,task2_cve_linkage,test,hackerone,90d4c6a7367937da9fbd,CVE-2024-2004,CVE-2024-2004: Usage of disabled protocol (Misinterpretation of Input),"[Misinterpretation of Input] CVE-2024-2004: Usage of disabled protocol
+
+## Summary:
+` --proto` in some circumstances ENABLES all protocols after being given `-all`, potentially leading to sending sensitive data over an unencrypted channel.
+
+## Steps To Reproduce:
+`curl -Ivs --proto -all,-http http://curl.se`
+This command should result in `curl: (1) Protocol ""http"" disabled` but it actually succeeds.
+
+## Supporting Material/References:
+The example command above performs a request to curl.se over ",,,,,ok,high,False,none,The text explicitly mentions CVE-2024-2004 and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2024-2004 and describes the affected product and vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0151,task2_cve_linkage,val,zeroscience,15ac19ff173a97e5f63c,CVE-2023-45228,Sielco Analog FM Transmitter 2.12 Improper Access Control Change Admin Password,"Sielco Analog FM Transmitter 2.12 Improper Access Control Change Admin Password
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2023-45228 and appears to describe a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2023-45228 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0152,task2_cve_linkage,test,cisa_kev,CVE-2021-44529,CVE-2021-44529,Ivanti Endpoint Manager Cloud Service Appliance (EPM CSA) Code Injection Vulnerability ,"Ivanti Endpoint Manager Cloud Service Appliance (EPM CSA) Code Injection Vulnerability 
+
+Affected: Ivanti Endpoint Manager Cloud Service Appliance (EPM CSA)
+
+Ivanti Endpoint Manager Cloud Service Appliance (EPM CSA) contains a code injection vulnerability that allows an unauthenticated user to execute malicious code with limited permissions (nobody).
+
+Required Action: Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.
+
+Ransomware: Known
+
+C",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-44529 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0153,task2_cve_linkage,test,hackerone,e107debfb519d59f7593,CVE-2024-24806,Libuv: Improper Domain Lookup that potentially leads to SSRF attacks (Server-Side Request Forgery (SSRF)),"[Server-Side Request Forgery (SSRF)] Libuv: Improper Domain Lookup that potentially leads to SSRF attacks
+
+I recently encountered a challenge in a CTF competition that led me to discover a vulnerability within Node.js, present in all versions after v10. Upon further investigation and code debugging, it became apparent that the vulnerability originated from its direct dependency, `libuv`.
+
+I submitted a report to the Node.js team via HackerOne, and they subsequently connected me with the libuv te",,,,,ok,medium,False,wrong_cve,The text describes a vulnerability related to Node.js and libuv but does not explicitly mention CVE-2024-24806 or provide evidence linking to it.,False,ok,high,False,wrong_cve,The text discusses a vulnerability in Node.js related to libuv but does not explicitly mention CVE-2024-24806 or provide evidence linking to it.,False,False,False,llm_assisted_not_human
+CVE-0154,task2_cve_linkage,val,github_advisory,GHSA-8jv7-vwrc-mv4g,CVE-2023-1286,Cross-site Scripting (XSS) in pimcore/pimcore,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2023-1286 and is unrelated to the specified CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2023-1286 and is unrelated to the provided CVE.,False,False,False,llm_assisted_not_human
+CVE-0155,task2_cve_linkage,val,github_advisory,GHSA-24hp-84jp-8wgm,CVE-2022-45398,Cross-Site Request Forgery in Jenkins Cluster Statistics Plugin,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the CVE.,False,ok,high,False,too_vague,The provided text is empty and does not mention the CVE or provide any context related to the vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0156,task2_cve_linkage,test,hackerone,b5e8590e45ae2c0ad66c,CVE-2023-6004,Command Injection using malicious hostname in expanded proxycommand (Code Injection),"[Code Injection] Command Injection using malicious hostname in expanded proxycommand
+
+Using the ProxyCommand or the ProxyJump feature enables users to exploit
+unchecked hostname syntax on the client, which enables to inject malicious code
+into the command of the above-mentioned features through the hostname parameter.
+
+User interaction is required to exploit this issue.
+
+Advisory from libssh: https://www.libssh.org/security/advisories/CVE-2023-6004.txt
+
+Advisory from OpenSSH which also suffered ",,,,,ok,high,False,none,The text explicitly mentions CVE-2023-6004 and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2023-6004 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0157,task2_cve_linkage,val,hackerone,ec1a94ef5a57d9ae01f5,CVE-2022-38463,Reflected XSS at https://██████/ (Cross-site Scripting (XSS) - Reflected),"[Cross-site Scripting (XSS) - Reflected] Reflected XSS at https://██████/
+
+**Description:**
+There exists a reflected XSS within the logout functionality of ServiceNow. This enables an unauthenticated remote attacker to execute arbitrary JavaScript.
+
+## References
+* https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB1156793
+
+## Impact
+
+Steal cookies to account takeover.
+
+## System Host(s)
+█████
+
+## Affected Product(s) and Version(s)
+
+
+## CVE Numbers
+CVE-2022-38463
+
+## Steps to",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-38463 and describes the same affected product and vulnerability.,True,ok,high,False,none,"The text explicitly mentions CVE-2022-38463 and describes a reflected XSS vulnerability in ServiceNow, which aligns with the CVE details.",True,True,False,llm_assisted_not_human
+CVE-0158,task2_cve_linkage,train,hackerone,734f39d7ba0b32dc999c,CVE-2020-3452,Path Traversal - [ CVE-2020-3452 ] (Path Traversal),"[Path Traversal] Path Traversal - [ CVE-2020-3452 ]
+
+Hello,
+
+I would like to report Path Traversal issue [ CVE-2020-3452 ] was found on https://█████/.
+
+POC: https://█████████/+CSCOT+/translation-table?type=mst&textdomain=/%2bCSCOE%2b/portal_inc.lua&default-language&lang=../
+
+## Impact
+
+https://nvd.nist.gov/vuln/detail/CVE-2020-3452
+
+## System Host(s)
+███
+
+## Affected Product(s) and Version(s)
+
+
+## CVE Numbers
+CVE-2020-3452
+
+## Steps to Reproduce
+Follow this URL to see the bug exists --> https:/",,,,,ok,high,False,none,The text explicitly mentions CVE-2020-3452 and describes a Path Traversal vulnerability associated with it.,True,ok,high,False,none,"The text explicitly mentions CVE-2020-3452, describes a path traversal vulnerability, and provides a proof-of-concept link along with impact details.",True,True,False,llm_assisted_not_human
+CVE-0159,task2_cve_linkage,val,hackerone,6b43fe61bb53d25eb373,CVE-2022-32222,Node 18 reads openssl.cnf from /home/iojs/build/... upon startup on MacOS (Cryptographic Issues - Generic),"[Cryptographic Issues - Generic] Node 18 reads openssl.cnf from /home/iojs/build/... upon startup on MacOS
+
+> NOTE! Thanks for submitting a report! Please replace *all* the [square] sections below with the pertinent details. Remember, the more detail you provide, the easier it is for us to triage and respond quickly, so be sure to take your time filling out the report!
+
+**Summary:**
+
+Similar to https://hackerone.com/reports/1623175 it looks like in Node 18 and later, when it starts 
+ it attempts",,,,,ok,medium,False,too_vague,The text does not explicitly mention CVE-2022-32222 or provide sufficient context linking it to the CVE.,False,ok,medium,False,too_vague,The text does not explicitly mention CVE-2022-32222 or provide sufficient details linking it to the specific vulnerability described.,False,False,False,llm_assisted_not_human
+CVE-0160,task2_cve_linkage,test,zeroscience,70f667fd1752747c0bfb,CVE-2025-34515,Ilevia EVE X1/X5 Server 4.7.18.0.eden Root Privilege Escalation,"Ilevia EVE X1/X5 Server 4.7.18.0.eden Root Privilege Escalation
+
+Severity: critical",,,,,ok,high,False,wrong_cve,The text does not explicitly mention CVE-2025-34515 and lacks evidence linking it to the provided CVE.,False,ok,medium,False,wrong_cve,The text does not mention CVE-2025-34515 and lacks specific details linking it to the provided CVE.,False,False,False,llm_assisted_not_human
+CVE-0161,task2_cve_linkage,test,cisa_kev,CVE-2026-20963,CVE-2026-20963,Microsoft SharePoint Deserialization of Untrusted Data Vulnerability,"Microsoft SharePoint Deserialization of Untrusted Data Vulnerability
+
+Affected: Microsoft SharePoint
+
+Microsoft SharePoint contains a deserialization of untrusted data vulnerability that allows an unauthorized attacker to execute code over a network.
+
+Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.
+
+CWE(s): CWE-502
+
+[Source: CISA Known Exploited Vulnerabilities C",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,wrong_cve,"The text describes a vulnerability in Microsoft SharePoint but is linked to CVE-2026-20963, which does not match the provided details.",False,,True,llm_assisted_not_human
+CVE-0162,task2_cve_linkage,val,cvefixes,68bc553fe3cef9a170bf,CVE-2022-1033,CVE-2022-1033,"CVE: CVE-2022-1033
+
+[{'lang': 'en', 'value': 'Unrestricted Upload of File with Dangerous Type in GitHub repository crater-invoice/crater prior to 6.0.6.'}]
+
+Fix commit: Expense attachment validation fix (#855)
+
+https://huntr.dev/bounties/4d7d4fc9-e0cf-42d3-b89c-6ea57a769045/",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-1033 and describes the affected product and vulnerability.,True,ok,high,False,none,"The text explicitly mentions CVE-2022-1033 and describes the affected product and vulnerability, providing a clear linkage.",True,True,False,llm_assisted_not_human
+CVE-0163,task2_cve_linkage,train,zeroscience,a4fd9e358cec7ba11ae0,CVE-2019-25284,V-SOL GPON/EPON OLT Platform v2.03 Reflected XSS Vulnerability,"V-SOL GPON/EPON OLT Platform v2.03 Reflected XSS Vulnerability
+
+Severity: medium",,,,,ok,high,False,none,The text explicitly mentions the same affected product and vulnerability as the CVE.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0164,task2_cve_linkage,test,github_advisory,GHSA-4c7q-m7hc-pc92,CVE-2024-23445,Elasticsearch Remote Cluster Search Cross Cluster API Key insufficient restrictions,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0165,task2_cve_linkage,train,dtl_exploits,EDB-ID:6730,CVE-2008-6184,Joomla Component ownbiblio 1.5.3 catid SQL Injection Vulnerability,"Joomla Component ownbiblio 1.5.3 catid SQL Injection Vulnerability
+
+Joomla Component ownbiblio 1.5.3 (catid)  SQL Injection Vulnerability. CVE-2008-6184. Webapps exploit for php platform
+
+#############################################################################
+#							                    #
+#          Joomla Component Ownbiblio SQL Injection Vulnerability           #
+#							                    #
+#############################################################################
+
+
+################",,,,,ok,high,False,none,The text explicitly mentions CVE-2008-6184 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2008-6184 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0166,task2_cve_linkage,val,zeroscience,c987dec69f93d8d3be90,CVE-2025-25038,MiniDVBLinux 5.4 Remote Root Command Injection Vulnerability,"MiniDVBLinux 5.4 Remote Root Command Injection Vulnerability
+
+Severity: critical",,,,,ok,high,False,wrong_cve,The text does not mention CVE-2025-25038 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2025-25038 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0167,task2_cve_linkage,val,github_advisory,GHSA-xp2f-9mx3-3c6p,CVE-2022-35649,Moodle PostScript Code Injection,,,,,,ok,high,False,too_vague,The provided text does not contain any information to establish a clear linkage to the specified CVE.,False,ok,high,False,wrong_cve,The text does not mention CVE-2022-35649 and lacks relevant details about the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0168,task2_cve_linkage,train,github_advisory,GHSA-jv74-f9pj-xp3f,CVE-2018-8041,Apache Camel's Mail is vulnerable to path traversal,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2018-8041 and appears to refer to a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2018-8041 and lacks relevant details about the vulnerability or affected product.,False,False,False,llm_assisted_not_human
+CVE-0169,task2_cve_linkage,train,github_advisory,GHSA-v9w2-v7j9-rjpr,CVE-2021-34435,Remote code execution in Eclipse Theia,,,,,,ok,high,False,too_vague,The provided text does not contain any information to establish a clear linkage to CVE-2021-34435.,False,ok,high,False,wrong_cve,The text does not mention CVE-2021-34435 and lacks relevant context linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0170,task2_cve_linkage,train,github_advisory,GHSA-hh7m-rx4f-4vpv,CVE-2021-21241,CSRF can expose users authentication token,,,,,,ok,high,False,too_vague,The text does not provide sufficient context or details to establish a clear linkage to CVE-2021-21241.,False,ok,high,False,too_vague,The text does not provide sufficient context or details to establish a clear linkage to CVE-2021-21241.,False,False,False,llm_assisted_not_human
+CVE-0171,task2_cve_linkage,test,hackerone,3a8496a889cad5acb61d,CVE-2024-21733,CVE-2024-21733 Apache Tomcat HTTP Request Smuggling (Client- Side Desync) (CWE: 444) (HTTP Request Smuggling),"[HTTP Request Smuggling] CVE-2024-21733 Apache Tomcat HTTP Request Smuggling (Client- Side Desync) (CWE: 444)
+
+Apache Tomcat from 8.5.7 through 8.5.63, from 9.0.0-M11 through 9.0.43 are vulnerable to client-side de-sync attacks. 
+
+Client-side de-sync (CSD) vulnerabilities occur when a web server fails to correctly process the Content-Length of POST requests. By exploiting this behavior, an attacker can force a victim's browser to de-synchronize its connection with the website, causing sensitive ",,,,,ok,high,False,none,The text explicitly mentions CVE-2024-21733 and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2024-21733 and describes the affected product and vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0172,task2_cve_linkage,train,zeroscience,2d31d0c8ad612a47e998,CVE-2014-8657,CBN CH6640E/CG6640E Wireless Gateway Series Multiple Vulnerabilities,"CBN CH6640E/CG6640E Wireless Gateway Series Multiple Vulnerabilities
+
+Severity: medium",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2014-8657 or provide evidence linking it to the vulnerabilities described.,False,ok,medium,False,too_vague,The text does not provide specific details about the vulnerabilities or their relation to CVE-2014-8657.,False,False,False,llm_assisted_not_human
+CVE-0173,task2_cve_linkage,val,cvefixes,50d86e03602485e0b0ce,CVE-2022-21802,CVE-2022-21802,"CVE: CVE-2022-21802
+
+[{'lang': 'en', 'value': 'The package grapesjs before 0.19.5 are vulnerable to Cross-site Scripting (XSS) due to an improper sanitization of the class name in Selector Manager.'}]
+
+Fix commit: Protect Selector Manager views from XSS. Closes #4411",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-21802 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-21802 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0174,task2_cve_linkage,test,vulnlab,6ab7e19586eecce05ead,CVE-2018-5697,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,low,True,too_vague,The provided text lacks specific details about the CVE and does not mention the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0175,task2_cve_linkage,train,zeroday,0day-ID-21085,CVE-2013-4880,BigTree CMS 4.0 RC2 - Multiple Vulnerabilities,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2013-4880 or provide relevant details about the vulnerabilities associated with it.,False,ok,high,False,wrong_cve,The text does not mention CVE-2013-4880 and lacks relevant details about the vulnerabilities in BigTree CMS.,False,False,False,llm_assisted_not_human
+CVE-0176,task2_cve_linkage,train,zeroday,0day-ID-24383,CVE-2015-7373,Revive Adserver 3.2.1 Multiple Vulnerabilities,,,,,,ok,high,False,too_vague,The provided text does not contain sufficient information to establish a clear linkage to CVE-2015-7373.,False,ok,high,False,wrong_cve,The text does not mention CVE-2015-7373 and lacks relevant details about the vulnerabilities in Revive Adserver 3.2.1.,False,False,False,llm_assisted_not_human
+CVE-0177,task2_cve_linkage,train,cisa_kev,CVE-2021-1879,CVE-2021-1879,"Apple iOS, iPadOS, and watchOS WebKit Cross-Site Scripting (XSS) Vulnerability","Apple iOS, iPadOS, and watchOS WebKit Cross-Site Scripting (XSS) Vulnerability
+
+Affected: Apple iOS, iPadOS, and watchOS
+
+Apple iOS, iPadOS, and watchOS WebKit contain an unspecified vulnerability that allows for universal cross-site scripting (XSS) when processing maliciously crafted web content. This vulnerability could impact HTML parsers that use WebKit, including but not limited to Apple Safari and non-Apple products which rely on WebKit for HTML processing.
+
+Required Action: Apply updates ",,,,,ok,high,False,none,The text explicitly mentions CVE-2021-1879 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-1879 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0178,task2_cve_linkage,test,github_advisory,GHSA-hpw7-8qpc-34p3,CVE-2025-24043,Microsoft Security Advisory CVE-2025-24043 | WinDbg Remote Code Execution Vulnerability,,,,,,ok,high,False,wrong_cve,"The text does not mention or relate to the correct CVE, as it is linked to CVE-2025-24043 but lacks relevant context.",False,ok,high,False,wrong_cve,The text references CVE-2025-24043 but does not provide any details or context linking it to the advisory.,False,False,False,llm_assisted_not_human
+CVE-0179,task2_cve_linkage,train,dtl_exploits,0day-ID-17263,CVE-2011-2777,Acpid 1:2.0.10-1ubuntu2 Privilege Boundary Crossing Vulnerability,"Acpid 1:2.0.10-1ubuntu2 Privilege Boundary Crossing Vulnerability
+
+Exploit for linux platform in category local exploits
+
+Exploit Title: Acpid Privilege Boundary Crossing Vulnerability
+Google Dork:
+Date: 23-11-2011
+Author: otr
+Software Link: https://launchpad.net/ubuntu/+source/acpid
+Version: 1:2.0.10-1ubuntu2
+Tested on: Ubuntu 11.10, Ubuntu 11.04
+CVE : CVE-2011-2777
+-- 
+Safeguard this letter, it may be an IMPORTANT DOCUMENT
+ 
+#!/bin/bash
+#
+# otr
+#
+# The following script is execut",,,,,ok,high,False,none,The text explicitly mentions CVE-2011-2777 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2011-2777 and describes the affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0180,task2_cve_linkage,train,dtl_exploits,EDB-ID:5313,CVE-2008-1247,Linksys WRT54G firmware 1.00.9 - Security Bypass Vulnerabilities,"Linksys WRT54G firmware 1.00.9 - Security Bypass Vulnerabilities
+
+Linksys WRT54G (firmware 1.00.9) Security Bypass Vulnerabilities. CVE-2008-1247. Remote exploit for hardware platform
+
+regurgitated by: meathive
+                                                       url: kinqpinz.info ;
+				             Tue, 05 Feb 2008 07:51:41 -0700
+############################################################################
+CVE-2008-1247
+WRT54G firmware version: v1.00.9
+Default LAN IP: 192.168.1.1
+Defau",,,,,ok,high,False,none,The text explicitly mentions CVE-2008-1247 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2008-1247 and describes the affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0181,task2_cve_linkage,test,vulnlab,60be51c5399d8aa658c0,CVE-2020-12129,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,True,too_vague,The provided text lacks specific details about the CVE and does not mention the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0182,task2_cve_linkage,train,zeroday,0day-ID-30515,CVE-2018-11135,Quest KACE System Management Appliance 8.0 - Multiple Vulnerabilities,,,,,,ok,high,False,too_vague,The provided text does not contain any information or context to establish a linkage to the specified CVE.,False,ok,high,False,too_vague,The provided text does not contain any information or context to establish a linkage to CVE-2018-11135.,False,False,False,llm_assisted_not_human
+CVE-0183,task2_cve_linkage,test,zeroscience,cb764ad92c65cf289110,CVE-2026-40044,Pachno 1.0.6 FileCache Deserialization Remote Code Execution,"Pachno 1.0.6 FileCache Deserialization Remote Code Execution
+
+Severity: high",,,,,ok,high,False,wrong_cve,The text does not mention CVE-2026-40044 and describes a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2026-40044 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0184,task2_cve_linkage,train,zeroday,0day-ID-22778,CVE-2014-8334,WordPress Database Manager 2.7.1 Command Injection / Credential Leak,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0185,task2_cve_linkage,val,zeroscience,3207a7495e84ee30423d,CVE-2023-54327,Tinycontrol LAN Controller v3 (LK3) Remote Admin Password Change,"Tinycontrol LAN Controller v3 (LK3) Remote Admin Password Change
+
+Severity: critical",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2023-54327 or provide evidence linking it to the described vulnerability.,False,ok,medium,True,too_vague,The text does not provide specific details about the vulnerability or its impact related to CVE-2023-54327.,False,False,False,llm_assisted_not_human
+CVE-0186,task2_cve_linkage,train,zeroday,0day-ID-30515,CVE-2018-11132,Quest KACE System Management Appliance 8.0 - Multiple Vulnerabilities,,,,,,ok,high,False,too_vague,The provided text does not contain any information linking it to CVE-2018-11132.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0187,task2_cve_linkage,val,cisa_kev,CVE-2011-0611,CVE-2011-0611,Adobe Flash Player Remote Code Execution Vulnerability,"Adobe Flash Player Remote Code Execution Vulnerability
+
+Affected: Adobe Flash Player
+
+Adobe Flash Player contains a vulnerability that allows remote attackers to execute arbitrary code or cause a denial of service (application crash) via crafted Flash content.
+
+Required Action: The impacted product is end-of-life and should be disconnected if still in use.
+
+CWE(s): CWE-843
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2011-0611 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0188,task2_cve_linkage,train,hackerone,580f8d80cd7b2843a85f,CVE-2005-0202,It's possible to view configuration and/or source code on uchat.awscorp.uberinternal.com without (Improper Authentication - Generic),"[Improper Authentication - Generic] It's possible to view configuration and/or source code on uchat.awscorp.uberinternal.com without
+
+## Summary
+Configuration file and/or source code information leakage without Uber OneLogin SSO authentication.
+
+## Security Impact
+Misconfiguration on the server results in information leakage without authentication.
+
+## Reproduction Steps
+https://uchat.awscorp.uberinternal.com/static/main.740f5a0b92c00e72e2e1.js
+
+## Specifics
+* http://cve.mitre.org/cgi-bin/cvenam",,,,,ok,high,False,wrong_cve,The text does not mention CVE-2005-0202 and describes a different vulnerability related to information leakage.,False,ok,high,False,wrong_cve,The text does not mention CVE-2005-0202 and describes a different vulnerability related to information leakage.,False,False,False,llm_assisted_not_human
+CVE-0189,task2_cve_linkage,test,github_advisory,GHSA-8vcg-cfxj-p5m3,CVE-2025-68398,Weblate is vulnerable to RCE through Git config file overwrite,,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2025-68398 and describes a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2025-68398 and describes a different vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0190,task2_cve_linkage,test,cisa_kev,CVE-2024-9380,CVE-2024-9380,Ivanti Cloud Services Appliance (CSA) OS Command Injection Vulnerability,"Ivanti Cloud Services Appliance (CSA) OS Command Injection Vulnerability
+
+Affected: Ivanti Cloud Services Appliance (CSA)
+
+Ivanti Cloud Services Appliance (CSA) contains an OS command injection vulnerability in the administrative console which can allow an authenticated attacker with application admin privileges to pass commands to the underlying OS.
+
+Required Action: As Ivanti CSA 4.6.x has reached End-of-Life status, users are urged to remove CSA 4.6.x from service or upgrade to the 5.0.x line",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2024-9380 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0191,task2_cve_linkage,train,hackerone,1f6ef2ad5e1f041bf9d0,CVE-2020-9383,CVE-2020-9383 Floppy OOB read (Buffer Over-read),"[Buffer Over-read] CVE-2020-9383 Floppy OOB read
+
+A vulnerability was found in Linux Kernel up to 5.5.6 (Operating System) and classified as critical. Affected by this issue is the function `set_fdc` of the file `drivers/block/floppy.c`. The manipulation with an unknown input leads to a memory corruption vulnerability (Out-of-Bounds). Using CWE to declare the problem leads to CWE-125. Impacted is confidentiality, integrity, and availability.
+
+The weakness was disclosed 02/25/2020 by Jordy Zomer ",,,,,ok,high,False,none,The text explicitly mentions CVE-2020-9383 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2020-9383 and describes the affected product and vulnerability details accurately.,True,True,False,llm_assisted_not_human
+CVE-0192,task2_cve_linkage,val,github_advisory,GHSA-7ggc-5r84-xf54,CVE-2022-2401,Mattermost users could access some sensitive information via API call,,,,,,ok,high,False,too_vague,The text does not provide sufficient information to establish a clear linkage to CVE-2022-2401.,False,ok,high,False,too_vague,The provided text lacks specific details about the CVE-2022-2401 vulnerability or its affected components.,False,False,False,llm_assisted_not_human
+CVE-0193,task2_cve_linkage,val,cvefixes,6f6324891eefada07669,CVE-2022-1555,CVE-2022-1555,"CVE: CVE-2022-1555
+
+[{'lang': 'en', 'value': 'DOM XSS in microweber ver 1.2.15 in GitHub repository microweber/microweber prior to 1.2.16. inject arbitrary js code, deface website, steal cookie...'}]
+
+Fix commit: Update order_filtering.blade.php",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-1555 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-1555 and describes the affected product and vulnerability details.,True,True,False,llm_assisted_not_human
+CVE-0194,task2_cve_linkage,train,zeroscience,ebecfa873c4f4b7073d1,CVE-2015-20120,RealtyScript v4.0.2 Multiple Time-based Blind SQL Injection Vulnerabilities,"RealtyScript v4.0.2 Multiple Time-based Blind SQL Injection Vulnerabilities
+
+Severity: medium",,,,,ok,medium,False,wrong_cve,The text does not mention CVE-2015-20120 and describes a different vulnerability context.,False,ok,high,False,wrong_cve,The text does not mention CVE-2015-20120 and describes a different vulnerability unrelated to the provided CVE.,False,False,False,llm_assisted_not_human
+CVE-0195,task2_cve_linkage,train,dtl_exploits,EDB-ID:7902,CVE-2009-0323,Amaya Web Editor XML and HTML parser Vulnerabilities,"Amaya Web Editor XML and HTML parser Vulnerabilities
+
+Amaya Web Editor XML and HTML parser Vulnerabilities. CVE-2009-0323. Dos exploit for windows platform
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+      Core Security Technologies - CoreLabs Advisory
+           http://www.coresecurity.com/corelabs/
+
+Amaya web editor XML and HTML parser vulnerabilities
+
+
+
+1. *Advisory Information*
+
+Title: Amaya web editor XML and HTML parser vulnerabilities
+Advisory ID: CORE-2008-1211
+Advisory URL: http://w",,,,,ok,high,False,none,The text explicitly mentions CVE-2009-0323 and describes the same affected product and vulnerability.,True,ok,high,False,none,"The text explicitly mentions CVE-2009-0323 and describes vulnerabilities in the Amaya Web Editor, which aligns with the CVE details.",True,True,False,llm_assisted_not_human
+CVE-0196,task2_cve_linkage,val,github_advisory,GHSA-g2hf-g7fh-vg92,CVE-2016-8737,Apache Brooklyn is vulnerable to cross-site request forgery (CSRF),,,,,,ok,high,False,wrong_cve,The text does not mention CVE-2016-8737 and describes a different vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2016-8737 and is unrelated to the specific vulnerability described.,False,False,False,llm_assisted_not_human
+CVE-0197,task2_cve_linkage,val,hackerone,bc640b61ca4ac216da8f,CVE-2018-7160,DNS rebinding in --inspect (insufficient fix of CVE-2022-32212 affecting macOS devices) (Improper Access Control - Generic),"[Improper Access Control - Generic] DNS rebinding in --inspect (insufficient fix of CVE-2022-32212 affecting macOS devices)
+
+The fix for CVE-2022-32212, covered the cases for routable IP addresses, however, there exists a specific behavior on macOS devices when handling the `http://0.0.0.0` URL that allows an attacker-controlled DNS server to bypass the DNS rebinding protection by resolving hosts in the `.local` domain.
+
+[Original HackerOne report](https://hackerone.com/reports/1632921)
+
+[Node.j",,,,,ok,high,False,wrong_cve,The text discusses CVE-2022-32212 and does not provide evidence linking it to CVE-2018-7160.,False,ok,high,False,wrong_cve,The text discusses CVE-2022-32212 and does not mention or relate to CVE-2018-7160.,False,False,False,llm_assisted_not_human
+CVE-0198,task2_cve_linkage,test,cisa_kev,CVE-2024-7694,CVE-2024-7694,TeamT5 ThreatSonar Anti-Ransomware Unrestricted Upload of File with Dangerous Type Vulnerability,"TeamT5 ThreatSonar Anti-Ransomware Unrestricted Upload of File with Dangerous Type Vulnerability
+
+Affected: TeamT5 ThreatSonar Anti-Ransomware
+
+TeamT5 ThreatSonar Anti-Ransomware contains an unrestricted upload of file with dangerous type vulnerability. ThreatSonar Anti-Ransomware does not properly validate the content of uploaded files. Remote attackers with administrator privileges on the product platform can upload malicious files, which can be used to execute arbitrary system commands on the",,,,,ok,high,False,wrong_cve,The text describes a vulnerability related to TeamT5 ThreatSonar but does not mention CVE-2024-7694.,False,ok,high,False,wrong_cve,The text describes a vulnerability in TeamT5 ThreatSonar but does not mention CVE-2024-7694 or provide evidence linking to it.,False,False,False,llm_assisted_not_human
+CVE-0199,task2_cve_linkage,test,zeroscience,729d6463a8057312acf2,CVE-2024-6298,ABB Cylon Aspect 3.08.01 (bigUpload.php) Remote Code Execution,"ABB Cylon Aspect 3.08.01 (bigUpload.php) Remote Code Execution
+
+Severity: critical",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0200,task2_cve_linkage,val,zeroscience,105b7e7407e3a6040aad,CVE-2022-50694,SOUND4 IMPACT/FIRST/PULSE/Eco <=2.x (username) Authentication Bypass,"SOUND4 IMPACT/FIRST/PULSE/Eco <=2.x (username) Authentication Bypass
+
+Severity: critical",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the affected product and describes the vulnerability associated with CVE-2022-50694.,True,True,False,llm_assisted_not_human
+CVE-0201,task2_cve_linkage,train,dtl_exploits,EDB-ID:28902,CVE-2006-5770,ac4p Mobile polls.php Multiple Parameter XSS,"ac4p Mobile polls.php Multiple Parameter XSS
+
+ac4p Mobile polls.php Multiple Parameter XSS. CVE-2006-5770. Webapps exploit for php platform
+
+source: http://www.securityfocus.com/bid/20895/info
+  
+Mobile is prone to multiple cross-site scripting vulnerabilities because the application fails to properly sanitize user-supplied input. 
+  
+An attacker may leverage these issues to have arbitrary script code execute in the browser of an unsuspecting user in the context of the affected site. This ma",,,,,ok,high,False,none,The text explicitly mentions CVE-2006-5770 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2006-5770 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0202,task2_cve_linkage,train,cisa_kev,CVE-2021-40539,CVE-2021-40539,Zoho ManageEngine ADSelfService Plus Authentication Bypass Vulnerability,"Zoho ManageEngine ADSelfService Plus Authentication Bypass Vulnerability
+
+Affected: Zoho ManageEngine
+
+Zoho ManageEngine ADSelfService Plus contains an authentication bypass vulnerability affecting the REST API URLs which allow for remote code execution.
+
+Required Action: Apply updates per vendor instructions.
+
+Ransomware: Known
+
+CWE(s): CWE-55
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions CVE-2021-40539 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-40539 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0203,task2_cve_linkage,val,cisa_kev,CVE-2017-11357,CVE-2017-11357,Telerik UI for ASP.NET AJAX Insecure Direct Object Reference Vulnerability,"Telerik UI for ASP.NET AJAX Insecure Direct Object Reference Vulnerability
+
+Affected: Telerik User Interface (UI) for ASP.NET AJAX
+
+Telerik UI for ASP.NET AJAX contains an insecure direct object reference vulnerability in RadAsyncUpload that can result in file uploads in a limited location and/or remote code execution.
+
+Required Action: Apply updates per vendor instructions.
+
+Ransomware: Known
+
+CWE(s): CWE-20
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2017-11357 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0204,task2_cve_linkage,train,zeroday,0day-ID-20837,CVE-2013-1966,Apache Struts includeParams Remote Code Execution,,,,,,ok,high,False,too_vague,The provided text is empty and does not contain any information to establish a linkage to the CVE.,False,ok,high,False,too_vague,The provided text is empty and does not contain any information linking it to the specified CVE.,False,False,False,llm_assisted_not_human
+CVE-0205,task2_cve_linkage,val,cvefixes,50d1c28c7acbd7de7297,CVE-2022-1380,CVE-2022-1380,"CVE: CVE-2022-1380
+
+[{'lang': 'en', 'value': 'Stored Cross Site Scripting vulnerability in Item name parameter in GitHub repository snipe/snipe-it prior to v5.4.3. The vulnerability is capable of stolen the user Cookie.'}]
+
+Fix commit: Merge pull request #10942 from snipe/fixes/xss_user_requested
+
+Fixes potential XSS vuln in user requestable results",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-1380 and describes the same vulnerability affecting the specified product.,True,ok,high,False,none,The text explicitly mentions CVE-2022-1380 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0206,task2_cve_linkage,val,cisa_kev,CVE-2022-32893,CVE-2022-32893,Apple iOS and macOS Out-of-Bounds Write Vulnerability,"Apple iOS and macOS Out-of-Bounds Write Vulnerability
+
+Affected: Apple iOS and macOS
+
+Apple iOS and macOS contain an out-of-bounds write vulnerability that could allow for remote code execution when processing malicious crafted web content.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-20, CWE-787
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-32893 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0207,task2_cve_linkage,train,cvefixes,6961fb559c82a71589de,CVE-2019-17539,CVE-2019-17539,"CVE: CVE-2019-17539
+
+[{'lang': 'en', 'value': 'In FFmpeg before 4.2, avcodec_open2 in libavcodec/utils.c allows a NULL pointer dereference and possibly unspecified other impact when there is no valid close function pointer.'}]
+
+Fix commit: avcodec/utils: Check close before calling it
+
+Fixes: NULL pointer dereference
+Fixes: 15733/clusterfuzz-testcase-minimized-ffmpeg_AV_CODEC_ID_IDF_fuzzer-5658616977162240
+
+Reviewed-by: Paul B Mahol <onemda@gmail.com>
+Found-by: continuous fuzzing process https://",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-17539 and describes the vulnerability and its fix.,True,ok,high,False,none,The text explicitly mentions CVE-2019-17539 and describes the vulnerability and its fix in detail.,True,True,False,llm_assisted_not_human
+CVE-0208,task2_cve_linkage,test,hackerone,f7c8eefd2d1d0a976a0a,CVE-2023-30584,Path traversal through path stored in Uint8Array in Node.js 20 (Path Traversal),"[Path Traversal] Path traversal through path stored in Uint8Array in Node.js 20
+
+Various `node:fs` functions allow specifying paths as either strings or `Uint8Array` objects. In Node.js environments, the `Buffer` class extends the `Uint8Array` class. Node.js prevents path traversal through strings (see CVE-2023-30584) and `Buffer` objects (see CVE-2023-32004), but not through non-`Buffer` `Uint8Array` objects.
+
+This is distinct from CVE-2023-32004 ([report 2038134](https://hackerone.com/reports/",,,,,ok,high,False,wrong_cve,The text discusses a different aspect of path traversal that is not directly linked to CVE-2023-30584.,False,ok,high,False,none,The text explicitly mentions CVE-2023-30584 and describes the affected product and vulnerability accurately.,True,,True,llm_assisted_not_human
+CVE-0209,task2_cve_linkage,test,vulnlab,54098df0b93e4921175a,CVE-2018-3684,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0210,task2_cve_linkage,test,cisa_kev,CVE-2020-14644,CVE-2020-14644,Oracle WebLogic Server Remote Code Execution Vulnerability,"Oracle WebLogic Server Remote Code Execution Vulnerability
+
+Affected: Oracle WebLogic Server
+
+Oracle WebLogic Server, a product within the Fusion Middleware suite, contains a deserialization vulnerability. Unauthenticated attackers with network access via T3 or IIOP can exploit this vulnerability to achieve remote code execution.
+
+Required Action: Apply mitigations per vendor instructions or discontinue use of the product if mitigations are unavailable.
+
+[Source: CISA Known Exploited Vulnerabili",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2020-14644 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0211,task2_cve_linkage,val,cvefixes,52ef6a80fd5b1d96e18e,CVE-2016-2138,CVE-2016-2138,"CVE: CVE-2016-2138
+
+[{'lang': 'en', 'value': 'In kippo-graph before version 1.5.1, there is a cross-site scripting vulnerability in xss_clean() in class/KippoInput.class.php.'}]
+
+Fix commit: Block XSS in wget commands (file links)",,,,,ok,high,False,none,The text explicitly mentions CVE-2016-2138 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2016-2138 and describes the affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0212,task2_cve_linkage,train,hackerone,96528a3647968ea517ef,CVE-2017-13082,"Key Reinstallation Attacks: Breaking WPA2 by forcing nonce reuse (Reusing a Nonce, Key Pair in Encryption)","[Reusing a Nonce, Key Pair in Encryption] Key Reinstallation Attacks: Breaking WPA2 by forcing nonce reuse
+
+Full background information is at [krackattacks.com](https://www.krackattacks.com) and all detailed information can be found in our [research paper](https://papers.mathyvanhoef.com/ccs2017.pdf).
+
+# Key Reinstallation Attack: 4-way handshake example
+
+We use the 4-way handshake to illustrate the idea behind key reinstallation attacks (CVE-2017-13077).
+Note that in practice, all protected Wi-",,,,,ok,high,False,wrong_cve,The text references CVE-2017-13077 instead of the provided CVE-2017-13082.,False,ok,high,False,wrong_cve,The text references CVE-2017-13077 instead of the provided CVE-2017-13082.,False,False,False,llm_assisted_not_human
+CVE-0213,task2_cve_linkage,train,cvefixes,a01fa62e07bf70c60e6a,CVE-2016-7915,CVE-2016-7915,"CVE: CVE-2016-7915
+
+[{'lang': 'en', 'value': 'The hid_input_field function in drivers/hid/hid-core.c in the Linux kernel before 4.6 allows physically proximate attackers to obtain sensitive information from kernel memory or cause a denial of service (out-of-bounds read) by connecting a device, as demonstrated by a Logitech DJ receiver.'}]
+
+Fix commit: HID: core: prevent out-of-bound readings
+
+Plugging a Logitech DJ receiver with KASAN activated raises a bunch of
+out-of-bound readings.
+
+The field",,,,,ok,high,False,none,The text explicitly mentions CVE-2016-7915 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2016-7915 and describes the affected product and vulnerability in detail.,True,True,False,llm_assisted_not_human
+CVE-0214,task2_cve_linkage,test,vulnlab,60be51c5399d8aa658c0,CVE-2020-12130,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,True,too_vague,The provided text lacks specific details about the CVE and does not mention the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0215,task2_cve_linkage,train,dtl_exploits,0day-ID-27626,CVE-2017-7692,Squirrelmail 1.4.22 Remote Code Execution Exploit,"Squirrelmail 1.4.22 Remote Code Execution Exploit
+
+Exploit for linux platform in category remote exploits
+
+Title:                 Squirrelmail Remote Code Execution
+Product:               Squirrelmail
+Version:               1.4.22 and probably prior
+Vendor:                squirrelmail.org
+Type:                  Command Injection
+Risk level:            4 / 5
+Credit:                email protected
+CVE:                   CVE-2017-7692
+Vendor notification:   2017-04-04
+Vendor fix:          ",,,,,ok,high,False,none,The text explicitly mentions CVE-2017-7692 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2017-7692 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0216,task2_cve_linkage,test,hackerone,d67b67fb54248cf71d6f,CVE-2024-2379,CVE-2024-2379: QUIC certificate check bypass with wolfSSL (Improper Certificate Validation),"[Improper Certificate Validation] CVE-2024-2379: QUIC certificate check bypass with wolfSSL
+
+See https://hackerone.com/reports/2410774 or https://curl.se/docs/CVE-2024-2379.html
+
+## Impact
+
+See https://hackerone.com/reports/2410774 or https://curl.se/docs/CVE-2024-2379.html",,,,,ok,high,False,none,The text explicitly mentions CVE-2024-2379 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2024-2379 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0217,task2_cve_linkage,test,cisa_kev,CVE-2025-48543,CVE-2025-48543,Android Runtime Use-After-Free Vulnerability,"Android Runtime Use-After-Free Vulnerability
+
+Affected: Android Runtime
+
+Android Runtime contains a use-after-free vulnerability potentially allowing a chrome sandbox escape leading to local privilege escalation.
+
+Required Action: Apply mitigations per vendor instructions, follow applicable BOD 22-01 guidance for cloud services, or discontinue use of the product if mitigations are unavailable.
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,wrong_cve,The text describes a vulnerability related to Android Runtime but does not mention CVE-2025-48543.,False,ok,high,False,wrong_cve,"The text describes a vulnerability related to Android Runtime but does not mention CVE-2025-48543, indicating a linkage error.",False,False,False,llm_assisted_not_human
+CVE-0218,task2_cve_linkage,val,zeroscience,9e57d80002dda5099033,CVE-2023-36252,Anevia Flamingo XL 3.6.20 Authenticated Root Remote Code Execution,"Anevia Flamingo XL 3.6.20 Authenticated Root Remote Code Execution
+
+Severity: high",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,wrong_cve,The text does not mention CVE-2023-36252 and lacks specific details linking it to the described vulnerability.,False,,True,llm_assisted_not_human
+CVE-0219,task2_cve_linkage,test,vulnlab,880950c3edaf69a6fe38,CVE-2017-15376,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,True,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,False,False,llm_assisted_not_human
+CVE-0220,task2_cve_linkage,test,hackerone,a88f257857671243ebfe,CVE-2023-49920,CVE-2023-49920: Apache Airflow: Missing CSRF protection on DAG/trigger (Cross-Site Request Forgery (CSRF)),"[Cross-Site Request Forgery (CSRF)] CVE-2023-49920: Apache Airflow: Missing CSRF protection on DAG/trigger
+
+During my testing, I've found that there is no CSRF protection in dag/trigger. If a user is logged in to his airflow account & has the permission to trigger a dag then an attacker can trick the user to run a dag unintentionally by the user.
+
+Apache Airflow, version 2.7.0 through 2.7.3, has a vulnerability that allows an attacker to trigger a DAG in a GET request without CSRF validation. As",,,,,ok,high,False,none,The text explicitly mentions CVE-2023-49920 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2023-49920 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0221,task2_cve_linkage,train,cisa_kev,CVE-2020-3566,CVE-2020-3566,Cisco IOS XR Software DVMRP Memory Exhaustion Vulnerability,"Cisco IOS XR Software DVMRP Memory Exhaustion Vulnerability
+
+Affected: Cisco IOS XR
+
+Cisco IOS XR Distance Vector Multicast Routing Protocol (DVMRP) incorrectly handles Internet Group Management Protocol (IGMP) packets. Exploitation could allow an unauthenticated, remote attacker to immediately crash the IGMP process or make it consume available memory and eventually crash.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-400
+
+[Source: CISA Known Exploited Vulnerabilities Ca",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2020-3566 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0222,task2_cve_linkage,test,cisa_kev,CVE-2026-20131,CVE-2026-20131,Cisco Secure Firewall Management Center (FMC) Software and Cisco Security Cloud Control (SCC) Firewall Management Deserialization of Untrusted Data Vulnerability,"Cisco Secure Firewall Management Center (FMC) Software and Cisco Security Cloud Control (SCC) Firewall Management Deserialization of Untrusted Data Vulnerability
+
+Affected: Cisco Secure Firewall Management Center (FMC)
+
+Cisco Secure Firewall Management Center (FMC) Software and Cisco Security Cloud Control (SCC) Firewall Management contain a deserialization of untrusted data vulnerability in the web-based management interface that could allow an unauthenticated, remote attacker to execute arbitr",,,,,ok,high,False,wrong_cve,The text describes a vulnerability related to Cisco Secure Firewall Management Center but is linked to the incorrect CVE ID (CVE-2026-20131).,False,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,,True,llm_assisted_not_human
+CVE-0223,task2_cve_linkage,val,cvefixes,03ae89bdf0075d8bea62,CVE-2022-1898,CVE-2022-1898,"CVE: CVE-2022-1898
+
+[{'lang': 'en', 'value': 'Use After Free in GitHub repository vim/vim prior to 8.2.'}]
+
+Fix commit: patch 8.2.5024: using freed memory with ""]d""
+
+Problem:    Using freed memory with ""]d"".
+Solution:   Copy the pattern before searching.",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-1898 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-1898 and describes the affected product and vulnerability details.,True,True,False,llm_assisted_not_human
+CVE-0224,task2_cve_linkage,train,zeroscience,5e3c758c3b8a53f6fe82,CVE-2021-41294,ECOA Building Automation System Arbitrary File Deletion,"ECOA Building Automation System Arbitrary File Deletion
+
+Severity: high",,,,,ok,medium,False,wrong_cve,The text does not explicitly mention CVE-2021-41294 and lacks specific evidence linking it to the described vulnerability.,False,ok,high,False,wrong_cve,The text does not mention CVE-2021-41294 and lacks specific details linking it to the described vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0225,task2_cve_linkage,train,cisa_kev,CVE-2021-1647,CVE-2021-1647,Microsoft Defender Remote Code Execution Vulnerability,"Microsoft Defender Remote Code Execution Vulnerability
+
+Affected: Microsoft Defender
+
+Microsoft Defender contains an unspecified vulnerability that allows for remote code execution.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-122, CWE-1285
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions the CVE-2021-1647 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0226,task2_cve_linkage,train,cisa_kev,CVE-2021-38003,CVE-2021-38003,Google Chromium V8 Memory Corruption Vulnerability,"Google Chromium V8 Memory Corruption Vulnerability
+
+Affected: Google Chromium V8
+
+Google Chromium V8 Engine has a bug in JSON.stringify, where the internal TheHole value can leak to script code, causing memory corruption. This vulnerability could affect multiple web browsers that utilize Chromium, including, but not limited to, Google Chrome, Microsoft Edge, and Opera.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-122, CWE-755
+
+[Source: CISA Known Exploited Vulnerabilitie",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the affected product and vulnerability accurately.,True,ok,high,False,none,The text explicitly mentions CVE-2021-38003 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0227,task2_cve_linkage,train,github_advisory,GHSA-33rv-m2gp-mm2r,CVE-2021-25927,Prototype pollution in safe-flat,,,,,,ok,high,False,too_vague,The text is empty and does not provide any evidence linking it to the specified CVE.,False,ok,high,False,too_vague,The provided text is empty and does not mention the CVE or provide any context regarding the vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0228,task2_cve_linkage,test,vulnlab,bb9dd427729ee6a8bb07,CVE-2023-3786,===============,"===============
+
+Class: ====================
+Product: ====================",,,,,ok,high,False,too_vague,"The provided text lacks specific details about the CVE or affected product, making it impossible to establish a clear linkage.",False,ok,high,True,too_vague,The provided text lacks specific details about the CVE and does not mention the affected product or vulnerability.,False,False,False,llm_assisted_not_human
+CVE-0229,task2_cve_linkage,test,zeroscience,5ed0197c456a439af573,CVE-2024-48845,ABB Cylon Aspect 3.07.02 (userManagement.php) Weak Password Policy,"ABB Cylon Aspect 3.07.02 (userManagement.php) Weak Password Policy
+
+Severity: medium",,,,,ok,high,False,none,The text explicitly mentions the affected product and describes the vulnerability related to the CVE.,True,ok,high,False,wrong_cve,"The text refers to a specific vulnerability in ABB Cylon Aspect 3.07.02 but does not mention CVE-2024-48845, indicating a mismatch.",False,,True,llm_assisted_not_human
+CVE-0230,task2_cve_linkage,train,hackerone,f104931cffe6a48f0f4e,CVE-2019-11538,Potential pre-auth RCE on Twitter VPN (OS Command Injection),"[OS Command Injection] Potential pre-auth RCE on Twitter VPN
+
+Hi, we(Orange Tsai and Meh Chang) are the security research team from DEVCORE. Recently, we are doing a research about SSL VPN security, and found several critical vulnerabilities on Pulse Secure SSL VPN! We have reported to vendor and [patches](https://kb.pulsesecure.net/articles/Pulse_Security_Advisories/SA44101) have been released on `2019/4/25`. Since that, we keep monitoring numerous large corporations using Pulse Secure and we n",,,,,ok,high,False,wrong_cve,"The text discusses vulnerabilities in Pulse Secure SSL VPN, which is unrelated to CVE-2019-11538.",False,ok,high,False,wrong_cve,"The text discusses vulnerabilities in Pulse Secure SSL VPN, which is unrelated to CVE-2019-11538, which pertains to Twitter VPN.",False,False,False,llm_assisted_not_human
+CVE-0231,task2_cve_linkage,val,cvefixes,74aca166d249283a5923,CVE-2021-23592,CVE-2021-23592,"CVE: CVE-2021-23592
+
+[{'lang': 'en', 'value': 'The package topthink/framework before 6.0.12 are vulnerable to Deserialization of Untrusted Data due to insecure unserialize method in the Driver class.'}]
+
+Fix commit: 改进缓存驱动unserialize方法参数类型限制",,,,,ok,high,False,none,The text explicitly mentions CVE-2021-23592 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-23592 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0232,task2_cve_linkage,val,cisa_kev,CVE-2013-1347,CVE-2013-1347,Microsoft Internet Explorer Remote Code Execution Vulnerability,"Microsoft Internet Explorer Remote Code Execution Vulnerability
+
+Affected: Microsoft Internet Explorer
+
+This vulnerability may corrupt memory in a way that could allow an attacker to execute arbitrary code in the context of the current user within Internet Explorer.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-94
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2013-1347 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0233,task2_cve_linkage,val,cisa_kev,CVE-2021-25369,CVE-2021-25369,Samsung Mobile Devices Improper Access Control Vulnerability,"Samsung Mobile Devices Improper Access Control Vulnerability
+
+Affected: Samsung Mobile Devices
+
+Samsung mobile devices using Mali GPU contains an improper access control vulnerability in sec_log file. Exploitation of the vulnerability exposes sensitive kernel information to the userspace. This vulnerability was chained with CVE-2021-25337 and CVE-2021-25370.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-200
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2021-25369 and describes the affected product and vulnerability details.,True,True,False,llm_assisted_not_human
+CVE-0234,task2_cve_linkage,test,hackerone,567a955e0a06435b07ce,CVE-2017-0255,Reflective Cross Site Scripting (XSS) on ███████/Pages (Cross-site Scripting (XSS) - Reflected),"[Cross-site Scripting (XSS) - Reflected] Reflective Cross Site Scripting (XSS) on ███████/Pages
+
+## Reflective Cross-Site Scripting (XSS)
+An elevation of privilege vulnerability exists when Microsoft SharePoint Server does not properly sanitize a specially crafted web request to an affected SharePoint server. An authenticated attacker could exploit the vulnerability by sending a specially crafted request to an affected SharePoint server. 
+The attacker to read content that the attacker is not aut",,,,,ok,high,False,wrong_cve,"The text describes a vulnerability related to Microsoft SharePoint Server, but it does not explicitly mention CVE-2017-0255 or provide evidence linking to it.",False,ok,high,False,none,"The text explicitly describes a vulnerability in Microsoft SharePoint Server related to CVE-2017-0255, providing clear evidence of linkage.",True,,True,llm_assisted_not_human
+CVE-0235,task2_cve_linkage,train,zeroscience,3535605b4ea956bda4af,CVE-2019-25237,V-SOL GPON/EPON OLT Platform v2.03 Remote Privilege Escalation,"V-SOL GPON/EPON OLT Platform v2.03 Remote Privilege Escalation
+
+Severity: high",,,,,ok,high,False,none,The text explicitly mentions the affected product and describes the same vulnerability as the CVE.,True,ok,high,False,none,The text explicitly mentions the affected product and describes the same vulnerability as CVE-2019-25237.,True,True,False,llm_assisted_not_human
+CVE-0236,task2_cve_linkage,train,github_advisory,GHSA-58mj-pw57-4vm2,CVE-2017-11503,Cross-site scripting in PHPMailer,,,,,,ok,high,False,too_vague,The text does not provide any information to establish a clear linkage to CVE-2017-11503.,False,ok,high,False,wrong_cve,The text does not mention CVE-2017-11503 and lacks relevant context linking it to the advisory.,False,False,False,llm_assisted_not_human
+CVE-0237,task2_cve_linkage,val,cvefixes,f67181d9a4c64942e0b3,CVE-2022-1631,CVE-2022-1631,"CVE: CVE-2022-1631
+
+[{'lang': 'en', 'value': 'Users Account Pre-Takeover or Users Account Takeover. in GitHub repository microweber/microweber prior to 1.2.15. Victim Account Take Over. Since, there is no email confirmation, an attacker can easily create an account in the application using the Victim’s Email. This allows an attacker to gain pre-authentication to the victim’s account. Further, due to the lack of proper validation of email coming from Social Login and failing to check if an accoun",,,,,ok,high,False,none,The text explicitly mentions CVE-2022-1631 and describes the affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2022-1631 and describes the affected product and vulnerability accurately.,True,True,False,llm_assisted_not_human
+CVE-0238,task2_cve_linkage,train,cvefixes,340dca4b16427dac0e0a,CVE-2017-16534,CVE-2017-16534,"CVE: CVE-2017-16534
+
+[{'lang': 'en', 'value': 'The cdc_parse_cdc_header function in drivers/usb/core/message.c in the Linux kernel before 4.13.6 allows local users to cause a denial of service (out-of-bounds read and system crash) or possibly have unspecified other impact via a crafted USB device.'}]
+
+Fix commit: USB: core: harden cdc_parse_cdc_header
+
+Andrey Konovalov reported a possible out-of-bounds problem for the
+cdc_parse_cdc_header function.  He writes:
+	It looks like cdc_parse_cdc_header",,,,,ok,high,False,none,The text explicitly mentions CVE-2017-16534 and describes the affected function and vulnerability.,True,ok,high,False,none,"The text explicitly mentions CVE-2017-16534 and describes the affected function and impact, providing clear evidence of linkage.",True,True,False,llm_assisted_not_human
+CVE-0239,task2_cve_linkage,train,dtl_exploits,PACKETSTORM:153028,CVE-2019-12189,Zoho ManageEngine ServiceDesk Plus 9.3 Cross Site Scripting,"Zoho ManageEngine ServiceDesk Plus 9.3 Cross Site Scripting
+
+`# Exploit Title: Zoho ManageEngine ServiceDesk Plus 9.3 Cross-Site Scripting  
+# Date: 2019-05-21  
+# Exploit Author: Enter of VinCSS (Vingroup)  
+# Vendor Homepage: https://www.manageengine.com/products/service-desk  
+# Version: Zoho ManageEngine ServiceDesk Plus 9.3  
+# CVE : CVE-2019-12189  
+  
+  
+An issue was discovered in Zoho ManageEngine ServiceDesk Plus 9.3. There is XSS via the SearchN.do search field.  
+  
+The vulnerability ",,,,,ok,high,False,none,The text explicitly mentions CVE-2019-12189 and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2019-12189 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human
+CVE-0240,task2_cve_linkage,train,cisa_kev,CVE-2019-17558,CVE-2019-17558,Apache Solr VelocityResponseWriter Plug-In Remote Code Execution Vulnerability,"Apache Solr VelocityResponseWriter Plug-In Remote Code Execution Vulnerability
+
+Affected: Apache Solr
+
+The Apache Solr VelocityResponseWriter plug-in contains an unspecified vulnerability which can allow for remote code execution.
+
+Required Action: Apply updates per vendor instructions.
+
+CWE(s): CWE-74
+
+[Source: CISA Known Exploited Vulnerabilities Catalog]",,,,,ok,high,False,none,The text explicitly mentions the CVE and describes the same affected product and vulnerability.,True,ok,high,False,none,The text explicitly mentions CVE-2019-17558 and describes the same affected product and vulnerability.,True,True,False,llm_assisted_not_human

@@ -1,0 +1,287 @@
+{
+  "tasks": {
+    "task1": {
+      "train": {
+        "rows": 1672,
+        "unique_labels": 2,
+        "label_counts": {
+          "0": 836,
+          "1": 836
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 32,
+        "short_under_8_tokens_pct": 0.0191,
+        "non_ascii_signal_rows": 124,
+        "non_ascii_signal_rows_pct": 0.0742,
+        "exact_duplicate_text_rows": 2
+      },
+      "val": {
+        "rows": 440,
+        "unique_labels": 2,
+        "label_counts": {
+          "0": 220,
+          "1": 220
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 4,
+        "short_under_8_tokens_pct": 0.0091,
+        "non_ascii_signal_rows": 78,
+        "non_ascii_signal_rows_pct": 0.1773,
+        "exact_duplicate_text_rows": 1
+      },
+      "test": {
+        "rows": 388,
+        "unique_labels": 2,
+        "label_counts": {
+          "0": 194,
+          "1": 194
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 130,
+        "short_under_8_tokens_pct": 0.3351,
+        "non_ascii_signal_rows": 22,
+        "non_ascii_signal_rows_pct": 0.0567,
+        "exact_duplicate_text_rows": 122
+      }
+    },
+    "task2": {
+      "train": {
+        "rows": 40698,
+        "unique_labels": 29067,
+        "label_counts": {},
+        "top_labels": {
+          "CVE-2012-1199": 38,
+          "CVE-2006-5911": 38,
+          "CVE-2008-6543": 36,
+          "CVE-2007-0182": 27,
+          "CVE-2014-6271": 27,
+          "CVE-2009-0689": 26,
+          "CVE-2006-4985": 22,
+          "CVE-2006-4889": 20,
+          "CVE-2007-5243": 20,
+          "CVE-2014-6332": 19,
+          "CVE-2018-14665": 19,
+          "CVE-2006-5190": 17,
+          "CVE-2018-6892": 17,
+          "CVE-2007-0900": 16,
+          "CVE-2004-1925": 15,
+          "CVE-2003-0201": 15,
+          "CVE-2018-6389": 14,
+          "CVE-2004-0067": 14,
+          "CVE-2008-6840": 13,
+          "CVE-2020-3452": 13
+        },
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 127,
+        "non_ascii_signal_rows_pct": 0.0031,
+        "exact_duplicate_text_rows": 617
+      },
+      "val": {
+        "rows": 2551,
+        "unique_labels": 2384,
+        "label_counts": {},
+        "top_labels": {
+          "CVE-2020-3452": 6,
+          "CVE-2021-43860": 5,
+          "CVE-2021-44228": 5,
+          "CVE-2022-27774": 4,
+          "CVE-2020-14179": 4,
+          "CVE-2022-38463": 3,
+          "CVE-2022-22954": 3,
+          "CVE-2022-42916": 3,
+          "CVE-2022-24710": 3,
+          "CVE-2022-27776": 3,
+          "CVE-2020-3187": 3,
+          "CVE-2022-29242": 3,
+          "CVE-2023-38205": 3,
+          "CVE-2018-6389": 3,
+          "CVE-2022-31124": 3,
+          "CVE-2022-23581": 3,
+          "CVE-2022-23559": 3,
+          "CVE-2022-24780": 3,
+          "CVE-2022-24739": 3,
+          "CVE-2022-35414": 2
+        },
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 28,
+        "non_ascii_signal_rows_pct": 0.011,
+        "exact_duplicate_text_rows": 81
+      },
+      "test": {
+        "rows": 550,
+        "unique_labels": 546,
+        "label_counts": {},
+        "top_labels": {
+          "CVE-2024-0853": 2,
+          "CVE-2024-2398": 2,
+          "CVE-2024-2379": 2,
+          "CVE-2024-2466": 2,
+          "CVE-2025-24472": 1,
+          "CVE-2026-20805": 1,
+          "CVE-2023-36424": 1,
+          "CVE-2023-49920": 1,
+          "CVE-2019-1551": 1,
+          "CVE-2024-43451": 1,
+          "CVE-2025-43200": 1,
+          "CVE-2026-1731": 1,
+          "CVE-2025-53770": 1,
+          "CVE-2014-0497": 1,
+          "CVE-2023-24329": 1,
+          "CVE-2018-6389": 1,
+          "CVE-2025-26399": 1,
+          "CVE-2025-27038": 1,
+          "CVE-2024-30051": 1,
+          "CVE-2024-40890": 1
+        },
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 1,
+        "non_ascii_signal_rows_pct": 0.0018,
+        "exact_duplicate_text_rows": 15
+      }
+    },
+    "task3": {
+      "train": {
+        "rows": 6797,
+        "unique_labels": 4,
+        "label_counts": {
+          "0": 415,
+          "1": 2256,
+          "2": 2537,
+          "3": 1589
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 257,
+        "short_under_8_tokens_pct": 0.0378,
+        "non_ascii_signal_rows": 6,
+        "non_ascii_signal_rows_pct": 0.0009,
+        "exact_duplicate_text_rows": 7
+      },
+      "val": {
+        "rows": 12836,
+        "unique_labels": 4,
+        "label_counts": {
+          "0": 602,
+          "1": 5798,
+          "2": 4142,
+          "3": 2294
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 70,
+        "short_under_8_tokens_pct": 0.0055,
+        "non_ascii_signal_rows": 28,
+        "non_ascii_signal_rows_pct": 0.0022,
+        "exact_duplicate_text_rows": 17
+      },
+      "test": {
+        "rows": 11711,
+        "unique_labels": 4,
+        "label_counts": {
+          "0": 1107,
+          "1": 5020,
+          "2": 3818,
+          "3": 1766
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 55,
+        "short_under_8_tokens_pct": 0.0047,
+        "non_ascii_signal_rows": 144,
+        "non_ascii_signal_rows_pct": 0.0123,
+        "exact_duplicate_text_rows": 9
+      }
+    },
+    "task4": {
+      "train": {
+        "rows": 50382,
+        "unique_labels": 3,
+        "label_counts": {
+          "0": 25000,
+          "1": 25000,
+          "2": 382
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 7630,
+        "non_ascii_signal_rows_pct": 0.1514,
+        "exact_duplicate_text_rows": 1727
+      },
+      "val": {
+        "rows": 1933,
+        "unique_labels": 3,
+        "label_counts": {
+          "0": 1216,
+          "1": 571,
+          "2": 146
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 326,
+        "non_ascii_signal_rows_pct": 0.1686,
+        "exact_duplicate_text_rows": 7
+      },
+      "test": {
+        "rows": 25963,
+        "unique_labels": 3,
+        "label_counts": {
+          "0": 25000,
+          "1": 926,
+          "2": 37
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 25572,
+        "non_ascii_signal_rows_pct": 0.9849,
+        "exact_duplicate_text_rows": 0
+      }
+    },
+    "task5": {
+      "train": {
+        "rows": 1146,
+        "unique_labels": 2,
+        "label_counts": {
+          "0": 764,
+          "1": 382
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 182,
+        "non_ascii_signal_rows_pct": 0.1588,
+        "exact_duplicate_text_rows": 6
+      },
+      "val": {
+        "rows": 438,
+        "unique_labels": 2,
+        "label_counts": {
+          "0": 292,
+          "1": 146
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 78,
+        "non_ascii_signal_rows_pct": 0.1781,
+        "exact_duplicate_text_rows": 0
+      },
+      "test": {
+        "rows": 111,
+        "unique_labels": 2,
+        "label_counts": {
+          "0": 74,
+          "1": 37
+        },
+        "top_labels": {},
+        "short_under_8_tokens": 0,
+        "short_under_8_tokens_pct": 0.0,
+        "non_ascii_signal_rows": 78,
+        "non_ascii_signal_rows_pct": 0.7027,
+        "exact_duplicate_text_rows": 0
+      }
+    }
+  }
+}

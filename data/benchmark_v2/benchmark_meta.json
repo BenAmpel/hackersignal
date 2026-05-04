@@ -1,0 +1,59 @@
+{
+  "benchmark": "HackerSignal v2",
+  "tasks": {
+    "task1_cve_linkage": {
+      "name": "CVE Linkage Retrieval",
+      "description": "Cross-source, temporally OOD entity grounding: map heterogeneous threat evidence to canonical CVE identifiers.",
+      "type": "retrieval",
+      "metrics": [
+        "recall_at_1",
+        "recall_at_5",
+        "recall_at_10",
+        "mrr"
+      ],
+      "splits": {
+        "train": 40698,
+        "val": 2551,
+        "test": 550
+      },
+      "corpus_size": 340536
+    },
+    "task2_signal_detection": {
+      "name": "Hacker Signal Detection",
+      "description": "Two-stage: detect actionable exploit intelligence in hacker discourse, then ground to CVE context.",
+      "type": "detection_and_retrieval",
+      "metrics": [
+        "f1_actionable",
+        "precision",
+        "recall",
+        "recall_at_5_on_positives",
+        "mrr_on_positives"
+      ],
+      "splits": {
+        "train": 4202,
+        "val": 1606,
+        "test": 407
+      },
+      "corpus_size": 340536,
+      "positive_ratio": "~1:10 negative-to-positive"
+    },
+    "task3_temporal_generalization": {
+      "name": "Temporal Generalization (Unseen CVE Linkage)",
+      "description": "Link evidence to entirely unseen CVEs (CVE-2024+). Tests prospective generalization to new vulnerabilities.",
+      "type": "retrieval",
+      "metrics": [
+        "recall_at_1",
+        "recall_at_5",
+        "recall_at_10",
+        "mrr"
+      ],
+      "splits": {
+        "train": 41630,
+        "val": 1776,
+        "test": 393
+      },
+      "corpus_size": 340536,
+      "constraint": "C_train \u2229 C_test = \u2205 (strictly disjoint CVE sets by year)"
+    }
+  }
+}

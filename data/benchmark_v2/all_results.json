@@ -1,0 +1,131 @@
+{
+  "task1_cve_linkage": {
+    "BM25": {
+      "R@1": 0.445,
+      "R@5": 0.64,
+      "R@10": 0.707,
+      "MRR": 0.528,
+      "verified": true
+    },
+    "all-MiniLM-L6-v2": {
+      "R@1": 0.431,
+      "R@5": 0.656,
+      "R@10": 0.727,
+      "MRR": 0.53,
+      "verified": true
+    },
+    "all-mpnet-base-v2": {
+      "R@1": 0.46,
+      "R@5": 0.64,
+      "R@10": 0.718,
+      "MRR": 0.54,
+      "verified": true
+    },
+    "Hybrid BM25+mpnet": {
+      "R@1": 0.486,
+      "R@5": 0.675,
+      "R@10": 0.736,
+      "MRR": 0.567,
+      "verified": true
+    },
+    "BGE-base-en-v1.5": {
+      "R@1": 0.4291,
+      "R@5": 0.6655,
+      "R@10": 0.7418,
+      "MRR": 0.5339,
+      "verified": true
+    },
+    "E5-base-v2": {
+      "R@1": 0.4927,
+      "R@5": 0.7073,
+      "R@10": 0.7691,
+      "MRR": 0.5874,
+      "verified": true
+    }
+  },
+  "task2_signal_detection": {
+    "Majority": {
+      "F1": 0.0,
+      "Precision": 0.0,
+      "Recall": 0.0,
+      "verified": true
+    },
+    "TF-IDF + LR": {
+      "F1": 0.928,
+      "Precision": 1.0,
+      "Recall": 0.865,
+      "verified": true
+    },
+    "SecBERT (FT)": {
+      "F1": 0.943,
+      "Precision": 1.0,
+      "Recall": 0.892,
+      "verified": true
+    },
+    "RoBERTa (FT)": {
+      "F1": 0.958,
+      "Precision": 1.0,
+      "Recall": 0.919,
+      "verified": true
+    },
+    "DeBERTa (FT)": {
+      "F1": 0.912,
+      "Precision": 1.0,
+      "Recall": 0.838,
+      "verified": true
+    }
+  },
+  "task3_temporal_generalization": {
+    "BM25": {
+      "R@1": 0.443,
+      "R@5": 0.654,
+      "R@10": 0.715,
+      "MRR": 0.533,
+      "verified": true
+    },
+    "all-MiniLM-L6-v2": {
+      "R@1": 0.453,
+      "R@5": 0.669,
+      "R@10": 0.728,
+      "MRR": 0.546,
+      "verified": true
+    },
+    "all-mpnet-base-v2": {
+      "R@1": 0.461,
+      "R@5": 0.657,
+      "R@10": 0.725,
+      "MRR": 0.544,
+      "verified": true
+    },
+    "Hybrid BM25+mpnet": {
+      "R@1": 0.491,
+      "R@5": 0.69,
+      "R@10": 0.743,
+      "MRR": 0.577,
+      "verified": true
+    },
+    "BGE-base-en-v1.5": {
+      "R@1": 0.4377,
+      "R@5": 0.6768,
+      "R@10": 0.7532,
+      "MRR": 0.5456,
+      "verified": true
+    },
+    "E5-base-v2": {
+      "R@1": 0.5089,
+      "R@5": 0.7252,
+      "R@10": 0.7786,
+      "MRR": 0.6022,
+      "verified": true
+    }
+  },
+  "meta": {
+    "corpus_size": 340536,
+    "task1_test_size": 550,
+    "task2_test_size": 407,
+    "task3_test_size": 393,
+    "hardware": "macOS arm64 (Apple M-series, CPU)",
+    "python_version": "3.12",
+    "pytorch_version": "2.4"
+  }
+}

@@ -1,0 +1,56 @@
+================================================================================
+ETG (Exploit Text Graph) Dataset — Summary Statistics
+================================================================================
+  Total posts:        8,742,660
+  Total CVE entries:  121,271
+  Unique CVEs:        56,556
+  Date range:         1990-05-19 → 2026-04-21
+  Sources:            35
+
+  [Hacker Forum]
+    Source                                Posts   CVE Refs    CVE%   AvgTok Dates
+    ----------------------------------------------------------------------------------------
+    Kaeli Hacker Forums                 258,647         44    0.0%       66 2001-07 – 2026-04
+    DeepDarkCTI (Broad)                 178,073          0    0.0%      156 2006-08 – 2026-04
+    HackForums                          152,478         18    0.0%       54 2009-01 – 2015-04
+    Go4Expert                            12,590          0    0.0%       88 2004-07 – 2026-04
+    CrackingArena                        11,997          0    0.0%       33 2013-04 – 2026-04
+    0x00sec                                 332         12    1.8%      390 2026-01 – 2026-04
+    CVE Hacker Forum                         67        111   97.0%     1980 2004-01 – 2026-04
+    Seebug                                   40         40   95.0%       27 2024-10 – 2026-02
+    AntiOnline                                5          0    0.0%      319 2026-03 – 2026-04
+      Subtotal                          614,229        225
+
+  [Darknet Market]
+    Source                                Posts   CVE Refs    CVE%   AvgTok Dates
+    ----------------------------------------------------------------------------------------
+    Evolution Forum                     488,989         32    0.0%      104 2014-01 – 2015-03
+      Subtotal                          488,989         32
+
+  [Exploit Database]
+    Source                                Posts   CVE Refs    CVE%   AvgTok Dates
+    ----------------------------------------------------------------------------------------
+    Hacker Exploits (Kaggle)          2,816,925      1,730    0.0%       67 2001-07 – 2026-04
+    DTL Exploits (AZSecure)              95,350     33,015   34.4%      976 1990-05 – 2019-11
+    Exploit-DB (HuggingFace)             70,233          8    0.0%       36 2000-01 – 2000-01
+    Exploit-DB                           46,498     19,178    0.0%      575 1990-05 – 2026-04
+    0day.today                           19,759      5,305   22.3%      594 1996-01 – 2019-07
+      Subtotal                        3,048,765     59,236
+
+  [Vulnerability Advisory]
+    Source                                Posts   CVE Refs    CVE%   AvgTok Dates
+    ----------------------------------------------------------------------------------------
+    NVD CVE                             340,536          0    0.0%       57 2002-01 – 2026-04
+    GitHub Advisory DB                   28,744     25,441   88.5%      492 2017-10 – 2026-04
+    HackerOne Disclosed                   9,472        854    7.0%      475 2013-11 – 2024-05
+    Full Disclosure ML                    2,752          0    0.0%      318 2002-01 – 2026-04
+    CISA KEV                              1,508      1,568  104.0%      117 2021-11 – 2026-04
+    ZeroScience Lab                       1,073        567   48.2%       20 2008-07 – 2026-04
+    Vulnerability-Lab                       954         70    6.6%       11 2011-06 – 2026-04
+      Subtotal                          385,039     28,500
+
+  [Fix Commit]
+    Source                                Posts   CVE Refs    CVE%   AvgTok Dates
+    ----------------------------------------------------------------------------------------
+    CVEfixes                              8,362      8,362  100.0%      176 1999-06 – 2022-08
+      Subtotal                            8,362      8,362

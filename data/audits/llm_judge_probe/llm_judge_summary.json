@@ -1,0 +1,31 @@
+{
+  "audit_mode": "llm_assisted_not_human",
+  "human_labels_present": false,
+  "tasks": {
+    "task1": {
+      "rows": 2,
+      "completed_rows": 2,
+      "consensus_rows": 1,
+      "disagreement_rows": 1,
+      "benchmark_agreement_on_consensus": 1.0,
+      "needs_human_review_rows": 1
+    },
+    "task2": {
+      "rows": 2,
+      "completed_rows": 2,
+      "consensus_rows": 2,
+      "disagreement_rows": 0,
+      "consensus_precision_estimate": 1.0,
+      "needs_human_review_rows": 0
+    }
+  },
+  "disclosure": "These labels are automated LLM judgments and must not be reported as qualified human-professional labels.",
+  "model": "gpt-4o-mini",
+  "generated_judgments_this_run": 8,
+  "failed_judgments_this_run": 0,
+  "raw_judgments": "data/audits/llm_judge_probe/llm_judge_raw.jsonl",
+  "outputs": {
+    "task1": "data/audits/llm_judge_probe/task1_llm_judge_audit.csv",
+    "task2": "data/audits/llm_judge_probe/task2_llm_judge_audit.csv"
+  }
+}

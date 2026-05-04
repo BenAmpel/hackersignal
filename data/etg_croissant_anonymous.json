@@ -1,0 +1,440 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "cr": "http://mlcommons.org/croissant/",
+    "sc": "https://schema.org/",
+    "dct": "http://purl.org/dc/terms/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "prov": "http://www.w3.org/ns/prov#"
+  },
+  "@type": "sc:Dataset",
+  "dct:conformsTo": "http://mlcommons.org/croissant/RAI/1.0",
+  "name": "HackerSignal",
+  "description": "HackerSignal is a large-scale, multi-source dataset linking hacker community discourse, exploit databases, vulnerability advisories, and fix commits through a shared CVE identifier space. It spans 64 public forum/source identifiers across eight source layers, covers 1991\u20132026, and supports three benchmark tasks: (1) CVE linkage retrieval (cross-source temporal out-of-distribution entity grounding over 340K NVD descriptions), (2) exploit type classification (8-class vulnerability type prediction with temporal OOD evaluation), and (3) temporal CVE-disjoint generalization (prospective retrieval where the gold CVE sets in train and test are disjoint).",
+  "url": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal",
+  "version": "1.0.0",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "usageInfo": "Code and metadata are CC BY 4.0 unless otherwise noted. Source text follows source-specific release modes documented in docs/release_governance.md; terms-ambiguous sources may be metadata_or_pointer_only.",
+  "isAccessibleForFree": true,
+  "datePublished": "2026",
+  "inLanguage": [
+    "en",
+    "zh",
+    "ru"
+  ],
+  "citation": "Anonymous (2026). HackerSignal \u2014 A Multi-Source Dataset for Hacker Community Analysis and CVE Linkage. Submitted to NeurIPS Evaluations & Datasets Track.",
+  "creator": [
+    {
+      "@type": "sc:Person",
+      "name": "Anonymous"
+    }
+  ],
+  "keywords": [
+    "cybersecurity",
+    "exploit",
+    "vulnerability",
+    "CVE",
+    "hacker forum",
+    "threat intelligence",
+    "NLP",
+    "information retrieval",
+    "text classification",
+    "benchmark"
+  ],
+  "prov:wasDerivedFrom": [
+    {
+      "@type": "cr:FileObject",
+      "name": "NVD (National Vulnerability Database)",
+      "contentUrl": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+      "description": "US government public-domain CVE records via REST API."
+    },
+    {
+      "@type": "cr:FileObject",
+      "name": "CISA KEV (Known Exploited Vulnerabilities)",
+      "contentUrl": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "description": "US government public-domain catalog of actively exploited vulnerabilities."
+    },
+    {
+      "@type": "cr:FileObject",
+      "name": "GitHub Advisory Database",
+      "contentUrl": "https://github.com/advisories",
+      "description": "Security advisories via GraphQL API, licensed CC BY 4.0."
+    },
+    {
+      "@type": "cr:FileObject",
+      "name": "ExploitDB",
+      "contentUrl": "https://www.exploit-db.com/",
+      "description": "Public exploit archive, licensed CC BY-SA 4.0."
+    },
+    {
+      "@type": "cr:FileObject",
+      "name": "CVEfixes",
+      "contentUrl": "https://zenodo.org/records/7029359",
+      "description": "Fix commits and CVE metadata from Zenodo, licensed CC BY 4.0."
+    },
+    {
+      "@type": "cr:FileObject",
+      "name": "HackerOne Public Reports",
+      "contentUrl": "https://huggingface.co/datasets",
+      "description": "Public bug bounty reports from HuggingFace Hub."
+    },
+    {
+      "@type": "cr:FileObject",
+      "name": "DeepDarkCTI",
+      "contentUrl": "https://github.com/fastfire/deepdarkCTI",
+      "description": "Cyber threat intelligence from GitHub public dataset."
+    }
+  ],
+  "prov:wasGeneratedBy": {
+    "@type": "prov:Activity",
+    "name": "HackerSignal ETL Pipeline",
+    "description": "Collection scripts executed by the dataset authors between January and April 2026 using public APIs, public dataset ingestion, web scraping of publicly accessible pages, and pre-processed dataset imports. The pipeline performs HTML stripping, encoding normalization, text truncation (8000 chars), exact deduplication by SHA-256 fingerprint, author pseudonymization, and source-layer normalization.",
+    "prov:startedAtTime": "2026-01-01",
+    "prov:endedAtTime": "2026-04-30"
+  },
+  "rai:dataCollection": "Data was collected through four mechanisms: (1) Public APIs \u2014 NVD (NIST REST), GitHub Advisory Database (GraphQL), CISA KEV (JSON feed), HackerOne (HuggingFace Hub); (2) Public dataset ingestion \u2014 Gayanku (Kaggle), HackForums (Kaggle), DTL Exploits (GitHub/AZSecure), CVEfixes (Zenodo), DeepDarkCTI (GitHub), Kaeli hacker forums (Kaggle), CrackingArena (Kaggle), ZeroDay (GitHub); (3) Web scraping and public forum APIs \u2014 ExploitDB (CSV), Vulnerability-Lab, ZeroScience Lab, 0x00sec, HackerSploit, ParrotSec, Hack The Box, Go4Expert, Full Disclosure mailing list archive, Seebug; (4) Pre-processed datasets from HuggingFace Hub. All sources were publicly accessible at collection time; no authentication was bypassed.",
+  "rai:dataCollectionType": "Web scraping, API, Surveys/Interviews",
+  "rai:dataCollectionTimeframe": {
+    "@type": "sc:DateTime",
+    "startDate": "2026-01-01",
+    "endDate": "2026-04-30"
+  },
+  "rai:dataCollectionRawData": "Raw scraped HTML is not distributed. The processed JSONL files are the primary artifact. Collection and preprocessing scripts are available in the src/etg/collectors/ directory of the code repository.",
+  "rai:dataCollectionMissingData": "Coverage is limited by public API availability, rate limits, and pagination depth for forum sources. Posts behind authentication walls are excluded. Some timestamps reflect scraping date rather than original publication date. Author information is pseudonymized and not recoverable. Some legacy forum imports do not preserve thread structure.",
+  "rai:dataPreprocessingProtocol": "HTML tags stripped from forum post content; HTML entities unescaped; text truncated at 8000 characters; encoding errors replaced with Unicode replacement character (U+FFFD); source provenance normalized into source_dataset, source_layer, forum_id, and optional thread/category fields; exact duplicates removed across sources by normalized-text SHA-256 fingerprint; near-duplicates removed via MinHash-LSH (128 permutations, 3-char k-shingles, Jaccard > 0.7); author strings pseudonymized via SHA-256 hashing of source-namespaced author identifiers.",
+  "rai:dataLimitations": "Forum sources skew toward English-language Western cybersecurity communities; threats emerging from non-English communities may be underrepresented. High-volume historical forum imports skew toward 2015\u20132017 or earlier. Task 1 (CVE-R) and Task 3 (TG) labels are metadata-derived CVE linkages (source URL or CVE regex extraction), not manually adjudicated ground truth; CVE-index absence is not a manual negative annotation. Task 2 (ETC) labels are derived from structured metadata fields (ExploitDB exploit descriptions, 0day.today exploit type fields, HackerOne vulnerability type prefixes) mapped to an 8-class taxonomy via deterministic rules; they are not human-validated annotations. Approximately 8.18% near-duplicate content remains after exact deduplication. The corpus contains 1,569,263 rows under eight tokens, useful for interaction analysis but not for text classification tasks.",
+  "rai:dataBiases": "English-language bias: the corpus is predominantly English with multilingual content (Russian, Turkish, Persian, Arabic, Chinese) limited to deepdarkcti and several community sources. Temporal bias: bulk of structured NVD records begin in 2002; high-volume forum imports cluster around 2015\u20132017. Source selection bias: only publicly indexed or API-accessible sources are included, potentially underrepresenting closed or invitation-only communities. CISA KEV covers only actively exploited vulnerabilities, over-representing critical severity relative to true distribution. Western-centric community selection may underrepresent threat actors operating primarily in non-English forums.",
+  "rai:personalSensitiveInformation": "No private communications, medical records, financial records, or government classified information is intentionally included. All text was collected from publicly accessible sources. Author strings are pseudonymized via SHA-256 hashing of source-namespaced author identifiers; original author strings are not recoverable from the released dataset. Public forum usernames are not distributed. The release supports takedown and correction requests through the repository issue tracker.",
+  "rai:dataUseCases": "Intended uses: defensive cybersecurity research, temporal retrieval, provenance-aware benchmark design, vulnerability lifecycle analysis, exploit prediction and early warning systems, cross-lingual threat intelligence, graph neural network research on exploit\u2013CVE\u2013fix commit knowledge graphs, and pre-training domain-adapted language models for cybersecurity. Prohibited uses: training systems for automated exploit code generation or malware; de-anonymizing forum participants or linking pseudonymous identities outside approved research protocols; operational blocking, law-enforcement, or employment decisions based solely on model outputs; republishing source text from metadata_or_pointer_only sources.",
+  "rai:dataSocialImpact": "HackerSignal enables earlier detection of vulnerability exploitation activity by connecting hacker community discourse to the CVE lifecycle. Positive impacts include faster defensive response times and better understanding of exploit emergence patterns. Potential negative impacts include misuse for automated attack generation or targeting of individuals; these are mitigated through responsible-use restrictions, author pseudonymization, source-level release governance, and explicit prohibition of offensive applications in the dataset license.",
+  "rai:dataReleaseMaintenancePlan": "Maintained by the dataset maintainer (contact via repository issue tracker). Annual updates planned to incorporate new CVE records, CISA KEV entries, and newly published advisories. Versioning follows semantic versioning (MAJOR.MINOR.PATCH). All tagged versions remain available on HuggingFace Hub. Takedown and correction requests acknowledged within 10 business days; disputed text removed in next patch release. Sources that change terms post-release are downgraded to metadata_or_pointer_only until permissions are clarified.",
+  "rai:hasSyntheticData": "none",
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "hf-repo",
+      "name": "HuggingFace Repository",
+      "contentUrl": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal",
+      "encodingFormat": "application/jsonlines",
+      "sha256": "See versioned manifest checksums in the HuggingFace repository."
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "public-jsonl",
+      "name": "unified_hacker_communities_neurips_public.jsonl",
+      "description": "Governed public release file enforcing source-level release modes from data/release/source_release_manifest.json.",
+      "contentUrl": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal/resolve/main/data/unified_hacker_communities_neurips_public.jsonl",
+      "encodingFormat": "application/jsonlines"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "source-manifest",
+      "name": "source_release_manifest.json",
+      "description": "Machine-readable source provenance and release-mode manifest with checksums and row counts.",
+      "contentUrl": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal/resolve/main/data/release/source_release_manifest.json",
+      "encodingFormat": "application/json"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "posts",
+      "name": "posts",
+      "description": "Forum posts, exploit advisories, vulnerability descriptions, and fix-commit messages from 64 public forum/source identifiers. Each record is one document. 7,447,646 exact-deduplicated rows spanning 1988\u20132026.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "posts/unified_id",
+          "name": "unified_id",
+          "description": "SHA-256-derived release identifier.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/source_dataset",
+          "name": "source_dataset",
+          "description": "Input source file or dataset name.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/source_layer",
+          "name": "source_layer",
+          "description": "Normalized layer: hacker_community, exploit_archive, vulnerability_reference, fix_commit_reference, exploit_qa_reference, or exploitation_reference.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/text",
+          "name": "text",
+          "description": "Full text of the post or advisory (UTF-8, max 8000 chars). Withheld for metadata_or_pointer_only sources.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/text_raw",
+          "name": "text_raw",
+          "description": "Source text before release cleaning, where available. Withheld for metadata_or_pointer_only sources.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/timestamp",
+          "name": "timestamp",
+          "description": "Publication date-time (ISO 8601, UTC).",
+          "dataType": "sc:DateTime"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/forum_id",
+          "name": "forum_id",
+          "description": "Source identifier (e.g. 'exploitdb', 'nvd', 'hackforums').",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/author_hash",
+          "name": "author_hash",
+          "description": "SHA-256 hash of the source-namespaced author string (pseudonymised).",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/release_mode",
+          "name": "release_mode",
+          "description": "Release-governance mode: redistributable_text, research_text_with_terms, metadata_or_pointer_only, or excluded.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/thread_url",
+          "name": "thread_url",
+          "description": "Source thread URL when exposed by the source.",
+          "dataType": "sc:URL"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/thread_title",
+          "name": "thread_title",
+          "description": "Thread or advisory title when available.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "posts/section",
+          "name": "section",
+          "description": "Forum section or category when available.",
+          "dataType": "sc:Text"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "cve_index",
+      "name": "cve_index",
+      "description": "Cross-source CVE linkage index mapping post IDs to CVE identifiers. One row per (post, CVE) pair. 360,004 rows contain CVE identifiers.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "cve_index/exploit_id",
+          "name": "exploit_id",
+          "description": "Foreign key to posts/unified_id.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cve_index/cve_id",
+          "name": "cve_id",
+          "description": "CVE identifier in the form CVE-YYYY-NNNNN.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cve_index/exploit_text",
+          "name": "exploit_text",
+          "description": "First 500 characters of the source post text.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cve_index/title",
+          "name": "title",
+          "description": "Advisory or post title.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cve_index/published",
+          "name": "published",
+          "description": "Publication date-time (ISO 8601, UTC).",
+          "dataType": "sc:DateTime"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "cve_index/source",
+          "name": "source",
+          "description": "Source identifier matching posts/forum_id.",
+          "dataType": "sc:Text"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "task1_cve_linkage_retrieval",
+      "name": "task1_cve_linkage_retrieval",
+      "description": "Task 1 \u2014 CVE Linkage Retrieval (CVE-R). Given exploit/advisory evidence text, retrieve the metadata-linked NVD CVE entry from a corpus of 340,536 CVE descriptions. Temporal split: train (<2022, 56,692 queries), val (2022\u20132023, 2,584 queries), test (2024+, 1,990 queries). Sources include CISA KEV, CVEfixes, and HackerOne (low/medium CVE-linkage audit risk only). Evaluated as a ranking problem (Recall@K for K in {1,5,10}, MRR).",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "task1/id",
+          "name": "id",
+          "description": "SHA-256-derived release identifier, foreign key to posts/unified_id.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task1/text",
+          "name": "text",
+          "description": "Exploit or advisory text (>=8 tokens after cleaning).",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task1/cve_id",
+          "name": "cve_id",
+          "description": "Gold CVE identifier (metadata-derived linkage to NVD corpus).",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task1/source",
+          "name": "source",
+          "description": "Source identifier matching posts/forum_id.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task1/timestamp",
+          "name": "timestamp",
+          "description": "Publication date-time (ISO 8601, UTC).",
+          "dataType": "sc:DateTime"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task1/split",
+          "name": "split",
+          "description": "train / val / test (temporal split by query timestamp).",
+          "dataType": "sc:Text"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "task2_exploit_type_classification",
+      "name": "task2_exploit_type_classification",
+      "description": "Task 2 \u2014 Exploit Type Classification (ETC). Given an exploit text, predict its vulnerability type from 8 classes: injection, xss, memory_corruption, dos, file_inclusion, auth_access, rce, info_disclosure. Labels derived from ExploitDB exploit descriptions and tags, 0day.today exploit type fields, and HackerOne vulnerability type prefixes. Temporal OOD split: train (<2020, 64,413 samples), val (2020\u20132022, 4,735 samples), test (>=2023, 1,735 samples). Total labeled corpus: 70,883 samples.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "task2/id",
+          "name": "id",
+          "description": "SHA-256-derived release identifier.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task2/text",
+          "name": "text",
+          "description": "Exploit or advisory text.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task2/label",
+          "name": "label",
+          "description": "Vulnerability type integer: 0=injection, 1=xss, 2=memory_corruption, 3=dos, 4=file_inclusion, 5=auth_access, 6=rce, 7=info_disclosure.",
+          "dataType": "sc:Integer"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task2/label_name",
+          "name": "label_name",
+          "description": "Human-readable vulnerability type class name.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task2/source",
+          "name": "source",
+          "description": "Source identifier matching posts/forum_id.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task2/timestamp",
+          "name": "timestamp",
+          "description": "Publication date-time (ISO 8601, UTC).",
+          "dataType": "sc:DateTime"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task2/split",
+          "name": "split",
+          "description": "train / val / test (temporal OOD split: train <2020, val 2020-2022, test >=2023).",
+          "dataType": "sc:Text"
+        }
+      ]
+    },
+    {
+      "@type": "cr:RecordSet",
+      "@id": "task3_temporal_generalization",
+      "name": "task3_temporal_generalization",
+      "description": "Task 3 \u2014 Temporal Generalization (TG). Identical retrieval formulation to Task 1 (CVE-R) but with a strict CVE-disjointness constraint: the gold CVE sets in train and test are disjoint (C_train \u2229 C_test = \u2205). Splits are defined by CVE publication year: train uses CVEs published before 2022 (56,833 queries), val uses 2022\u20132023 (2,535 queries), test uses 2024+ (1,898 queries). Same NVD retrieval corpus of 340,536 CVE descriptions. Evaluated with Recall@K (K in {1,5,10}) and MRR.",
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "task3/id",
+          "name": "id",
+          "description": "SHA-256-derived release identifier, foreign key to posts/unified_id.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task3/text",
+          "name": "text",
+          "description": "Exploit or advisory text (>=8 tokens after cleaning).",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task3/cve_id",
+          "name": "cve_id",
+          "description": "Gold CVE identifier (metadata-derived linkage; CVE publication year determines split).",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task3/source",
+          "name": "source",
+          "description": "Source identifier matching posts/forum_id.",
+          "dataType": "sc:Text"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task3/timestamp",
+          "name": "timestamp",
+          "description": "Publication date-time (ISO 8601, UTC).",
+          "dataType": "sc:DateTime"
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "task3/split",
+          "name": "split",
+          "description": "train / val / test (CVE-disjoint split by CVE publication year).",
+          "dataType": "sc:Text"
+        }
+      ]
+    }
+  ]
+}
