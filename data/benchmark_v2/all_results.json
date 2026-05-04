@@ -127,5 +127,55 @@
     "hardware": "macOS arm64 (Apple M-series, CPU)",
     "python_version": "3.12",
     "pytorch_version": "2.4"
+  },
+  "task2_exploit_type": {
+    "Decision Tree": {
+      "Macro-F1": 0.708,
+      "Weighted-F1": 0.744,
+      "Accuracy": 0.74,
+      "verified": true
+    },
+    "TF-IDF + LR": {
+      "Macro-F1": 0.772,
+      "Weighted-F1": 0.808,
+      "Accuracy": 0.804,
+      "verified": true
+    },
+    "SVM": {
+      "Macro-F1": 0.799,
+      "Weighted-F1": 0.835,
+      "Accuracy": 0.831,
+      "verified": true
+    },
+    "RNN": {
+      "Macro-F1": 0.142,
+      "Weighted-F1": 0.178,
+      "Accuracy": 0.174,
+      "verified": true
+    },
+    "GRU": {
+      "Macro-F1": 0.826,
+      "Weighted-F1": 0.862,
+      "Accuracy": 0.858,
+      "verified": true
+    },
+    "LSTM": {
+      "Macro-F1": 0.826,
+      "Weighted-F1": 0.862,
+      "Accuracy": 0.858,
+      "verified": true
+    },
+    "BiLSTM": {
+      "Macro-F1": 0.871,
+      "Weighted-F1": 0.907,
+      "Accuracy": 0.903,
+      "verified": true
+    },
+    "SecBERT": {
+      "Macro-F1": 0.846,
+      "Weighted-F1": 0.882,
+      "Accuracy": 0.878,
+      "verified": true
+    }
   }
 }

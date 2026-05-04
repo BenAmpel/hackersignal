@@ -268,10 +268,18 @@ def main(legend_fontsize: int = 9) -> None:
     t1_models = _extract(t1, metrics_t13)
     t3_models = _extract(t3, metrics_t13)
 
-    # --- Compute Task 2 results ---------------------------------------------
-    print("Computing Task 2 (ETC) metrics …")
-    t2_metrics = _compute_task2_metrics()
+    # --- Task 2 results (from all_results.json if available, else compute) ---
     metrics_t2 = ["Macro-F1", "Weighted-F1", "Accuracy"]
+    if "task2_exploit_type" in all_res:
+        print("Loading Task 2 (ETC) metrics from all_results.json …")
+        t2_metrics = {
+            k: {m: v[m] for m in metrics_t2}
+            for k, v in all_res["task2_exploit_type"].items()
+            if k != "meta" and isinstance(v, dict) and "Macro-F1" in v
+        }
+    else:
+        print("Computing Task 2 (ETC) metrics (no cached results found) …")
+        t2_metrics = _compute_task2_metrics()
 
     t2_models = {
         m: [vals[k] for k in metrics_t2]
