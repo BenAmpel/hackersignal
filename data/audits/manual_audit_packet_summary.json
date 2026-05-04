@@ -1,0 +1,18 @@
+{
+  "seed": 42,
+  "mode": "annotation_packet_only",
+  "task1_packet": "data/audits/task1_manual_label_audit_packet.csv",
+  "task1_rows": 240,
+  "task1_strata": [
+    "split",
+    "source",
+    "label"
+  ],
+  "task2_packet": "data/audits/task2_cve_linkage_manual_audit_packet.csv",
+  "task2_rows": 240,
+  "task2_strata": [
+    "split",
+    "source"
+  ],
+  "human_labels_present": false
+}

@@ -1,0 +1,140 @@
+{
+  "audit_mode": "llm_assisted_not_human",
+  "method_notes": {
+    "bootstrap_replicates": 10000,
+    "ci_level": 0.95,
+    "warning": "These metrics quantify agreement between two automated LLM judge prompts. They must not be described as qualified human-professional interrater reliability."
+  },
+  "tasks": [
+    {
+      "task": "task1_exploit_relevance",
+      "audit_mode": "llm_assisted_not_human",
+      "n_items": 240,
+      "categories": [
+        "0",
+        "1"
+      ],
+      "rater_columns": [
+        "cti_triage_llm_label",
+        "vuln_research_llm_label"
+      ],
+      "confusion_cti_rows_vuln_cols": {
+        "0": {
+          "0": 82,
+          "1": 0
+        },
+        "1": {
+          "0": 9,
+          "1": 149
+        }
+      },
+      "percent_agreement": 0.9625,
+      "percent_agreement_ci95_wilson": [
+        0.9303,
+        0.9801
+      ],
+      "cohen_kappa": 0.9188,
+      "cohen_kappa_ci95_bootstrap": [
+        0.8622,
+        0.9648
+      ],
+      "krippendorff_alpha_nominal": 0.9188,
+      "krippendorff_alpha_ci95_bootstrap": [
+        0.8631,
+        0.9648
+      ],
+      "gwet_ac1": 0.9304,
+      "gwet_ac1_ci95_bootstrap": [
+        0.8821,
+        0.9706
+      ],
+      "pabak": 0.925,
+      "pabak_ci95_bootstrap": [
+        0.875,
+        0.9667
+      ],
+      "positive_specific_agreement": 0.9707,
+      "positive_specific_agreement_ci95_bootstrap": [
+        0.9498,
+        0.9875
+      ],
+      "negative_specific_agreement": 0.948,
+      "negative_specific_agreement_ci95_bootstrap": [
+        0.9114,
+        0.9783
+      ],
+      "interpretation_note": "Reliability is between two LLM judge prompts, not human interrater reliability.",
+      "consensus_rows": 231,
+      "consensus_vs_benchmark_agreement": 0.7532,
+      "consensus_vs_benchmark_ci95_wilson": [
+        0.6938,
+        0.8044
+      ]
+    },
+    {
+      "task": "task2_cve_linkage",
+      "audit_mode": "llm_assisted_not_human",
+      "n_items": 240,
+      "categories": [
+        "False",
+        "True"
+      ],
+      "rater_columns": [
+        "cti_triage_cve_link_correct",
+        "vuln_research_cve_link_correct"
+      ],
+      "confusion_cti_rows_vuln_cols": {
+        "False": {
+          "False": 118,
+          "True": 4
+        },
+        "True": {
+          "False": 3,
+          "True": 115
+        }
+      },
+      "percent_agreement": 0.9708,
+      "percent_agreement_ci95_wilson": [
+        0.941,
+        0.9858
+      ],
+      "cohen_kappa": 0.9417,
+      "cohen_kappa_ci95_bootstrap": [
+        0.899,
+        0.9831
+      ],
+      "krippendorff_alpha_nominal": 0.9418,
+      "krippendorff_alpha_ci95_bootstrap": [
+        0.8919,
+        0.9832
+      ],
+      "gwet_ac1": 0.9417,
+      "gwet_ac1_ci95_bootstrap": [
+        0.9,
+        0.9833
+      ],
+      "pabak": 0.9417,
+      "pabak_ci95_bootstrap": [
+        0.8917,
+        0.9833
+      ],
+      "positive_specific_agreement": 0.9705,
+      "positive_specific_agreement_ci95_bootstrap": [
+        0.9464,
+        0.991
+      ],
+      "negative_specific_agreement": 0.9712,
+      "negative_specific_agreement_ci95_bootstrap": [
+        0.9478,
+        0.9913
+      ],
+      "interpretation_note": "Reliability is between two LLM judge prompts, not human interrater reliability.",
+      "consensus_rows": 233,
+      "consensus_precision_estimate": 0.4936,
+      "consensus_precision_ci95_wilson": [
+        0.43,
+        0.5573
+      ]
+    }
+  ]
+}

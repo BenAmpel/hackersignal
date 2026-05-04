@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.venv/
+venv/
+dist/
+build/
+*.so
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Large data files — raw corpora, not distributed
+data/*_posts.jsonl
+data/*_raw.jsonl
+data/*_cve_index.jsonl
+data/unified_hacker_communities.jsonl
+data/unified_hacker_communities_neurips.jsonl
+data/unified_hacker_communities_neurips_public.jsonl
+data/raw_posts.jsonl
+data/real_posts.jsonl
+data/hf_cve_posts.jsonl
+data/ev_pairs.jsonl
+data/nvd_cve_dict.jsonl
+data/nvd_posts.jsonl
+
+# SQLite databases
+data/*.sqlite3
+
+# Large sub-repos / raw crawl dirs
+data/exploitdb_repo/
+data/external/
+
+# Build/cache artifacts
+data/preprocessed/
+data/logs/
+data/expansion_smoke/
+cache/
+*.log
+
+# Discovery / smoke-test outputs (development only)
+data/discovery_*.json
+data/discovery_*.md
+data/test_*.json
+data/test_*.md
+data/bench_*.json
+data/bench_*.md
+data/bits_*.json
+data/bits_*.md
+data/deepdarkcti_benchmark*.json
+data/deepdarkcti_benchmark*.md
+data/deepdarkcti_public_broad*.jsonl
+data/deepdarkcti_public_broad*.json
+data/deepdarkcti_public_broad*.md
+data/forum_profiles.*.json
+data/full_crawl_*.jsonl
+data/broad_crawl_*.jsonl
+
+# Large benchmark artifacts — embeddings, corpora, train/val splits
+# Full data (train/val/corpus) available on HuggingFace: DatasetSubmission/HackerSignal
+# Only test splits are included here for reproducibility verification.
+data/benchmark_v2/*.npy
+data/benchmark_v2/task1_cve_linkage/corpus.jsonl
+data/benchmark_v2/task1_cve_linkage/train.jsonl
+data/benchmark_v2/task1_cve_linkage/val.jsonl
+data/benchmark_v2/task2_exploit_type/train.jsonl
+data/benchmark_v2/task2_exploit_type/val.jsonl
+data/benchmark_v2/task3_temporal_generalization/corpus.jsonl
+data/benchmark_v2/task3_temporal_generalization/train.jsonl
+data/benchmark_v2/task3_temporal_generalization/val.jsonl
+data/benchmark_v2/task2_signal_detection/
+
+# LaTeX build artifacts
+paper/.texpadtmp/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+paper/*.out
+paper/*.pdf
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# Session logs (internal)
+CC-Session-Logs/

@@ -1,0 +1,41 @@
+{
+  "tasks": {
+    "task1": {
+      "train_val_overlap": 0,
+      "train_test_overlap": 0,
+      "val_test_overlap": 0
+    },
+    "task2": {
+      "train_val_overlap": 2,
+      "train_test_overlap": 0,
+      "val_test_overlap": 1
+    },
+    "task3": {
+      "train_val_overlap": 1,
+      "train_test_overlap": 0,
+      "val_test_overlap": 0
+    },
+    "task4": {
+      "train_val_overlap": 0,
+      "train_test_overlap": 0,
+      "val_test_overlap": 0
+    },
+    "task5": {
+      "train_val_overlap": 0,
+      "train_test_overlap": 0,
+      "val_test_overlap": 0
+    }
+  },
+  "cross_task_text_overlap": {
+    "task1_task2": 78,
+    "task1_task3": 0,
+    "task1_task4": 893,
+    "task1_task5": 598,
+    "task2_task3": 983,
+    "task2_task4": 126,
+    "task2_task5": 41,
+    "task3_task4": 0,
+    "task3_task5": 0,
+    "task4_task5": 1689
+  }
+}

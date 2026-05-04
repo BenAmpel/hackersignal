@@ -1,0 +1,40 @@
+{
+  "task": "temporal_generalization_v2",
+  "description": "CVE-disjoint temporal generalization with expanded queries.",
+  "corpus_size": 340536,
+  "cve_disjoint": true,
+  "splits": {
+    "train": 56833,
+    "val": 2535,
+    "test": 1898
+  },
+  "cve_counts": {
+    "train": 29254,
+    "val": 2361,
+    "test": 1786
+  },
+  "sources": [
+    "zeroscience",
+    "evolution",
+    "0x00sec",
+    "parrotsec",
+    "cvefixes",
+    "hacker_exploits",
+    "vulnlab",
+    "dtl_exploits",
+    "public_exploits",
+    "hackerone",
+    "seebug",
+    "exploitdb",
+    "zeroday",
+    "gayanku",
+    "kaeli_hacker",
+    "cve_hacker_forum",
+    "hackersploit",
+    "hackforums",
+    "cisa_kev",
+    "github_advisory",
+    "hackthebox",
+    "exploitdb_hf"
+  ]
+}

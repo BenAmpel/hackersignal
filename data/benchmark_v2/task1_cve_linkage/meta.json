@@ -1,0 +1,34 @@
+{
+  "task": "cve_linkage_retrieval_v2",
+  "description": "Cross-source temporal OOD CVE linkage retrieval with expanded queries.",
+  "corpus_size": 340536,
+  "splits": {
+    "train": 56692,
+    "val": 2584,
+    "test": 1990
+  },
+  "sources": [
+    "zeroscience",
+    "evolution",
+    "0x00sec",
+    "parrotsec",
+    "cvefixes",
+    "hacker_exploits",
+    "vulnlab",
+    "dtl_exploits",
+    "public_exploits",
+    "hackerone",
+    "seebug",
+    "exploitdb",
+    "zeroday",
+    "gayanku",
+    "kaeli_hacker",
+    "cve_hacker_forum",
+    "hackersploit",
+    "hackforums",
+    "cisa_kev",
+    "github_advisory",
+    "hackthebox",
+    "exploitdb_hf"
+  ]
+}
