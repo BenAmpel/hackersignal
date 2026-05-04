@@ -242,7 +242,7 @@ def _plot_radar(
         color="#333333",
     )
     # nudge labels outward slightly
-    ax.tick_params(axis="x", pad=6)
+    ax.tick_params(axis="x", pad=4)
 
     # ── Plot each model ────────────────────────────────────────────────────
     for model_name, values in models.items():
@@ -372,7 +372,7 @@ def main(legend_fontsize: int = 8) -> None:
         _plot_radar(ax, cats, models, r_min=lo, r_max=hi,
                     n_rings=5, panel_label=plabel)
         ax.set_title(title, fontsize=9, fontweight="bold",
-                     pad=22, color="#1a1a1a")
+                     pad=14, color="#1a1a1a")
 
     # ── Shared legend ────────────────────────────────────────────────────────
     # Ordered by model family for readability
@@ -408,7 +408,7 @@ def main(legend_fontsize: int = 8) -> None:
         framealpha=0.95,
         edgecolor="#cccccc",
         facecolor="white",
-        bbox_to_anchor=(0.5, -0.04),
+        bbox_to_anchor=(0.5, 0.01),
         handlelength=1.0,
         handleheight=0.85,
         columnspacing=0.9,
@@ -416,7 +416,11 @@ def main(legend_fontsize: int = 8) -> None:
         borderpad=0.6,
     )
 
-    plt.subplots_adjust(bottom=0.24, wspace=0.5, top=0.92)
+    plt.subplots_adjust(
+        left=0.01, right=0.99,
+        bottom=0.22, top=0.96,
+        wspace=0.22,
+    )
     fig.savefig(OUT_PDF, dpi=300, bbox_inches="tight", facecolor="white")
     fig.savefig(OUT_PNG, dpi=150, bbox_inches="tight", facecolor="white")
     print(f"\nSaved → {OUT_PDF}")
