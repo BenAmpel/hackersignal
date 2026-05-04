@@ -38,6 +38,7 @@ data/external/
 data/preprocessed/
 data/logs/
 data/expansion_smoke/
+data/results/
 cache/
 *.log
 
