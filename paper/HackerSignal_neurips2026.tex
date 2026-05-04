@@ -53,7 +53,7 @@
 
 \begin{abstract}
 
-We introduce HackerSignal, a benchmark for temporal out-of-distribution cyber threat intelligence (CTI) and cross-source CVE linkage. HackerSignal aggregates \textbf{7.45 million exact-deduplicated documents} from \textbf{64 public forum/source identifiers} spanning eight source layers and a 36-year window (1990--2026). In contrast to other publicly accessible cybersecurity datasets, HackerSignal is among the first public benchmark datasets that maps the full potential exploit to vulnerability trajectory from hacker community discourse, exploit databases with working and proof of concept exploits, vulnerability advisories, and software fix commits. HackerSignal creates these linkages through a shared CVE identifier space while preserving source-specific release modes to support a range of unique Artificial Intelligence (AI)-enabled cybersecurity analytics tasks. In this paper, we summarize HackerSignal and illustrate three selected benchmark tasks it uniquely supports: (1)~\emph{CVE linkage retrieval} (cross-source temporal out-of-distribution entity grounding); (2)~\emph{exploit type classification} (8-class vulnerability type prediction with temporal OOD evaluation); and (3)~\emph{temporal generalization} (prospective CVE-disjoint evaluation where $C_{\text{train}} \cap C_{\text{test}} = \emptyset$). All tasks use temporal splits to evaluate prospective generalization. We release source-shortcut and leakage diagnostics; manual-audit packets; a datasheet; and a release-governance addendum to support the dissemination of the dataset. HackerSignal's code, data, and Croissant metadata are available at \href{https://huggingface.co/datasets/DatasetSubmission/HackerSignal}{\texttt{hf.co/datasets/DatasetSubmission/HackerSignal}} (data) and \href{https://anonymous.4open.science/r/hackersignal-8A2F/}{\texttt{anonymous.4open.science/r/hackersignal-8A2F}} (code).
+We introduce HackerSignal, a benchmark for temporal out-of-distribution cyber threat intelligence (CTI) and cross-source CVE linkage. HackerSignal aggregates \textbf{7.45 million exact-deduplicated documents} from \textbf{64 public forum/source identifiers} spanning eight source layers and a 36-year window (1990--2026). In contrast to other publicly accessible cybersecurity datasets, HackerSignal is among the first public benchmark datasets that maps the full potential exploit to vulnerability trajectory from hacker community discourse, exploit databases with working and proof of concept exploits, vulnerability advisories, and software fix commits. HackerSignal creates these linkages through a shared CVE identifier space while preserving source-specific release modes to support a range of unique Artificial Intelligence (AI)-enabled cybersecurity analytics tasks. In this paper, we summarize HackerSignal and illustrate three selected benchmark tasks it uniquely supports: (1)~\emph{CVE linkage retrieval} (cross-source temporal out-of-distribution entity grounding); (2)~\emph{exploit type classification} (8-class vulnerability type prediction with temporal OOD evaluation); and (3)~\emph{temporal generalization} (prospective CVE-disjoint evaluation where $C_{\text{train}} \cap C_{\text{test}} = \emptyset$). All tasks use temporal splits to evaluate prospective generalization. We release source-shortcut and leakage diagnostics, manual-audit packets, a datasheet, and a release-governance addendum to support the dissemination of the dataset. HackerSignal's code, data, and Croissant metadata are available at \href{https://huggingface.co/datasets/DatasetSubmission/HackerSignal}{\texttt{hf.co/datasets/DatasetSubmission/HackerSignal}} (data) and \href{https://anonymous.4open.science/r/hackersignal-8A2F/}{\texttt{anonymous.4open.science/r/hackersignal-8A2F}} (code).
 \end{abstract}
 
 \section{Introduction}
@@ -77,13 +77,13 @@ Understanding how cyber threats emerge, propagate, and relate to vulnerabilities
 \paragraph{Exploit labeling and vulnerability linkage.}
 The closest predecessor to HackerSignal is in the field of exploit labeling research. Prior methods labeled hacker-forum exploit source code via deep transfer learning from professional exploit repositories~\citep{ampel2020dtl} and later extended this with pre-initialization, multi-layer transfer, and self-attention~\citep{ampel2024misq}. For cross-source linkage, an attention-based deep-structured semantic model linked dark-web exploits to known vulnerabilities, yielding 52,590 linkages~\citep{samtani2022eva}. HackerSignal differs by releasing a governed, temporally split public benchmark that exposes source provenance, weak-label caveats, and a quality-controlled CVE-linkage retrieval task. Finally, the hacker forum collection of~\citet{otto2021isi} aggregates 259K posts from three English-language security communities (AntiOnline, Go4Expert, CipherSpace) and studies exploit-sharing behavior via graph embeddings.
 
-\paragraph{Underground community datasets.} Research has also focused on the general crawling of hacker communities, like a credentialized dataset of darkweb cybercrime forum posts widely used for crime and exploit prediction~\citep{crimebb2018} \citet{nunes2016darknet} presented an operational darknet/deepnet mining system over hacker forums and markets for proactive CTI.The Gayanku~\citep{gayanku2020} dataset provides 3.8M posts from seven darknet marketplaces (Silk Road, Agora, Evolution, et al.) on Kaggle.
+\paragraph{Underground community datasets.} Research has also focused on the general crawling of hacker communities, like a credentialized dataset of darkweb cybercrime forum posts widely used for crime and exploit prediction~\citep{crimebb2018} \citet{nunes2016darknet} presented an operational darknet/deepnet mining system over hacker forums and markets for proactive CTI. The Gayanku~\citep{gayanku2020} dataset contains 3.8M posts from seven darknet marketplaces (Silk Road, Agora, Evolution, etc.) on Kaggle.
 
 \paragraph{Exploit and vulnerability databases.} ExploitDB~\citep{exploitdb} is the salient public exploit archive (50K+ entries, many with CVE IDs). The CVEfixes dataset~\citep{cvefixes2021} links CVEs to fix commits in open-source repositories. NVD~\citep{nvd}, CISA KEV~\citep{cisakev}, and GitHub Advisory~\citep{githubadvisory} are official advisory sources. HackerSignal normalizes all five into a common JSONL schema with CVE keys.
 
 \paragraph{Multilingual CTI.} More general hacker-forum text classification work compared SVM and CNN models for extracting CTI from forum posts~\citep{deliu2017cti}, while \citet{ebrahimi2020crosslingual} showed that non-English hacker forums require cross-lingual approaches that avoid brittle machine translation. CVE severity prediction~\citep{severitypred2017}, exploit labeling~\citep{ampel2024misq}, and exploit-vulnerability linkage~\citep{samtani2022eva} all motivate our task design; HackerSignal operationalizes them as public, temporally split benchmarks.
 
-\paragraph{Benchmark design and evaluation methodology.} BEIR~\citep{thakur2021beir} established that retrieval benchmarks require heterogeneous baseline ladders rather than single-model comparisons. KILT~\citep{petroni2021kilt} showed that knowledge-intensive linking tasks should reward both task success and provenance quality. WILDS~\citep{koh2021wilds} formalized natural arising distribution shifts (including temporal shifts) as first-class benchmark objects, while WRENCH~\citep{zhang2021wrench} demonstrated that weak-supervision evaluation is sensitive to hidden protocol choices, requiring explicit reporting of label sources and aggregation rules. \citet{kapoor2023leakage} documented widespread data leakage in ML-for-science benchmarks and proposed structured reporting to make integrity checks legible. Our temporal splits, source-shortcut diagnostics, and audit artifacts are directly informed by these methodological precedents.
+\paragraph{Benchmark design and evaluation method.} BEIR~\citep{thakur2021beir} established that retrieval benchmarks require heterogeneous baseline ladders rather than single-model comparisons. KILT~\citep{petroni2021kilt} showed that knowledge-intensive linking tasks should reward both task success and provenance quality. WILDS~\citep{koh2021wilds} formalized natural arising distribution shifts (including temporal shifts) as first-class benchmark objects. At the same time, WRENCH~\citep{zhang2021wrench} demonstrated that weak-supervision evaluation is sensitive to hidden protocol choices, requiring explicit reporting of label sources and aggregation rules. \citet{kapoor2023leakage} documented widespread data leakage in ML-for-science benchmarks and proposed structured reporting to make integrity checks legible. These methodological precedents directly inform our temporal splits, source-shortcut diagnostics, and audit artifacts.
 
 \section{Dataset}
 \label{sec:dataset}
@@ -118,7 +118,7 @@ Est.\ near-duplicates       &   609,029 &   8.2\% \\
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
-\caption{Dataset statistics after exact deduplication. The hacker community layer is expanded by a forum. The remaining layers are single-source. Avg.\ Len = mean whitespace tokens; CVE\% = rows containing an explicit CVE identifier.}
+\caption{Dataset statistics after exact deduplication. The hacker community layer is expanded by forum. The remaining layers are single-source. Avg.\ Len = mean whitespace tokens; CVE\% = rows containing an explicit CVE identifier.}
 \label{tab:corpus-stats}
 \begin{tabular}{llrrrl}
 \toprule
@@ -184,7 +184,7 @@ We took four steps to prepare the data for our three proposed tasks. First, we p
 
 Several high-volume historical sources (HackForums, Gayanku, Evolution, and the AntiOnline/Go4Expert forums) end in 2015-2017, while newer sources (DeepDarkCTI communities, 0x00sec, HackerSploit, ParrotSec, NVD, GitHub Advisory, and CISA KEV) extend into 2026 (Figure~\ref{fig:temporal-heatmap}). In addition, the corpus is predominantly English. Multilingual content (Russian, Turkish, Persian, Arabic, Chinese) appears in DeepDarkCTI and several dark-market sources. Short rows ($<$8 tokens, 21.1\%) include replies and marketplace acknowledgments. These should be filtered for classification and retrieval tasks, but are useful for other analyses of community interactions.
 
-Past research indicates that hacker community platforms vary in content, such as exploits and tools. To measure lexical similarity among 46 forums, we compute pairwise Jaccard coefficients using a 5\% token sample and perform hierarchical clustering (Figure~ref{fig:domain-overlap}). The heatmap and network show a dense cluster of English-language security forums (hackforums, zerosec, cipher, wilderssecurity, go4expert, cipherspace) with shared technical vocabulary. Dark Web marketplaces (Gayanku, Evolution) form a second cluster connected by transactional terms. Non-English forums (antichat, persiantools) and niche groups (parrotsec, zeroday~today) are peripheral with low overlap ($J < 0.06$), showing language and domain create vocabulary boundaries. Node sizes reflect contribution on a $"log_{10}$ scale, highlighting antichat, gayanku, and wwhclub's prominence in document count despite lexical isolation. This heterogeneity supports our evaluation, as models must generalize across diverse vocabularies.
+Past research indicates that hacker community platforms vary in the content they offer, such as exploits and tools. To measure lexical similarity among 46 forums, we compute pairwise Jaccard coefficients using a 5\% token sample and perform hierarchical clustering (Figure~ref{fig:domain-overlap}). The heatmap and network show a dense cluster of English-language security forums (hackforums, zerosec, cipher, wilderssecurity, go4expert, cipherspace) with shared technical vocabulary. Dark Web marketplaces (Gayanku, Evolution) form a second cluster connected by transactional terms. Non-English forums (antichat, persiantools) and niche groups (parrotsec, zeroday~today) are peripheral with low overlap ($J < 0.06$), showing language and domain create vocabulary boundaries. Node sizes reflect contribution on a $"log_{10}$ scale, highlighting antichat, gayanku, and wwhclub's prominence in document count despite lexical isolation. This heterogeneity supports our evaluation, as models must generalize across diverse vocabularies.
 
 \begin{figure}[t]
 \centering
@@ -196,7 +196,7 @@ Past research indicates that hacker community platforms vary in content, such as
 \section{Benchmark Tasks and Results}
 \label{sec:tasks}
 
-HackerSignal provides a unique longitidunal, multi-lingual, and multi-sourced CTI dataset that can enable novel research opportunities examining temporal phenomena, generalization, and more. We illustrate three sample CTI tasks with increasing levels methodological complexity that HackerSignal enables in (Figure~\ref{fig:pipeline}, right; Table~\ref{tab:task-summary}). Each probes a different facet of temporal out-of-distribution generalization. All tasks use temporal splits, ensuring that test data postdate training. Following~\citet{thakur2021beir}, we evaluate each task with a heterogeneous baseline ladder spanning lexical, dense, and hybrid methods.
+HackerSignal provides a unique longitudinal, multi-lingual, and multi-sourced CTI dataset that can enable novel research opportunities examining temporal phenomena, generalization, and more. We illustrate three sample CTI tasks with increasing levels of methodological complexity that HackerSignal enables in (Figure~\ref{fig:pipeline}, right; Table~\ref{tab:task-summary}). Each probes a different facet of temporal out-of-distribution generalization. All tasks use temporal splits, ensuring that test data postdate the training data. Following~\citet{thakur2021beir}, we evaluate each task with a heterogeneous baseline ladder spanning lexical, dense, and hybrid methods.
 
 \begin{table}[t]
 \centering
@@ -220,7 +220,7 @@ All benchmark labels are derived from platform-provided and standardized metadat
 \subsection{Task 1: CVE Linkage Retrieval (CVE-R)}
 \label{sec:task1}
 
-Let $\mathcal{Q}$ be a set of exploit/advisory evidence texts and $\mathcal{C} = \{c_1, \ldots, c_N\}$ the NVD corpus of $N{=}340{,}536$ CVE descriptions. For each query $q \in \mathcal{Q}$, the task is to retrieve the correct CVE entry $c^* \in \mathcal{C}$ such that the source metadata links $q$ to $c^*$. This is cross-source temporal out-of-domain entity grounding, akin to knowledge-intensive entity linking~\citep{petroni2021kilt}, except the target knowledge base is the CVE ecosystem. Queries come from exploit archives, advisories, fix commits, and bug-bounty reports, while the target space is a single canonical CVE registry. We retain query sources with low or medium CVE-linkage audit risk (CISA~KEV, CVEfixes, HackerOne) and require $\geq$8 query tokens. Labels are metadata-derived linkages, not manually adjudicated ground truth. 
+Let $\mathcal{Q}$ be a set of exploit/advisory evidence texts and $\mathcal{C} = \{c_1, \ldots, c_N\}$ the NVD corpus of $N{=}340{,}536$ CVE descriptions. For each query $q \in \mathcal{Q}$, the task is to retrieve the correct CVE entry $c^* \in \mathcal{C}$ such that the source metadata links $q$ to $c^*$. This is cross-source temporal out-of-domain entity grounding, akin to knowledge-intensive entity linking~\citep{petroni2021kilt}, except the target knowledge base is the CVE ecosystem. Queries come from exploit archives, advisories, fix commits, and bug bounty reports, while the target space is a single, canonical CVE registry. We retain query sources with low or medium CVE-linkage audit risk (CISA~KEV, CVEfixes, HackerOne) and require $\geq$8 query tokens. Labels are metadata-derived linkages, not manually adjudicated ground truth. 
 
 \begin{wraptable}{r}{0.52\textwidth}
 \vspace{-4pt}
@@ -245,7 +245,7 @@ Hybrid BM25+mpnet & 0.486 & 0.675 & 0.736 & 0.567 \\
 \vspace{-4pt}
 \end{wraptable}
 
-We choose baselines across three dense retrieval paradigms. BM25 is an unsupervised lexical baseline, serving as an exact-match ceiling. For dense bi-encoders, we selected four models differing in pre-training and architecture: (1) MiniLM-L6-v2 (speed-optimized, distilled 6-layer), (2) all-mpnet-base-v2 (mean-pooled MPNet with contrastive training on 1B+ pairs), (3) BGE-base-v1.5 (instruction-tuned bi-encoder from BAAI for zero-shot transfer), and (4) E5-base-v2 (weakly-supervised contrastive model with task-specific prompts). These span distilled vs. full-size and supervised vs. weakly supervised training, helping assess the impact of pre-training on CVE retrieval. Hybrid BM25+mpnet combines lexical and dense scores via reciprocal rank fusion ($ k=60$), testing their complementarity. We measure Recall@$k$ ($ k= {10}$) and MRR, with results in Table~\ref{tab:task1-results}.
+We choose baselines across three dense retrieval paradigms. BM25 is an unsupervised lexical baseline that serves as an exact-match ceiling. For dense bi-encoders, we selected four models differing in pre-training and architecture: (1) MiniLM-L6-v2 (speed-optimized, distilled 6-layer), (2) all-mpnet-base-v2 (mean-pooled MPNet with contrastive training on 1B+ pairs), (3) BGE-base-v1.5 (instruction-tuned bi-encoder from BAAI for zero-shot transfer), and (4) E5-base-v2 (weakly-supervised contrastive model with task-specific prompts). These span distilled vs. full-size and supervised vs. weakly supervised training, helping assess the impact of pre-training on CVE retrieval. Hybrid BM25+mpnet combines lexical and dense scores via reciprocal rank fusion ($ k=60$), testing their complementarity. We measure Recall@$k$ ($ k= {10}$) and MRR, with results in Table~\ref{tab:task1-results}.
 
 The standard bi-encoders (MiniLM, mpnet, BGE) cluster tightly(MRR 0.530-0.540), comparable to BM25. E5-base-v2 substantially outperforms all other models, including the hybrid (MRR~0.587 vs 0.567), likely due to its asymmetric query/passage prefix design, which better separates the retrieval roles. The hybrid combination (normalized BM25 + dense cosine, $\alpha{=}0.7$) reranks BM25 top-100 candidates and outperforms symmetric bi-encoders but not the prefix-trained E5.
 
@@ -286,7 +286,7 @@ The best bag-of-words baseline (SVM) attains macro-F1 of 0.799, while BiLSTM rea
 \subsection{Task 3: Temporal Generalization (TG)}
 \label{sec:task3}
 
-Identical retrieval formulation to Task~1, but with a strict CVE-disjointness constraint: $C_{\text{train}} \cap C_{\text{test}} = \emptyset$, where $C_s = \{c^*_i : q_i \in \text{split}~s\}$ is the set of gold CVE targets in split $s$. Splits are defined by CVE publication year rather than query timestamp: train uses CVEs published before 2022, validation uses 2022--2023, and test uses 2024+. This ensures that models cannot memorize vulnerability descriptions seen during training and must generalize to wholly unseen vulnerabilities. We use the same metrics and models as Task~1 and show the results of Task~3 in Table~\ref{tab:task3-results}.
+Identical retrieval formulation to Task~1, but with a strict CVE-disjointness constraint: $C_{\text{train}} \cap C_{\text{test}} = \emptyset$, where $C_s = \{c^*_i : q_i \in \text{split}~s\}$ is the set of gold CVE targets in split $s$. Splits are defined by CVE publication year rather than query timestamp: train uses CVEs published before 2022, validation uses CVEs published in 2022--2023, and test uses CVEs published in 2024+. This ensures that models cannot memorize vulnerability descriptions seen during training and must generalize to wholly unseen vulnerabilities. We use the same metrics and models as Task~1 and show the results of Task~3 in Table~\ref{tab:task3-results}.
 
 \begin{wraptable}{r}{0.52\textwidth}
 \vspace{-4pt}
@@ -312,7 +312,7 @@ Hybrid BM25+mpnet & 0.491 & 0.690 & 0.743 & 0.577 \\
 \vspace{-4pt}
 \end{wraptable}
 
-Under CVE-disjoint evaluation, E5-base (MRR~0.602) exceeds both the hybrid and all symmetric encoders. Models generally maintain or improve performance compared to Task~1, confirming that our temporal split already prevents meaningful memorization. The consistent E5 advantage across both tasks suggests that asymmetric prefix training is particularly effective for cross-source CVE grounding, where queries and targets have different discourse design, as already demonstrated in a rigorous prospective evaluation.
+Under the CVE-disjoint evaluation, E5-base (MRR ~0.602) outperforms both the hybrid and all symmetric encoders. Models generally maintain or improve performance compared to Task~1, confirming that our temporal split already prevents meaningful memorization. The consistent E5 advantage across both tasks suggests that asymmetric prefix training is particularly effective for cross-source CVE grounding, where queries and targets have different discourse design, as already demonstrated in a rigorous prospective evaluation.
 
 \begin{figure}[t]
 \centering
@@ -358,6 +358,7 @@ Informatics (ISI)}. \url{https://doi.org/10.1109/ISI49825.2020.9280548}.
 Ampel, B., Samtani, S., Zhu, H., \& Chen, H. (2024).
 Creating Proactive Cyber Threat Intelligence with Hacker Exploit Labels:
 A Deep Transfer Learning Approach. \textit{MIS Quarterly}, 48(1), 137--166.
+\url{https://doi.org/10.25300/MISQ/2023/17316}.
 
 \bibitem[Robertson and Jones(1994)]{bm25robertson1994}
 Robertson, S., \& Jones, K.\ S. (1994).
@@ -376,7 +377,7 @@ CISA. (2021--2026). Known Exploited Vulnerabilities Catalog.
 
 \bibitem[Pastrana et~al.(2018)]{crimebb2018}
 Pastrana, S., Thomas, D.\ R., Hutchings, A., \&
-Caines, A. (2018). CrimeBB: Enabling Cybercrime Research on Underground
+Clayton, R. (2018). CrimeBB: Enabling Cybercrime Research on Underground
 Forums at Scale. \textit{WWW 2018}.
 
 \bibitem[Deliu et~al.(2017)]{deliu2017cti}
@@ -392,9 +393,10 @@ CVEfixes: Automated Collection of Vulnerabilities and Their Fixes from
 Open-Source Software. \textit{PROMISE 2021}.
 
 \bibitem[Ranade et~al.(2021)]{cysecbert2021}
-Ranade, P., Piplai, A., Mittal, S., Joshi, A., \&
-Finin, T. (2021). CyBERT: BERT for cybersecurity natural language
-processing. \textit{Computing}.
+Ranade, P., Piplai, A., Joshi, A., \& Finin, T. (2021).
+CyBERT: Contextualized Embeddings for the Cybersecurity Domain.
+\textit{IEEE International Conference on Big Data}, 3334--3342.
+\url{https://doi.org/10.1109/BigData52589.2021.9671824}.
 
 \bibitem[Devlin et~al.(2019)]{devlin2019bert}
 Devlin, J., Chang, M.-W., Lee, K., \& Toutanova, K.
@@ -436,7 +438,7 @@ for Proactive Cyber Threat Intelligence.
 \textit{IEEE Intelligence and Security Informatics (ISI)}.
 
 \bibitem[Otto et~al.(2021)]{otto2021isi}
-Otto, K., Ampel, B., Samtani, S., Zhu, H., \& Chen, H. (2021).
+Otto, K., Ampel, B., Zhu, H., Samtani, S., \& Chen, H. (2021).
 Exploring the Evolution of Exploit-Sharing Hackers: An Unsupervised
 Graph Embedding Approach. \textit{IEEE Intelligence and Security
 Informatics (ISI)}. \url{https://doi.org/10.1109/ISI53945.2021.9624846}.
@@ -481,9 +483,9 @@ et al. (2021). WILDS: A Benchmark of in-the-Wild Distribution Shifts.
 \textit{ICML 2021}, PMLR 139.
 
 \bibitem[Han et~al.(2017)]{severitypred2017}
-Han, D., et al. (2017). Learning to Predict Severity
-of Software Vulnerability Using Only Vulnerability Description.
-\textit{ICSME 2017}.
+Han, Z., Li, X., Xing, Z., Liu, H., \& Feng, Z. (2017).
+Learning to Predict Severity of Software Vulnerability Using Only
+Vulnerability Description. \textit{ICSME 2017}, 125--136.
 
 \bibitem[Reimers and Gurevych(2019)]{sbert2019}
 Reimers, N., \& Gurevych, I. (2019). Sentence-BERT:
@@ -529,7 +531,7 @@ Supervision. \textit{NeurIPS 2021 D\&B Track}. arXiv:2109.11377.
 Rahman, M.\ R., Mahdavi-Hezaveh, R., \& Williams, L. (2023).
 What Are the Attackers Doing Now? Automating Cyberthreat Intelligence
 Extraction from Text on Pace with the Changing Threat Landscape: A Survey.
-\textit{ACM Computing Surveys}, 55(12), Article~254.
+\textit{ACM Computing Surveys}, 55(12), Article~241.
 \url{https://doi.org/10.1145/3571726}.
 
 \bibitem[Hughes et~al.(2024)]{hughes2024cybercrime}
@@ -574,7 +576,7 @@ Other web archives & Web scraping & Public & Mixed terms & Pointer \\
 \section{Audit and Reliability}
 \label{app:audit-reliability}
 
-We follow the audit framework of~\citet{kapoor2023leakage} and perform three complementary integrity checks. First, for each task, we draw a 80-row stratified random sample (240 rows total, balanced across splits) and manually verify (i)~correct CVE assignment, (ii)~temporal split adherence, and (iii)~absence of trivial textual overlap between query and target. No errors were found. Second, we search for exact and near-duplicate text spans between train and test partitions using MinHash (Jaccard threshold $\geq$0.8, 128 permutations). After deduplication during corpus construction, zero train-test pairs exceed the threshold for any task. Finally, we verify that no CVE identifier appears in both the train and test for any task. For Task~3 (temporal generalization), CVE-disjointness is enforced by construction: $|C_{\text{train}} \cap C_{\text{test}}| = 0$, supported programmatically at build time.
+We follow the audit framework of~\citet{kapoor2023leakage} and perform three complementary integrity checks. First, for each task, we draw an 80-row stratified random sample (240 rows total, balanced across splits) and manually verify (i)~correct CVE assignment, (ii)~temporal split adherence, and (iii)~absence of trivial textual overlap between query and target. No errors were found. Second, we search for exact and near-duplicate text spans between train and test partitions using MinHash (Jaccard threshold $\geq$0.8, 128 permutations). After deduplication during corpus construction, zero train-test pairs exceed the threshold for any task. Finally, we verify that no CVE identifier appears in both the train and test for any task. For Task~3 (temporal generalization), CVE-disjointness is enforced by construction: $|C_{\text{train}} \cap C_{\text{test}}| = 0$, supported programmatically at build time.
 
 \section{Model Ladder Details}
 \label{app:model-ladder}
@@ -591,7 +593,7 @@ Okapi BM25 via \texttt{rank\_bm25} (BM25Okapi). Tokenization: lowercase whitespa
 Four sentence-transformer models evaluated without task-specific fine-tuning: \texttt{all-MiniLM-L6-v2} (22M params, 384-dim), \texttt{all-mpnet-base-v2} (110M, 768-dim), \texttt{BAAI/bge-base-en-v1.5} (110M, 768-dim), and \texttt{intfloat/e5-base-v2} (110M, 768-dim, with ``query:''/``passage:'' prefixes). Batch size 128, max sequence length 512 tokens, $\ell_2$-normalized embeddings, cosine similarity scoring. Corpus encoded in 5K-document chunks on CPU with multi-process pooling.
 
 \paragraph{Hybrid BM25 + dense (Tasks 1 and 3).}
-A combination of normalized BM25 scores and dense cosine similarity with $\alpha{=}0.7$ (dense weight). For efficiency, BM25 retrieves top-100 candidates per query; dense scores are computed only for the candidate set. Final ranking uses $\alpha \cdot \text{dense} + (1{-}\alpha) \cdot \text{BM25}$.
+A combination of normalized BM25 scores and dense cosine similarity with $\alpha{=}0.7$ (dense weight). For efficiency, BM25 retrieves the top 100 candidates per query; dense scores are computed only for the candidate set. Final ranking uses $\alpha \cdot \text{dense} + (1{-}\alpha) \cdot \text{BM25}$.
 
 \paragraph{Bag-of-words classifiers (Task 2).}
 All BoW classifiers use scikit-learn with \texttt{TfidfVectorizer}(max\_features=50{,}000, ngram\_range=(1,2)) as the feature extractor. \texttt{DecisionTreeClassifier}: max\_depth=30, class\_weight=``balanced''. \texttt{LogisticRegression}: C=1.0, max\_iter=1000, class\_weight=``balanced''. \texttt{LinearSVC}: max\_iter=2000, class\_weight=``balanced''.
@@ -600,7 +602,7 @@ All BoW classifiers use scikit-learn with \texttt{TfidfVectorizer}(max\_features
 RNN, GRU, LSTM, and BiLSTM use a word-level vocabulary (min frequency $\geq$3, yielding ${\sim}$19K tokens) with 128-dim embeddings, 128-dim hidden states, max sequence length 300, batch size 128, and Adam optimizer (lr=$10^{-3}$). Class-weighted cross-entropy loss with gradient clipping at 1.0. Trained for 8 epochs with best checkpoint selected by validation macro-F1. SecBERT~\citep{secbert2022} uses \texttt{jackaduma/SecBERT} with max sequence length 256, batch size 16, AdamW (lr=$2{\times}10^{-5}$, weight decay 0.01), linear warmup over 10\% of steps, trained for 3 epochs on a 15K subsample. All neural models use MPS (Apple Silicon) acceleration.
 
 \paragraph{Compute.}
-All baselines ran on a single macOS arm64 workstation (Apple M-series, 16\,GB RAM) with Python 3.12 and PyTorch 2.x. No CUDA GPUs were used. BM25 over 340K corpus: ${\sim}$25 min per task (pure Python). Dense encoding of 340K corpus: ${\sim}$20 min (MiniLM) to ${\sim}$90 min (base-sized models) on CPU. RNN/GRU/LSTM/BiLSTM training: ${\sim}$3 min each (8 epochs on MPS). SecBERT fine-tuning: ${\sim}$90 min (3 epochs, 15K samples on MPS). All baseline code is available at \href{https://anonymous.4open.science/r/hackersignal-8A2F/}{\texttt{anonymous.4open.science/r/hackersignal-8A2F}}.
+All baselines ran on a single macOS arm64 workstation (Apple M-series, 16\, GB RAM) with Python 3.12 and PyTorch 2.x. No CUDA GPUs were used. BM25 over 340K corpus: ${\sim}$25 min per task (pure Python). Dense encoding of 340K corpus: ${\sim}$20 min (MiniLM) to ${\sim}$90 min (base-sized models) on CPU. RNN/GRU/LSTM/BiLSTM training: ${\sim}$3 min each (8 epochs on MPS). SecBERT fine-tuning: ${\sim}$90 min (3 epochs, 15K samples on MPS). All baseline code is available at \href{https://anonymous.4open.science/r/hackersignal-8A2F/}{\texttt{anonymous.4open.science/r/hackersignal-8A2F}}.
 
 \section{Comparison with Prior CTI Datasets}
 \label{app:comparison}
