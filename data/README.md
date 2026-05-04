@@ -185,11 +185,11 @@ This dataset is intended for **defensive cybersecurity research** only. Prohibit
 ## Citation
 
 ```bibtex
-@inproceedings{hackersignal2026,
-  title={HackerSignal: A Multi-Source Dataset for Hacker Community Analysis and CVE Linkage},
+@misc{hackersignal2026,
+  title={{HackerSignal}: A Temporally Structured, Multi-Source Benchmark for Cybersecurity Threat Intelligence},
   author={Anonymous},
-  booktitle={NeurIPS Evaluations \& Datasets Track},
-  year={2026}
+  year={2026},
+  howpublished={arXiv preprint}
 }
 ```
 
