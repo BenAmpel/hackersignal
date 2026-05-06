@@ -9,6 +9,7 @@
     "prov": "http://www.w3.org/ns/prov#"
   },
   "@type": "sc:Dataset",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
   "dct:conformsTo": "http://mlcommons.org/croissant/1.0",
   "name": "HackerSignal",
   "description": "HackerSignal is a large-scale, multi-source dataset linking hacker community discourse, exploit databases, vulnerability advisories, and fix commits through a shared CVE identifier space. It spans 64 public forum/source identifiers across eight source layers, covers 1991\u20132026, and supports three benchmark tasks: (1) CVE linkage retrieval (cross-source temporal out-of-distribution entity grounding over 340K NVD descriptions), (2) exploit type classification (8-class vulnerability type prediction with temporal OOD evaluation), and (3) temporal CVE-disjoint generalization (prospective retrieval where the gold CVE sets in train and test are disjoint).",
