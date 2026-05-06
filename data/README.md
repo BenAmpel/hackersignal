@@ -108,13 +108,13 @@ full = load_dataset("DatasetSubmission/HackerSignal", "default")
 ## Benchmark Tasks
 
 ### Task 1: CVE Linkage Retrieval (CVE-R)
-Cross-source temporally OOD entity grounding: given exploit/advisory evidence text, retrieve the correct NVD CVE entry from a corpus of 340K descriptions. Quality-controlled to remove unretrievable rows.
+Cross-source temporally OOD entity grounding: given exploit/advisory evidence text, retrieve the correct NVD CVE entry from a corpus of 340K descriptions. Queries come from 22 source identifiers across exploit archives, advisories, fix commits, and bug bounty reports; filtered to ≥8 tokens.
 
 | Split | Rows |
 |-------|------|
-| Train | 40,698 |
-| Val | 2,551 |
-| Test | 550 |
+| Train | 56,692 |
+| Val | 2,584 |
+| Test | 1,990 |
 | Corpus | 340,536 |
 
 ### Task 2: Exploit Type Classification (ETC)
@@ -131,9 +131,9 @@ Identical retrieval formulation to Task 1 but with strict CVE-disjoint constrain
 
 | Split | Rows |
 |-------|------|
-| Train | 41,630 |
-| Val | 1,776 |
-| Test | 393 |
+| Train | 56,833 |
+| Val | 2,535 |
+| Test | 1,898 |
 | Corpus | 340,536 |
 
 ## Schema

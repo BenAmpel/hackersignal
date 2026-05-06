@@ -1,3 +1,3 @@
-"""Exploit Text Graph — RT1 (DGT) + RT2 (CTE) reference implementation."""
+"""HackerSignal — data collection, benchmark construction, and baseline evaluation."""
 
 __version__ = "0.1.0"
