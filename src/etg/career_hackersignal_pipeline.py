@@ -123,6 +123,13 @@ class RuntimePlan:
     dgt_edge_batch: int | None = None  # None = auto-computed from GPU memory at runtime
     min_date: str | None = None  # ISO date string e.g. "2016-01-01"; None = no lower bound
     temporal_loss_weight: float = 0.1  # weight for temporal context loss (0.1 avoids ablation inversion)
+    pe_type: str = "laplacian"           # "laplacian" | "rwpe" | "mose" | "none"
+    use_residual_bypass: bool = True     # learnable alpha bypass (v4 default on)
+    temporal_gate: bool = False          # per-node GRU-style gate replaces global alpha
+    use_time_embedding: bool = True      # include spell-index embedding in transformer
+    time_encoding: str = "learned_discrete"  # "learned_discrete" | "learned_linear"
+    rwpe_attention_bias: bool = False    # add pairwise RWPE dot-product to attn mask
+    use_trend_seasonal: bool = False     # TIDFormer trend+seasonal decomposition in temporal loss
 
 
 def _json_default(obj):
