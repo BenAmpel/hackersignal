@@ -511,6 +511,46 @@ def _run_non_neural_and_classic(snapshots: list[dict], words: list[str], dim: in
     for shifts, preds in experiments:
         shift_frames.append(shifts)
         pred_frames.append(preds)
+
+    # Unbalanced OT shift (ACL 2025, arxiv:2412.12569) — L1 PPMI distribution distance
+    ot_shift_rows = []
+    ot_series: dict[str, list[float]] = {w: [] for w in words}
+    for t in range(1, len(snapshots)):
+        magnitudes = _ot_shift_magnitude(snapshots[t - 1], snapshots[t], words)
+        for idx, val in enumerate(magnitudes):
+            ot_series[words[idx]].append(float(val))
+        for rank, idx in enumerate(np.argsort(magnitudes)[-top_k:][::-1], 1):
+            ot_shift_rows.append({
+                "experiment": "experiment_1_non_neural_classic",
+                "tier": "non_neural",
+                "model": "unbalanced_ot_shift",
+                "status": "run",
+                "transition": _transition_label(t),
+                "rank": rank,
+                "word": words[idx],
+                "score": float(magnitudes[idx]),
+                "score_name": "ot_shift",
+                "note": "L1 PPMI distribution distance; UOT approximation (ACL 2025)",
+            })
+    ot_pred_rows = []
+    for word, vals in ot_series.items():
+        if len(vals) < 2:
+            continue
+        pred = _ema_predict_bench(vals[:-1])
+        ot_pred_rows.append({
+            "experiment": "experiment_1_non_neural_classic",
+            "tier": "non_neural",
+            "model": "unbalanced_ot_shift",
+            "word": word,
+            "predicted_next_shift": float(pred),
+            "heldout_shift": float(vals[-1]),
+            "abs_error": abs(float(pred) - float(vals[-1])),
+        })
+    if ot_shift_rows:
+        shift_frames.append(pd.DataFrame(ot_shift_rows))
+    if ot_pred_rows:
+        pred_frames.append(pd.DataFrame(ot_pred_rows))
+
     return pd.concat(shift_frames, ignore_index=True), pd.concat(pred_frames, ignore_index=True)
 
 
@@ -590,6 +630,28 @@ def _run_transformer_contextual(snapshots: list[dict], words: list[str], dim: in
             }
         )
     shift_frames.append(pd.DataFrame(skipped))
+
+    # SIGN (ICML-W 2020): multi-hop inception aggregation
+    rng_exp3a = np.random.default_rng(seed=1729)
+    sign_embs = _align_embeddings([_sign_aggregate(s, words, dim=dim, k_hops=3, rng=rng_exp3a) for s in snapshots])
+    shifts, preds = _embedding_shifts(sign_embs, words, model="sign_scalable_inception", tier="modern_graph_transformer", experiment="experiment_3_modern_transformers", top_k=top_k, note="SIGN 3-hop inception aggregation (ICML-W 2020)")
+    shift_frames.append(shifts)
+    pred_frames.append(preds)
+
+    # NodeFormer (NeurIPS 2022): kernelized random-feature all-pairs attention
+    rng_exp3b = np.random.default_rng(seed=1730)
+    nf_embs = _align_embeddings([_nodeformer_features(s, words, dim=dim, rng=rng_exp3b) for s in snapshots])
+    shifts, preds = _embedding_shifts(nf_embs, words, model="nodeformer_kernelized", tier="modern_graph_transformer", experiment="experiment_3_modern_transformers", top_k=top_k, note="NodeFormer ELU kernel random-feature all-pairs attention (NeurIPS 2022)")
+    shift_frames.append(shifts)
+    pred_frames.append(preds)
+
+    # GRIT (ICML 2023): RWPE relative attention bias
+    rng_exp3c = np.random.default_rng(seed=1731)
+    grit_embs = _align_embeddings([_grit_features(s, words, dim=dim, k=lap_pe_k, rng=rng_exp3c) for s in snapshots])
+    shifts, preds = _embedding_shifts(grit_embs, words, model="grit_rwpe_attention", tier="modern_graph_transformer", experiment="experiment_3_modern_transformers", top_k=top_k, note="GRIT RWPE relative attention bias proxy (ICML 2023)")
+    shift_frames.append(shifts)
+    pred_frames.append(preds)
+
     return pd.concat(shift_frames, ignore_index=True), pd.concat(pred_frames, ignore_index=True)
 
 
@@ -625,6 +687,16 @@ def _run_dgt_ablations(
     variants = [
         ("dgt_no_laplacian_pe", {"lap_pe_k": 0}, "no Laplacian positional encoding"),
         ("dgt_static_graph_transformer_only", {"epochs": max(1, epochs // 2), "lap_pe_k": lap_pe_k}, "static graph transformer comparison with reduced temporal training budget"),
+        # v5 neural ablations — each varies exactly one mechanism from DGT full
+        ("dgt_rwpe", {"pe_type": "rwpe"}, "Random Walk PE replacing Laplacian PE (GraphGPS NeurIPS 2022)"),
+        ("dgt_no_residual_bypass", {"use_residual_bypass": False}, "remove residual alpha bypass — isolates bypass contribution"),
+        ("dgt_temporal_gate", {"temporal_gate": True}, "per-node GRU-style gate replacing global scalar alpha (DySAT WSDM 2020)"),
+        ("dgt_no_time_embedding", {"use_time_embedding": False}, "ablate spell-index time signal from transformer"),
+        ("dgt_deeper_3_layers", {"layers": 3}, "3 transformer layers vs 2 — architecture depth ablation"),
+        ("dgt_grit_full_rwpe_bias", {"pe_type": "rwpe", "rwpe_attention_bias": True}, "RWPE PE + pairwise dot-product attention bias (GRIT ICML 2023)"),
+        ("dgt_linear_time_encoding", {"time_encoding": "learned_linear"}, "nn.Linear(1,D) on normalised spell index vs nn.Embedding (KDD 2025 workshop)"),
+        ("dgt_mose_structural_encoding", {"pe_type": "mose"}, "MoSE motif counts as node structural encoding (ICLR 2025)"),
+        ("dgt_trend_seasonal_temporal", {"use_trend_seasonal": True}, "TIDFormer trend+seasonal decomposition of temporal loss (KDD 2025)"),
     ]
     for model, params, note in variants:
         res = run_dgt_pipeline(
@@ -632,12 +704,20 @@ def _run_dgt_ablations(
             max_nodes=max_nodes,
             hidden_dim=dim,
             heads=4,
-            layers=2,
+            layers=params.get("layers", 2),
             epochs=params.get("epochs", epochs),
             lap_pe_k=params.get("lap_pe_k", lap_pe_k),
             device=device,
             output_dir=None,
             seed=seed + len(shift_frames),
+            temporal_loss_weight=0.1,
+            pe_type=params.get("pe_type", "laplacian"),
+            use_residual_bypass=params.get("use_residual_bypass", True),
+            temporal_gate=params.get("temporal_gate", False),
+            use_time_embedding=params.get("use_time_embedding", True),
+            time_encoding=params.get("time_encoding", "learned_discrete"),
+            rwpe_attention_bias=params.get("rwpe_attention_bias", False),
+            use_trend_seasonal=params.get("use_trend_seasonal", False),
         )
         shifts = res["shifts"].head(top_k).copy()
         shifts["experiment"] = "experiment_4_dgt_ablations"
@@ -670,6 +750,97 @@ def _run_dgt_ablations(
         shifts, preds = _matrix_embedding_baseline(snapshots, words, model=model, tier="dgt_ablation", experiment="experiment_4_dgt_ablations", dim=dim, top_k=top_k, matrix_fn=fn, note=note)
         shift_frames.append(shifts)
         pred_frames.append(preds)
+
+    # ── v5 matrix ablations ────────────────────────────────────────────────────
+
+    # RWPE SVD-aligned (GraphGPS, NeurIPS 2022)
+    rwpe_embs = [_svd(sparse.csr_matrix(_rwpe_features(s, words, k=lap_pe_k).astype(np.float64)), dim) for s in snapshots]
+    shifts, preds = _embedding_shifts(_align_embeddings(rwpe_embs), words, model="rwpe_svd_aligned", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="RWPE landing probabilities → SVD + Procrustes (GraphGPS NeurIPS 2022)")
+    shift_frames.append(shifts); pred_frames.append(preds)
+
+    # Heat kernel diffusion PE
+    hk_embs = [_svd(sparse.csr_matrix(_heat_kernel_pe(s, words).astype(np.float64)), dim) for s in snapshots]
+    shifts, preds = _embedding_shifts(_align_embeddings(hk_embs), words, model="heat_kernel_diffusion_pe", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="heat kernel diagonal PE exp(-t*L)_ii for t=1,2,4,8")
+    shift_frames.append(shifts); pred_frames.append(preds)
+
+    # Per-spell PPMI Procrustes (Kim et al. 2014)
+    ppmi_embs = [_svd(_ppmi(_edge_matrix(s, words)), dim) for s in snapshots]
+    shifts, preds = _embedding_shifts(_align_embeddings(ppmi_embs), words, model="per_spell_ppmi_procrustes", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="per-spell PPMI SVD + Procrustes alignment (Kim et al. 2014)")
+    shift_frames.append(shifts); pred_frames.append(preds)
+
+    # Hamilton 2016 SGNS approximation (ACL 2016)
+    sgns_embs = [_svd(_ppmi(_edge_matrix(s, words)) - sparse.eye(len(words)) * math.log(5), dim) for s in snapshots]
+    shifts, preds = _embedding_shifts(_align_embeddings(sgns_embs), words, model="hamilton2016_sgns_per_spell", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="Hamilton ACL 2016 shifted-PPMI SGNS approximation + Procrustes")
+    shift_frames.append(shifts); pred_frames.append(preds)
+
+    # Spectral wavelet SVD
+    def _wavelet_matrix(snap: dict) -> sparse.spmatrix:
+        adj = _edge_matrix(snap, words, weighted=False, sym=True)
+        deg = np.asarray(adj.sum(axis=1)).ravel()
+        inv_sqrt = np.zeros_like(deg); inv_sqrt[deg > 0] = 1.0 / np.sqrt(deg[deg > 0])
+        norm_adj = sparse.diags(inv_sqrt) @ adj @ sparse.diags(inv_sqrt)
+        lap = sparse.eye(len(words)) - norm_adj
+        return (sparse.eye(len(words)) - 0.5 * lap) @ adj
+    wavelet_embs = [_svd(_wavelet_matrix(s), dim) for s in snapshots]
+    shifts, preds = _embedding_shifts(_align_embeddings(wavelet_embs), words, model="spectral_wavelet_svd", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="graph wavelet diffusion coefficient approximation → SVD")
+    shift_frames.append(shifts); pred_frames.append(preds)
+
+    # DGT Procrustes post-hoc: re-align DGT embeddings with Procrustes after training
+    dgt_embs_raw = dgt_result["embeddings"]
+    if len(dgt_embs_raw) > 1:
+        dgt_proc = _align_embeddings([e.astype(np.float32) for e in dgt_embs_raw])
+        shifts, preds = _embedding_shifts(dgt_proc, words, model="dgt_procrustes_posthoc", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="DGT embeddings with post-hoc Procrustes alignment applied")
+        shift_frames.append(shifts); pred_frames.append(preds)
+
+    # MoSE SVD-aligned (ICLR 2025)
+    mose_embs = [_svd(sparse.csr_matrix(_mose_features_bench(s, words).astype(np.float64)), dim) for s in snapshots]
+    shifts, preds = _embedding_shifts(_align_embeddings(mose_embs), words, model="mose_svd_aligned", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="MoSE motif counts (triangle, star, path-2) → SVD (ICLR 2025)")
+    shift_frames.append(shifts); pred_frames.append(preds)
+
+    # SPSE path encoding SVD (ICML 2025)
+    spse_embs = [_svd(sparse.csr_matrix(_spse_features(s, words, k_paths=4).astype(np.float64)), dim) for s in snapshots]
+    shifts, preds = _embedding_shifts(_align_embeddings(spse_embs), words, model="spse_path_encoding_svd", tier="dgt_ablation", experiment="experiment_4_dgt_ablations", top_k=top_k, note="SPSE simple path counts lengths 1-4 → SVD (ICML 2025)")
+    shift_frames.append(shifts); pred_frames.append(preds)
+
+    # OT Wasserstein-aligned (ACL 2025)
+    ot_shift_rows2 = []
+    ot_series2: dict[str, list[float]] = {w: [] for w in words}
+    for t in range(1, len(snapshots)):
+        magnitudes = _ot_shift_magnitude(snapshots[t - 1], snapshots[t], words)
+        for idx, val in enumerate(magnitudes):
+            ot_series2[words[idx]].append(float(val))
+        for rank, idx in enumerate(np.argsort(magnitudes)[-top_k:][::-1], 1):
+            ot_shift_rows2.append({
+                "experiment": "experiment_4_dgt_ablations",
+                "tier": "dgt_ablation",
+                "model": "ot_wasserstein_aligned",
+                "status": "run",
+                "transition": _transition_label(t),
+                "rank": rank,
+                "word": words[idx],
+                "score": float(magnitudes[idx]),
+                "score_name": "ot_shift",
+                "note": "UOT L1-PPMI distribution distance (ACL 2025)",
+            })
+    ot_pred_rows2 = []
+    for word, vals in ot_series2.items():
+        if len(vals) < 2:
+            continue
+        pred = _ema_predict_bench(vals[:-1])
+        ot_pred_rows2.append({
+            "experiment": "experiment_4_dgt_ablations",
+            "tier": "dgt_ablation",
+            "model": "ot_wasserstein_aligned",
+            "word": word,
+            "predicted_next_shift": float(pred),
+            "heldout_shift": float(vals[-1]),
+            "abs_error": abs(float(pred) - float(vals[-1])),
+        })
+    if ot_shift_rows2:
+        shift_frames.append(pd.DataFrame(ot_shift_rows2))
+    if ot_pred_rows2:
+        pred_frames.append(pd.DataFrame(ot_pred_rows2))
+
     return pd.concat(shift_frames, ignore_index=True), pd.concat(pred_frames, ignore_index=True)
 
 
