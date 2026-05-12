@@ -1045,12 +1045,25 @@ def _mose_features(edge_counts: dict, node_to_idx: dict[str, int]) -> np.ndarray
     return features
 
 
-def _build_dgt_tensors(snapshots: list[dict], max_nodes: int, lap_pe_k: int, vocab: list[str] | None = None) -> dict:
+def _build_dgt_tensors(
+    snapshots: list[dict],
+    max_nodes: int,
+    lap_pe_k: int,
+    vocab: list[str] | None = None,
+    pe_type: str = "laplacian",
+) -> dict:
     words = vocab if vocab is not None else _select_dgt_vocab(snapshots, max_nodes)
     node_to_idx = {word: i for i, word in enumerate(words)}
     features, adjacencies = [], []
     for snap in tqdm(snapshots, desc="Building DGT tensors", unit=" spell", leave=False):
-        pe = _laplacian_pe(snap["edge_counts"], node_to_idx, lap_pe_k)
+        if pe_type == "laplacian":
+            pe = _laplacian_pe(snap["edge_counts"], node_to_idx, lap_pe_k)
+        elif pe_type == "rwpe":
+            pe = _rwpe(snap["edge_counts"], node_to_idx, lap_pe_k)
+        elif pe_type == "mose":
+            pe = _mose_features(snap["edge_counts"], node_to_idx)
+        else:  # "none"
+            pe = np.zeros((len(words), 0), dtype=np.float32)
         x = []
         for word in words:
             count = snap["term_counts"].get(word, 0)
