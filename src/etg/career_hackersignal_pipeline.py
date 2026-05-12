@@ -461,7 +461,7 @@ def iter_hackersignal_posts(
     _min_ts: datetime | None = parse_timestamp(min_date) if min_date else None
     _max_ts: datetime | None = parse_timestamp(max_date) if max_date else None
     _path = Path(path)
-    _open = gzip.open if _path.suffix == ".gz" else _path.open
+    _open = gzip.open if _path.suffix == ".gz" else open
     _kwargs: dict = {"mode": "rt", "encoding": "utf-8"} if _path.suffix == ".gz" else {"mode": "r", "encoding": "utf-8"}
     with _open(_path, **_kwargs) as handle:
         _pbar = tqdm(handle, desc=desc, unit=" rec", total=limit, leave=False)
@@ -1133,6 +1133,13 @@ def run_dgt_pipeline(
     use_cache: bool = True,
     edge_batch: int | None = None,
     temporal_loss_weight: float = 0.1,
+    pe_type: str = "laplacian",
+    use_residual_bypass: bool = True,
+    temporal_gate: bool = False,
+    use_time_embedding: bool = True,
+    time_encoding: str = "learned_discrete",
+    rwpe_attention_bias: bool = False,
+    use_trend_seasonal: bool = False,
 ) -> dict:
     """Train the RT1.2 Diachronic Graph Transformer approximation.
 
@@ -1156,6 +1163,13 @@ def run_dgt_pipeline(
             "device_request": device,
             "seed": seed,
             "temporal_loss_weight": temporal_loss_weight,
+            "pe_type": pe_type,
+            "use_residual_bypass": use_residual_bypass,
+            "temporal_gate": temporal_gate,
+            "use_time_embedding": use_time_embedding,
+            "time_encoding": time_encoding,
+            "rwpe_attention_bias": rwpe_attention_bias,
+            "use_trend_seasonal": use_trend_seasonal,
         }
     )
     out = Path(output_dir) if output_dir is not None else None
@@ -1202,7 +1216,7 @@ def run_dgt_pipeline(
         torch_device = torch.device("cpu")
 
     rng = np.random.default_rng(seed)
-    tensors = _build_dgt_tensors(snapshots, max_nodes=max_nodes, lap_pe_k=lap_pe_k)
+    tensors = _build_dgt_tensors(snapshots, max_nodes=max_nodes, lap_pe_k=lap_pe_k, pe_type=pe_type)
     words = tensors["words"]
     node_to_idx = {w: i for i, w in enumerate(words)}
     if not words:
@@ -1218,24 +1232,71 @@ def run_dgt_pipeline(
                 d_model=hidden_dim,
                 nhead=heads,
                 dim_feedforward=hidden_dim * 2,
-                dropout=0.2,          # v4: increased from 0.1 for better generalization
+                dropout=0.2,
                 batch_first=True,
                 activation="gelu",
             )
             self.encoder = nn.TransformerEncoder(enc_layer, num_layers=layers)
-            self.time_embedding = nn.Embedding(len(snapshots), hidden_dim)
-            self.proj = nn.Sequential(nn.Linear(hidden_dim, hidden_dim), nn.ReLU(), nn.Linear(hidden_dim, hidden_dim))
-            # v4: learnable residual bypass — alpha=sigmoid(0)=0.5 initially.
-            # Allows the model to interpolate between full-attention output and
-            # the skip-connected projected input, reducing embedding volatility.
-            self.residual_alpha = nn.Parameter(torch.tensor(0.0))
+            # Time embedding: discrete (nn.Embedding) or linear (nn.Linear)
+            if use_time_embedding:
+                if time_encoding == "learned_linear":
+                    self.time_embed_linear = nn.Linear(1, hidden_dim)
+                    self.time_embed_table = None
+                else:
+                    self.time_embed_table = nn.Embedding(len(snapshots), hidden_dim)
+                    self.time_embed_linear = None
+            else:
+                self.time_embed_table = None
+                self.time_embed_linear = None
+            self.proj = nn.Sequential(
+                nn.Linear(hidden_dim, hidden_dim), nn.ReLU(), nn.Linear(hidden_dim, hidden_dim)
+            )
+            # Residual bypass: global scalar alpha OR per-node gate OR nothing
+            if temporal_gate:
+                self.gate = nn.Linear(hidden_dim, hidden_dim)
+                self.residual_alpha = None
+            elif use_residual_bypass:
+                self.residual_alpha = nn.Parameter(torch.tensor(0.0))
+                self.gate = None
+            else:
+                self.residual_alpha = None
+                self.gate = None
 
         def forward(self, x, adjacency, t):
-            h = self.input(x) + self.time_embedding(torch.tensor(t, device=x.device)).view(1, -1)
-            attn_mask = torch.tensor(~adjacency, dtype=torch.bool, device=x.device)
+            h = self.input(x)
+            if use_time_embedding:
+                if time_encoding == "learned_linear":
+                    t_norm = torch.tensor(
+                        [[t / max(len(snapshots) - 1, 1)]], dtype=torch.float32, device=x.device
+                    )
+                    h = h + self.time_embed_linear(t_norm).view(1, -1)
+                else:
+                    h = h + self.time_embed_table(
+                        torch.tensor(t, device=x.device)
+                    ).view(1, -1)
+
+            if rwpe_attention_bias and pe_type == "rwpe":
+                # Pairwise RWPE dot-product as float attention bias (GRIT, ICML 2023).
+                # x contains base(9) + rwpe(lap_pe_k) cols; extract rwpe cols.
+                rwpe_cols = x[:, 9:9 + lap_pe_k]      # (N, k)
+                bias = rwpe_cols @ rwpe_cols.T          # (N, N) float
+                adj_float = torch.zeros_like(bias)
+                adj_float[~adjacency] = float("-inf")
+                attn_mask = adj_float + bias
+            else:
+                attn_mask = torch.tensor(~adjacency, dtype=torch.bool, device=x.device)
+
             z_enc = self.encoder(h.unsqueeze(0), mask=attn_mask).squeeze(0)
-            alpha = torch.sigmoid(self.residual_alpha)
-            z = alpha * z_enc + (1.0 - alpha) * h   # bypass reduces inter-spell embedding jumps
+
+            if temporal_gate:
+                gate_val = torch.sigmoid(self.gate(h))
+                z = gate_val * z_enc + (1.0 - gate_val) * h
+            elif use_residual_bypass:
+                alpha = torch.sigmoid(self.residual_alpha)
+                z = alpha * z_enc + (1.0 - alpha) * h
+            else:
+                z = z_enc
+
             return F.normalize(self.proj(z), dim=1)
 
     model = MaskedGraphTransformer().to(torch_device)
@@ -1334,7 +1395,20 @@ def run_dgt_pipeline(
             )  # shape (t,)  — largest weight at index -1 (most recent past)
             ema_weights = (decay / decay.sum()).view(-1, 1, 1)
             context = (ema_weights * past).sum(dim=0)           # weighted mean of past
-            temporal_loss = temporal_loss + F.mse_loss(current, context.detach())
+            if use_trend_seasonal:
+                # TIDFormer (KDD 2025) trend+seasonal decomposition:
+                # trend = mean over all past embeddings; seasonal = context - trend
+                trend = past.mean(dim=0)                        # (N, D)
+                seasonal = context - trend                      # (N, D)
+                curr_trend = current.mean(dim=0, keepdim=True).expand_as(current)
+                curr_seasonal = current - curr_trend
+                temporal_loss = (
+                    temporal_loss
+                    + 0.5 * F.mse_loss(curr_trend, trend.detach())
+                    + 0.5 * F.mse_loss(curr_seasonal, seasonal.detach())
+                )
+            else:
+                temporal_loss = temporal_loss + F.mse_loss(current, context.detach())
         total = loss + temporal_loss_weight * temporal_loss
         total.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -1369,7 +1443,7 @@ def run_dgt_pipeline(
             shift_rows.append({"transition": f"G{t} to G{t+1}", "word": words[idx], "cosine_shift": float(dist[idx])})
     shifts = pd.DataFrame(shift_rows)
 
-    def _ema_predict(shift_series: list[float], decay: float = 0.5) -> float:
+    def _ema_predict(shift_series: list[float], decay: float = 0.7) -> float:
         """Predict next cosine-shift value using a recency-weighted EMA.
 
         Replaces linear extrapolation (np.polyfit) which produced negative
@@ -1437,6 +1511,13 @@ def run_dgt_pipeline(
                         "seed": seed,
                         "edge_batch": actual_edge_batch,
                         "temporal_loss_weight": temporal_loss_weight,
+                        "pe_type": pe_type,
+                        "use_residual_bypass": use_residual_bypass,
+                        "temporal_gate": temporal_gate,
+                        "use_time_embedding": use_time_embedding,
+                        "time_encoding": time_encoding,
+                        "rwpe_attention_bias": rwpe_attention_bias,
+                        "use_trend_seasonal": use_trend_seasonal,
                     },
                 },
                 indent=2,
