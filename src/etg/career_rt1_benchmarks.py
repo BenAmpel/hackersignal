@@ -324,6 +324,146 @@ def _feature_propagation_embeddings(
     return embeddings
 
 
+def _rwpe_features(snap: dict, words: list[str], k: int) -> np.ndarray:
+    """Random Walk PE features for a single snapshot (GraphGPS, NeurIPS 2022)."""
+    from etg.career_hackersignal_pipeline import _rwpe
+    node_to_idx = {w: i for i, w in enumerate(words)}
+    return _rwpe(snap["edge_counts"], node_to_idx, k).astype(np.float32)
+
+
+def _mose_features_bench(snap: dict, words: list[str]) -> np.ndarray:
+    """MoSE motif counts for a single snapshot (ICLR 2025, arxiv:2410.18676)."""
+    from etg.career_hackersignal_pipeline import _mose_features
+    node_to_idx = {w: i for i, w in enumerate(words)}
+    return _mose_features(snap["edge_counts"], node_to_idx).astype(np.float32)
+
+
+def _heat_kernel_pe(snap: dict, words: list[str], t_vals: tuple = (1, 2, 4, 8)) -> np.ndarray:
+    """Heat kernel diagonal PE: [exp(-t*L)]_{ii} for each t in t_vals."""
+    from scipy.sparse.linalg import eigsh
+    adj = _edge_matrix(snap, words, weighted=False, sym=True)
+    n = len(words)
+    if adj.nnz == 0:
+        return np.zeros((n, len(t_vals)), dtype=np.float32)
+    deg = np.asarray(adj.sum(axis=1)).ravel()
+    inv_sqrt = np.zeros_like(deg)
+    inv_sqrt[deg > 0] = 1.0 / np.sqrt(deg[deg > 0])
+    norm_adj = sparse.diags(inv_sqrt) @ adj @ sparse.diags(inv_sqrt)
+    lap = sparse.eye(n) - norm_adj
+    k_eig = min(64, max(2, n - 1))
+    try:
+        vals, vecs = eigsh(lap.astype(np.float64), k=k_eig, which="SM")
+    except Exception:
+        return np.zeros((n, len(t_vals)), dtype=np.float32)
+    pe = np.zeros((n, len(t_vals)), dtype=np.float32)
+    for col_idx, t in enumerate(t_vals):
+        kernel_weights = np.exp(-t * np.maximum(vals, 0.0))
+        pe[:, col_idx] = (vecs ** 2 @ kernel_weights).astype(np.float32)
+    return pe
+
+
+def _spse_features(snap: dict, words: list[str], k_paths: int = 4) -> np.ndarray:
+    """Simple Path Structural Encoding (SPSE, ICML 2025, arxiv:2502.09365).
+
+    Per-node counts of non-self-intersecting simple paths of lengths 1..k_paths.
+    Lengths 3-4 are approximated for O(N*deg) cost.
+    """
+    n = len(words)
+    node_to_idx = {w: i for i, w in enumerate(words)}
+    adj_sets: dict[int, set[int]] = {i: set() for i in range(n)}
+    for (src, dst) in snap["edge_counts"]:
+        if src in node_to_idx and dst in node_to_idx:
+            i, j = node_to_idx[src], node_to_idx[dst]
+            adj_sets[i].add(j)
+            adj_sets[j].add(i)
+
+    features = np.zeros((n, k_paths), dtype=np.float32)
+    for i in range(n):
+        nbrs_i = adj_sets[i]
+        deg_i = len(nbrs_i)
+        features[i, 0] = float(deg_i)
+        if k_paths >= 2:
+            cnt2 = sum(max(len(adj_sets[j]) - 1, 0) for j in nbrs_i)
+            features[i, 1] = float(cnt2)
+        if k_paths >= 3:
+            cnt3 = 0
+            for j in nbrs_i:
+                for kk in adj_sets[j]:
+                    if kk != i and kk not in nbrs_i:
+                        cnt3 += max(len(adj_sets[kk]) - 2, 0)
+            features[i, 2] = float(cnt3)
+        if k_paths >= 4:
+            if deg_i > 0:
+                avg_2nd = sum(len(adj_sets[j]) for j in nbrs_i) / deg_i
+                features[i, 3] = float(deg_i * avg_2nd * avg_2nd)
+    return features
+
+
+def _sign_aggregate(snap: dict, words: list[str], dim: int, k_hops: int, rng: np.random.Generator) -> np.ndarray:
+    """SIGN multi-hop inception aggregation (ICML-W 2020)."""
+    adj = _edge_matrix(snap, words, weighted=False, sym=True)
+    counts = np.array(
+        [[snap["term_counts"].get(w, 0), snap["in_degree"].get(w, 0) + snap["out_degree"].get(w, 0)]
+         for w in words], dtype=np.float64
+    )
+    deg = np.asarray(adj.sum(axis=1)).ravel()
+    inv = np.zeros_like(deg)
+    inv[deg > 0] = 1.0 / deg[deg > 0]
+    P = sparse.diags(inv) @ adj
+    hops = [counts.copy()]
+    prop = counts.copy()
+    for _ in range(k_hops):
+        prop = P @ prop
+        hops.append(prop.copy())
+    feat = np.concatenate(hops, axis=1)
+    proj = rng.normal(0, 1 / math.sqrt(max(feat.shape[1], 1)), size=(feat.shape[1], dim))
+    return (feat @ proj).astype(np.float32)
+
+
+def _nodeformer_features(snap: dict, words: list[str], dim: int, rng: np.random.Generator) -> np.ndarray:
+    """NodeFormer kernelized random-feature attention proxy (NeurIPS 2022)."""
+    counts = np.array([[snap["term_counts"].get(w, 0)] for w in words], dtype=np.float64)
+    feat_dim = 1
+    W = rng.normal(0, 1, size=(dim, feat_dim))
+    b = rng.uniform(0, 2 * math.pi, size=dim)
+    phi = np.maximum(counts @ W.T + b, 0.0) + 1.0   # ELU+1, shape (N, dim)
+    phi_weighted = phi @ (phi.T @ counts)             # (N, 1)
+    phi_norm = phi @ phi.sum(axis=0, keepdims=True).T # (N, 1)
+    aggregated = phi_weighted / (phi_norm + 1e-9)
+    out = np.concatenate([counts, aggregated, phi[:, :dim // 2]], axis=1)
+    proj = rng.normal(0, 1 / math.sqrt(max(out.shape[1], 1)), size=(out.shape[1], dim))
+    return (out @ proj).astype(np.float32)
+
+
+def _grit_features(snap: dict, words: list[str], dim: int, k: int, rng: np.random.Generator) -> np.ndarray:
+    """GRIT RWPE relative-attention proxy (ICML 2023, arxiv:2312.02220)."""
+    rwpe = _rwpe_features(snap, words, k)         # (N, k)
+    bias = rwpe @ rwpe.T                           # (N, N) pairwise dot-product
+    agg = bias.sum(axis=1, keepdims=True)          # (N, 1) aggregated relative signal
+    feat = np.concatenate([rwpe, agg], axis=1)    # (N, k+1)
+    proj = rng.normal(0, 1 / math.sqrt(max(feat.shape[1], 1)), size=(feat.shape[1], dim))
+    return (feat @ proj).astype(np.float32)
+
+
+def _ot_shift_magnitude(snap_prev: dict, snap_curr: dict, words: list[str]) -> np.ndarray:
+    """Unbalanced OT semantic shift magnitude (ACL 2025, arxiv:2412.12569).
+
+    L1 distance between normalised PPMI context distributions across consecutive
+    spells. Captures the same distributional drift signal as UOT without the POT
+    library dependency.
+    """
+    def _ppmi_dense(snap: dict) -> np.ndarray:
+        mat = _edge_matrix(snap, words, weighted=True, sym=True)
+        ppmi = _ppmi(mat)
+        return np.asarray(ppmi.toarray(), dtype=np.float32)
+
+    prev_ppmi = _ppmi_dense(snap_prev)
+    curr_ppmi = _ppmi_dense(snap_curr)
+    prev_norm = prev_ppmi / (prev_ppmi.sum(axis=1, keepdims=True) + 1e-9)
+    curr_norm = curr_ppmi / (curr_ppmi.sum(axis=1, keepdims=True) + 1e-9)
+    return np.abs(prev_norm - curr_norm).sum(axis=1).astype(np.float32)
+
+
 def _matrix_embedding_baseline(
     snapshots: list[dict],
     words: list[str],
