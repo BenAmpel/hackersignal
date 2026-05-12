@@ -969,6 +969,82 @@ def _laplacian_pe(edge_counts: dict, node_to_idx: dict[str, int], k: int) -> np.
     return pe.astype(np.float32)
 
 
+def _rwpe(edge_counts: dict, node_to_idx: dict[str, int], k: int) -> np.ndarray:
+    """Random Walk Positional Encoding (GraphGPS, NeurIPS 2022).
+
+    For each node i, computes the k-step landing probabilities
+    [(D^{-1}A)^s]_{ii} for s=1..k.  These diagonal entries measure how
+    likely a random walk starting at i returns to i after exactly s steps,
+    capturing multi-scale local structure without an eigenvector solve.
+    """
+    n = len(node_to_idx)
+    if n == 0 or k <= 0:
+        return np.zeros((n, 0), dtype=np.float32)
+    rows, cols, data = [], [], []
+    for (src, dst), weight in edge_counts.items():
+        if src in node_to_idx and dst in node_to_idx:
+            i, j = node_to_idx[src], node_to_idx[dst]
+            rows.extend([i, j])
+            cols.extend([j, i])
+            data.extend([float(weight), float(weight)])
+    if not data:
+        return np.zeros((n, k), dtype=np.float32)
+    adj = sparse.coo_matrix((data, (rows, cols)), shape=(n, n)).tocsr().astype(np.float64)
+    degree = np.asarray(adj.sum(axis=1)).ravel()
+    inv = np.zeros_like(degree)
+    mask = degree > 0
+    inv[mask] = 1.0 / degree[mask]
+    # Row-stochastic transition matrix P = D^{-1}A
+    P = sparse.diags(inv) @ adj
+    pe = np.zeros((n, k), dtype=np.float32)
+    Ps = P.copy()
+    for s in range(k):
+        diag_vals = np.array(Ps.tocsr().diagonal(), dtype=np.float32)
+        pe[:, s] = diag_vals
+        if s < k - 1:
+            Ps = Ps @ P
+    return pe
+
+
+def _mose_features(edge_counts: dict, node_to_idx: dict[str, int]) -> np.ndarray:
+    """Motif Structural Encoding (MoSE, ICLR 2025, arxiv:2410.18676).
+
+    Computes three cheap motif counts per node:
+      col 0 — star count   = degree (number of incident edges)
+      col 1 — triangle count = number of closed triangles through node
+      col 2 — path-2 count  = number of length-2 paths through node
+
+    These homomorphism counts capture topology beyond degree alone.
+    """
+    n = len(node_to_idx)
+    if n == 0:
+        return np.zeros((n, 3), dtype=np.float32)
+
+    adj_sets: dict[int, set[int]] = {i: set() for i in range(n)}
+    for (src, dst) in edge_counts:
+        if src in node_to_idx and dst in node_to_idx:
+            i, j = node_to_idx[src], node_to_idx[dst]
+            adj_sets[i].add(j)
+            adj_sets[j].add(i)
+
+    features = np.zeros((n, 3), dtype=np.float32)
+    for i in range(n):
+        nbrs = adj_sets[i]
+        deg_i = len(nbrs)
+        features[i, 0] = float(deg_i)
+        tri = 0
+        nbr_list = list(nbrs)
+        for idx_j, j in enumerate(nbr_list):
+            for kk in nbr_list[idx_j + 1:]:
+                if kk in adj_sets[j]:
+                    tri += 1
+        features[i, 1] = float(tri)
+        path2 = sum(len(adj_sets[j]) for j in nbrs) - deg_i
+        features[i, 2] = float(max(path2, 0))
+
+    return features
+
+
 def _build_dgt_tensors(snapshots: list[dict], max_nodes: int, lap_pe_k: int, vocab: list[str] | None = None) -> dict:
     words = vocab if vocab is not None else _select_dgt_vocab(snapshots, max_nodes)
     node_to_idx = {word: i for i, word in enumerate(words)}
