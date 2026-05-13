@@ -190,30 +190,53 @@ Following \textcite{hevner2004}'s taxonomy of evaluation modes, we employ two co
 
 \subsection{HackerSignal Corpus}
 
-The HackerSignal corpus is a multi-layer collection of 1,783,276 posts aggregated from seven source types, spanning January 2016 through April 2026 (Table 2). The dominant layer is hacker community discourse (81.6\%), supplemented by structured vulnerability reference posts (15.2\%), security advisories (1.6\%), exploit archives (0.65\%), bug bounty disclosures (0.47\%), fix-commit references (0.40\%), and exploitation reports (0.08\%). This multi-source design instantiates DP4: no single source captures the full semantic spectrum of exploit vocabulary in use. Hacker communities supply the raw, early-stage discourse; advisory and vulnerability references provide the formal vocabulary against which community terms can be grounded; exploit archives and bug-bounty disclosures supply the technical detail that distinguishes attack-oriented usage from general security discussion.
+\subsubsection{The Full HackerSignal Dataset}
 
-\begin{misqtable}{4}{HackerSignal Corpus Source Layer Statistics}%
-{Note: Percentages may not sum to exactly 100 due to rounding. Total records: 1,783,276 posts across 12 temporal spells (January 2016 -- April 2026).}%
-{l|r|r|l}
-\textbf{Source Layer} & \textbf{Records} & \textbf{\%} & \textbf{Primary Content} \\
+The ETG analysis draws on HackerSignal \parencite{ampel2026hackersignal}, a large-scale multi-source benchmark corpus linking hacker community discourse to the CVE vulnerability lifecycle. The full HackerSignal release comprises \textbf{7,447,646 exact-deduplicated documents} from \textbf{64 public forum and source identifiers} spanning \textbf{eight source layers} and a \textbf{36-year window} (1991--2026):
+
+\begin{enumerate}
+  \item \textbf{Hacker Community (6,966,014 docs; 56 forums):} Organic security discourse from darkweb marketplaces, security discussion boards, and multilingual hacker communities. Major forums include \texttt{gayanku\_darkweb} (3.11M rows, 2011--17), \texttt{antichat} (1.82M, 2002--26), \texttt{evolution\_darkweb} (471K, 2014--15), \texttt{antionline} (463K, 2001--26), \texttt{persiantools} (280K), \texttt{wwhclub} (161K), and \texttt{hackforums} (151K, 2009--15), alongside 48 additional forums.
+  \item \textbf{Vulnerability Reference (340,536 docs):} National Vulnerability Database (NVD) CVE descriptions (2002--26), each with a CVE identifier; the retrieval corpus for HackerSignal's benchmark tasks.
+  \item \textbf{Exploit Archive (46,653 docs):} ExploitDB, 0day.today, PacketStorm, ZeroScience, and Vulnerability-Lab proof-of-concept exploit descriptions (1991--2026).
+  \item \textbf{Exploit Q\&A Reference (46,505 docs):} Structured exploit question-and-answer references (circa 2000).
+  \item \textbf{Advisory Reference (28,684 docs):} GitHub Advisory, CISA advisories, and CERT notices (2017--2026).
+  \item \textbf{Bug-Bounty Disclosure (9,453 docs):} HackerOne and related bug-bounty platform reports (2013--2024).
+  \item \textbf{Fix-Commit Reference (8,293 docs):} CVEfixes security-relevant fix commit messages (1999--2022).
+  \item \textbf{Exploitation Reference (1,508 docs):} CISA Known Exploited Vulnerabilities (KEV) catalog entries (2021--2026).
+\end{enumerate}
+
+Documents are unified through a shared CVE identifier namespace and a common JSONL record format carrying source provenance, ISO~8601 timestamps, and pseudonymized author hashes. Across all 7.45M documents, 4.8\% carry explicit CVE references, 23.5\% contain at least one CTI keyword, and estimated near-duplicates account for 8.2\% (addressed through SHA-256 exact deduplication and MinHash-LSH near-deduplication during corpus construction). The corpus spans multilingual content---including Russian, Turkish, Persian, Arabic, and Chinese in DeepDarkCTI and darknet sources---though English-language posts constitute the substantial majority.
+
+\subsubsection{ETG Corpus: Subsetting HackerSignal to the Analysis Window}
+
+The ETG analysis requires a \textit{temporally coherent} corpus aligned with the modern era of systematic CVE tracking and structured exploit discourse. We apply a single temporal filter: \textbf{January 1, 2016 onward}. The 2016 boundary is motivated by three converging factors. First, the CISA KEV catalog, the NVD's modern structured CVE format, and the major hacker community platforms that dominate our analysis all reach maturity and consistent coverage after 2016. Second, the pre-2016 period is dominated by a small number of historical forum archives (Gayanku 2011--17, Evolution 2014--15) whose temporal coverage is asymmetric with respect to the other source layers. Third, the ETG's design is oriented toward the \textit{modern} exploit discourse era---the decade in which IoT weaponisation, ransomware-as-a-service, nation-state zero-day exploitation, and LLM safety bypass all emerged as dominant threat paradigms.
+
+Applying the 2016+ filter to HackerSignal yields the \textbf{ETG corpus of 1,783,276 documents} across \textbf{seven active source layers} (Table 2). The Exploit Q\&A Reference layer (46,505 documents, circa 2000) falls entirely outside the analysis window and is excluded. All other layers are retained but reduced in size relative to the full HackerSignal release; the largest reduction occurs in the Hacker Community layer (6,966,014 $\rightarrow$ 1,455,413), primarily because Gayanku (2011--17), Evolution (2014--15), HackForums (2009--15), and other historical archives largely predate our cutoff.
+
+\begin{misqtable}{5}{ETG Corpus Source Layer Statistics (HackerSignal Subset, 2016--2026)}%
+{Note: The ETG corpus is derived from HackerSignal \parencite{ampel2026hackersignal} by applying a January 2016 temporal cutoff. The full HackerSignal release contains 7,447,646 documents across 8 source layers (1991--2026); the Exploit Q\&A Reference layer (46,505 docs, circa 2000) is excluded by the cutoff. Percentages may not sum to 100 due to rounding.}%
+{l|r|r|r|l}
+\textbf{Source Layer} & \textbf{ETG Corpus} & \textbf{\%} & \textbf{Full HackerSignal} & \textbf{Primary Content} \\
 \hline
-Hacker Community         & 1,455,413 & 81.6 & Forum posts, discussions, tool releases \\
+Hacker Community         & 1,455,413 & 81.6 & 6,966,014 & Forum posts, tool releases, community discourse \\
 \hline
-Vulnerability Reference  & 270,515   & 15.2 & CVE descriptions, NVD entries \\
+Vulnerability Reference  & 270,515   & 15.2 & 340,536   & NVD CVE descriptions \\
 \hline
-Advisory Reference       & 28,684    & 1.6  & Vendor advisories, CERT notices \\
+Advisory Reference       & 28,684    & 1.6  & 28,684    & GitHub Advisory, CISA advisories \\
 \hline
-Exploit Archive          & 11,652    & 0.65 & Proof-of-concept exploit code/descriptions \\
+Exploit Archive          & 11,652    & 0.65 & 46,653    & PoC exploit descriptions (ExploitDB, etc.) \\
 \hline
-Bug Bounty Disclosure    & 8,338     & 0.47 & HackerOne, Bugcrowd reports \\
+Bug Bounty Disclosure    & 8,338     & 0.47 & 9,453     & HackerOne reports \\
 \hline
-Fix Commit Reference     & 7,166     & 0.40 & Security-relevant code commit messages \\
+Fix Commit Reference     & 7,166     & 0.40 & 8,293     & Security fix commit messages \\
 \hline
-Exploitation Reference   & 1,508     & 0.08 & Incident reports, threat actor profiles \\
+Exploitation Reference   & 1,508     & 0.08 & 1,508     & CISA KEV entries \\
 \hline
-\textbf{Total}           & \textbf{1,783,276} & \textbf{100.0} & \\
+\textbf{ETG Total}       & \textbf{1,783,276} & \textbf{100.0} & \textbf{7,447,646} & \\
 \hline
 \end{misqtable}
+
+This multi-source design instantiates DP4: no single source captures the full semantic spectrum of exploit vocabulary in use. Hacker communities supply the raw, early-stage discourse; vulnerability references provide formal CVE-grounded vocabulary; advisory and exploit archive layers contribute the technical detail that distinguishes attack-oriented usage from general security discussion; and the KEV exploitation layer grounds the corpus in confirmed, weaponised vulnerabilities.
 
 Each post is preprocessed through a standard pipeline: Unicode normalisation, lowercasing, tokenisation, Porter stemming, stopword removal, and CVE-ID extraction (matching the pattern \texttt{CVE-YYYY-NNNN}). A four-token sliding window is applied to each post's token sequence to enumerate ordered co-occurrence pairs: for each token $u$ at position $i$, edges $(u, v)$ are created for each $v$ in positions $i{+}1$ through $i{+}4$. Co-occurrence counts accumulate into the ETG for each spell. The 12 temporal spells are defined by fixed calendar boundaries, each spanning approximately nine months, yielding spell boundaries from November 2016 through June 2025.
 
