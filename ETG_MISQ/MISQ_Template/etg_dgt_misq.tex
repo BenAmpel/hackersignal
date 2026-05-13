@@ -215,13 +215,13 @@ Exploitation Reference   & 1,508     & 0.08 & Incident reports, threat actor pro
 \hline
 \end{misqtable}
 
-Each post is preprocessed through a standard pipeline: Unicode normalisation, lowercasing, tokenisation, Porter stemming, stopword removal, and CVE-ID extraction (matching the pattern \texttt{CVE-YYYY-NNNN}). A five-token sliding window is applied to each post's token sequence to enumerate co-occurrence pairs, which accumulate into the ETG for each spell. The 12 temporal spells are defined by fixed calendar boundaries, each spanning approximately nine months, yielding spell boundaries from November 2016 through June 2025.
+Each post is preprocessed through a standard pipeline: Unicode normalisation, lowercasing, tokenisation, Porter stemming, stopword removal, and CVE-ID extraction (matching the pattern \texttt{CVE-YYYY-NNNN}). A four-token sliding window is applied to each post's token sequence to enumerate ordered co-occurrence pairs: for each token $u$ at position $i$, edges $(u, v)$ are created for each $v$ in positions $i{+}1$ through $i{+}4$. Co-occurrence counts accumulate into the ETG for each spell. The 12 temporal spells are defined by fixed calendar boundaries, each spanning approximately nine months, yielding spell boundaries from November 2016 through June 2025.
 
 \subsection{Exploit Text Graph Construction}
 
 \subsubsection{Formal Definition}
 
-The Exploit Text Graph at spell $t$ is a directed weighted graph $\mathcal{G}_t = (\mathcal{V}, \mathcal{E}_t, \mathbf{W}_t)$, where $\mathcal{V}$ is the vocabulary of stemmed exploit terms, $\mathcal{E}_t \subseteq \mathcal{V} \times \mathcal{V}$ is the edge set, and $\mathbf{W}_t : \mathcal{E}_t \rightarrow \mathbb{R}_{>0}$ assigns co-occurrence weights. An edge $(u, v) \in \mathcal{E}_t$ exists if terms $u$ and $v$ co-occur within a five-token window in at least one post up to and including spell $t$, and its weight is the total number of such co-occurrences.
+The Exploit Text Graph at spell $t$ is a directed weighted graph $\mathcal{G}_t = (\mathcal{V}, \mathcal{E}_t, \mathbf{W}_t)$, where $\mathcal{V}$ is the vocabulary of stemmed exploit terms, $\mathcal{E}_t \subseteq \mathcal{V} \times \mathcal{V}$ is the edge set, and $\mathbf{W}_t : \mathcal{E}_t \rightarrow \mathbb{R}_{>0}$ assigns co-occurrence weights. An edge $(u, v) \in \mathcal{E}_t$ exists if $u$ precedes $v$ within a four-token sliding window in at least one post up to and including spell $t$, capturing sequential proximity; its weight is the cumulative count of such co-occurrences. Only edges with weight $\geq 10$ (minimum co-occurrence threshold) are retained per spell, and the top 300,000 edges by weight are kept to bound memory.
 
 \subsubsection{Cumulative Design (DP1)}
 
@@ -229,7 +229,7 @@ Crucially, $\mathcal{G}_t$ is \textit{cumulative}: it incorporates all posts fro
 
 \subsubsection{Node Features}
 
-Each node $v \in \mathcal{V}$ at spell $t$ is associated with a 7-dimensional feature vector: (1) raw term frequency $f_t(v)$, (2) document frequency $d_t(v)$, (3) in-degree $\text{deg}^-(v)$, (4) out-degree $\text{deg}^+(v)$, (5) weighted degree $\sum_{u:(u,v)\in\mathcal{E}_t} W_t(u,v)$, (6) a binary lexical flag indicating whether the term appears as a CVE-adjacent token in at least one post, and (7) a trigram-hash positional encoding that provides a stable, spell-invariant structural fingerprint. This feature set balances distributional frequency with structural position and lexical grounding.
+Each node $v \in \mathcal{V}$ at spell $t$ is associated with a 9-dimensional base feature vector, with all frequency counts log-transformed via $\log(1+x)$ to compress the heavy-tailed distribution: (1) log term frequency $\log(1+f_t(v))$, (2) log document frequency $\log(1+d_t(v))$, (3) log in-degree $\log(1+\text{deg}^-(v))$, (4) log out-degree $\log(1+\text{deg}^+(v))$, (5) log weighted in-degree $\log(1+\sum_{u:(u,v)\in\mathcal{E}_t} W_t(u,v))$, (6) log weighted out-degree $\log(1+\sum_{v:(v,w)\in\mathcal{E}_t} W_t(v,w))$, (7) normalised word length $|v|/32$, (8) a binary flag for digit-containing terms (e.g., CVE IDs, version numbers), and (9) a binary flag for terms containing non-alphanumeric characters (e.g., hyphenated tokens). These nine scalar features capture distributional prominence, graph centrality, and basic lexical morphology. Graph-structural position is encoded separately via Laplacian positional encodings (Section~4.3.2).
 
 \subsubsection{Growth Statistics}
 
@@ -260,39 +260,78 @@ Figure 1 shows the growth of the ETG vocabulary (nodes) and edge weight (co-occu
 
 \subsubsection{Input and Vocabulary}
 
-The DGT operates on the top-$N = 6{,}000$ nodes ranked by cumulative co-occurrence weight at the final spell, ensuring that the embedding vocabulary captures the most substantive exploit terms across the full corpus while remaining computationally tractable. Node feature matrices $\mathbf{X}_t \in \mathbb{R}^{N \times 7}$ and adjacency matrices $\mathbf{A}_t \in \mathbb{R}^{N \times N}$ for spells $t = 1, \ldots, T$ form the input sequence.
+The DGT operates on the top-$N = 6{,}000$ nodes ranked by raw term frequency in the final spell. Selecting vocabulary from the final spell ensures the embedding space is anchored to the most active terms in current discourse while remaining computationally tractable. The 9-dimensional base feature matrices $\mathbf{X}_t \in \mathbb{R}^{N \times 9}$ and Boolean adjacency matrices $\mathbf{A}_t \in \{0,1\}^{N \times N}$ for spells $t = 1, \ldots, T$ are constructed independently for each spell from the cumulative ETG snapshots and form the input to the DGT encoder.
 
 \subsubsection{Laplacian Positional Encodings (DP2)}
 
-Following \textcite{kreuzer2021}, we augment each node's feature vector with the $k = 16$ leading eigenvectors of the graph Laplacian $\mathbf{L}_t = \mathbf{D}_t - \mathbf{A}_t$, where $\mathbf{D}_t$ is the degree matrix. These Laplacian positional encodings (LapPE) give each node a structural fingerprint---its position in the graph's spectral geometry---that is stable enough across spells to enable meaningful cross-spell comparison while sensitive to local topology changes. The augmented node representation is $\tilde{\mathbf{X}}_t = [\mathbf{X}_t \| \mathbf{\Phi}_t] \in \mathbb{R}^{N \times (7+k)}$, where $\mathbf{\Phi}_t$ contains the $k$ Laplacian eigenvectors.
-
-\subsubsection{Masked Graph-Attention Encoder}
-
-The core of DGT is a two-layer graph-attention encoder applied independently at each spell, whose parameters are shared across spells to enable temporal generalisation. Each layer applies a multi-head attention operation over the neighbourhood of each node:
+Following \textcite{kreuzer2021} and \textcite{rampasek2022}, we augment each node's feature vector with the $k = 16$ eigenvectors corresponding to the $k$ smallest non-trivial eigenvalues of the \textit{normalised} graph Laplacian:
 \begin{equation}
-  \mathbf{h}_v^{(\ell+1)} = \sigma\!\left(\sum_{u \in \mathcal{N}(v) \cup \{v\}} \alpha_{vu}^{(\ell)}\, \mathbf{W}^{(\ell)}\, \mathbf{h}_u^{(\ell)}\right)
+  \mathbf{L}_t = \mathbf{I} - \mathbf{D}_t^{-1/2}\, \mathbf{A}_t\, \mathbf{D}_t^{-1/2}
 \end{equation}
-where $\alpha_{vu}^{(\ell)}$ are multi-head attention coefficients \parencite{velickovic2018}, $\mathbf{W}^{(\ell)}$ are learnable weight matrices, and $\sigma$ is a non-linear activation. The encoder produces per-spell node embeddings $\mathbf{E}_t \in \mathbb{R}^{N \times d}$ with $d = 128$ hidden dimensions and 4 attention heads.
-
-The temporal attention mechanism aggregates information across spells for each node:
+where $\mathbf{D}_t$ is the diagonal degree matrix. These Laplacian positional encodings (LapPE) give each node a structural fingerprint---its position in the graph's spectral geometry---that is sensitive to local co-occurrence topology without requiring global position labels. This is an established technique for injecting graph structure into otherwise position-agnostic transformers \parencite{kreuzer2021}. The augmented node representation is:
 \begin{equation}
-  \mathbf{z}_v = \text{Attention}_{\text{masked}}\!\left(\mathbf{e}_{v,1}, \mathbf{e}_{v,2}, \ldots, \mathbf{e}_{v,T}\right)
+  \tilde{\mathbf{X}}_t = [\mathbf{X}_t \;\|\; \mathbf{\Phi}_t] \in \mathbb{R}^{N \times (9+k)}
 \end{equation}
-where the attention is \textit{causally masked}---spell $t$ can attend only to spells $1, \ldots, t$ (DP2). This prevents future-spell information from influencing past-spell representations, which would constitute temporal data leakage and defeat the purpose of diachronic analysis. Without masking, we observe in ablation experiments that the model collapses to predicting zero shift for all terms, as it can perfectly reconstruct each spell from future context.
+where $\mathbf{\Phi}_t \in \mathbb{R}^{N \times k}$ contains the $k$ eigenvectors, yielding a 25-dimensional input per node ($d_{\text{in}} = 9 + 16 = 25$).
 
-\subsubsection{Temporal Loss and Shift Prediction Head (DP3)}
+\subsubsection{Adjacency-Masked Transformer Encoder}
 
-DGT is trained with a composite loss:
+\textit{What is standard practice.} The DGT's within-spell encoder is implemented as a two-layer PyTorch \texttt{TransformerEncoder} \parencite{vaswani2017} with GELU activation, $d = 128$ hidden dimensions, $h = 4$ attention heads, a $2d$-dimensional feedforward sublayer, and 0.2 dropout. The key structural adaptation---common to graph transformer approaches \parencite{rampasek2022}---is that the self-attention operation is constrained by the ETG adjacency matrix: tokens (nodes) that are not co-occurrence neighbours are blocked from attending to each other via a Boolean attention mask $\mathbf{M}_t \in \{0,1\}^{N \times N}$:
 \begin{equation}
-  \mathcal{L} = \mathcal{L}_{\text{recon}} + \lambda\, \mathcal{L}_{\text{temporal}}
+  \text{Attn}(\mathbf{Q},\mathbf{K},\mathbf{V})_{ij} = \frac{(\mathbf{Q}_i \cdot \mathbf{K}_j) / \sqrt{d_k} + m_{ij}}{\text{(softmax over } j\text{)}}
 \end{equation}
-where $\mathcal{L}_{\text{recon}}$ is a graph reconstruction loss (link prediction on held-out edges) and $\mathcal{L}_{\text{temporal}} = \frac{1}{N} \sum_{v=1}^{N} \left\| \cos(\mathbf{e}_{v,t}, \mathbf{e}_{v,t+1}) - \hat{c}_{v,t} \right\|^2$ penalises inaccurate prediction of consecutive-spell cosine distances. The temporal loss weight $\lambda = 0.1$ balances the reconstruction and shift objectives.
+where $m_{ij} = -\infty$ if $(i,j) \notin \mathcal{E}_t$ (non-neighbours are masked out) and $m_{ij} = 0$ otherwise. This constrains information flow to ETG co-occurrence structure without requiring explicit message-passing aggregation. Each spell's graph is encoded independently: the encoder is called once per spell $t$, producing per-spell node embeddings $\mathbf{E}_t \in \mathbb{R}^{N \times d}$ with parameters shared across all spells.
 
-A linear shift prediction head $f_\theta : \mathbb{R}^d \rightarrow [0, 2]$ maps each node's final-spell embedding $\mathbf{e}_{v,T}$ to a predicted next-spell cosine shift $\hat{y}_v = f_\theta(\mathbf{e}_{v,T})$. Training uses the AdamW optimiser for 200 epochs with edge-batched gradient computation (65,536 edges per batch) on CUDA hardware.
+\textit{What is novel: temporal grounding and the residual bypass.} To inject temporal position, a \textit{learned spell-index embedding} $\mathbf{s}_t \in \mathbb{R}^d$ (implemented as a standard \texttt{nn.Embedding} table, one vector per spell) is added to each node's projected feature vector before encoding:
+\begin{equation}
+  \mathbf{h}_{v,t}^{(0)} = \mathbf{W}_{\text{in}}\,\tilde{\mathbf{x}}_{v,t} + \mathbf{s}_t
+\end{equation}
+This is the only mechanism by which the model learns that two calls with the same adjacency structure belong to different time periods. After encoding, a learnable scalar gating parameter $\alpha \in [0,1]$ (implemented as $\alpha = \sigma(\theta)$ with $\theta$ initialised to 0) forms a residual bypass between the raw projected input and the transformer output:
+\begin{equation}
+  \mathbf{z}_{v,t} = \alpha\,\mathbf{e}_{v,t}^{\text{enc}} + (1-\alpha)\,\mathbf{h}_{v,t}^{(0)}
+\end{equation}
+The final per-node embedding is produced by an MLP projection followed by L2 normalisation: $\mathbf{e}_{v,t} = \text{L2}(\mathbf{W}_2 \,\text{ReLU}(\mathbf{W}_1\, \mathbf{z}_{v,t}))$. The scalar $\alpha$ is jointly learned during training; it controls the trade-off between the structurally-enriched transformer representation and the raw (but temporally-grounded) input.
+
+\textit{Temporal data leakage and the no-masked-attention ablation.} Because each spell is processed independently, there is no cross-spell attention and therefore no risk of future-spell leakage within the encoder itself. Temporal continuity is instead enforced through a separate context loss (Section~4.3.4). The ablation result reported in Table~7---where removing the temporal context loss degrades performance significantly---validates DP2's requirement that temporal ordering be respected during training.
+
+\subsubsection{Training Objective: Link Prediction and Temporal Context Loss (DP3)}
+
+\textit{What is standard practice.} DGT is trained with a composite loss:
+\begin{equation}
+  \mathcal{L} = \mathcal{L}_{\text{link}} + \lambda\, \mathcal{L}_{\text{temporal}}, \quad \lambda = 0.1
+\end{equation}
+The primary term $\mathcal{L}_{\text{link}}$ is a standard binary cross-entropy link-prediction loss over sampled positive (observed co-occurrence) and negative (randomly drawn non-edge) node pairs, evaluated independently per spell:
+\begin{equation}
+  \mathcal{L}_{\text{link}} = -\!\sum_{t=1}^{T}\!\sum_{(u,v)}\!\Big[ y_{uv}\log\sigma(\mathbf{e}_{u,t}^{\top}\mathbf{e}_{v,t}) + (1-y_{uv})\log(1-\sigma(\mathbf{e}_{u,t}^{\top}\mathbf{e}_{v,t}))\Big]
+\end{equation}
+where $y_{uv}=1$ for observed ETG edges. Up to 65,536 positive pairs are sampled per spell per batch to bound GPU memory.
+
+\textit{What is novel: recency-weighted temporal context loss.} The temporal term $\mathcal{L}_{\text{temporal}}$ is a novel regulariser that encourages temporal continuity in embedding space. For each spell $t > 1$, the current spell's embeddings are penalised for deviating from an \textit{exponentially-weighted moving average} (EMA) of all preceding spells' embeddings:
+\begin{equation}
+  \bar{\mathbf{E}}_{<t} = \sum_{s=1}^{t-1} w_s\, \mathbf{E}_s, \quad w_s \propto \exp\!\bigl(-0.5 \cdot (t-1-s)\bigr)
+\end{equation}
+\begin{equation}
+  \mathcal{L}_{\text{temporal}} = \sum_{t=2}^{T} \bigl\| \mathbf{E}_t - \bar{\mathbf{E}}_{<t} \bigr\|_F^2
+\end{equation}
+The EMA weights assign the highest influence to the most recent past spell and exponential decay to earlier ones, so the model is pulled toward recent context rather than a flat historical average. Crucially, $\bar{\mathbf{E}}_{<t}$ is detached from the computation graph---only $\mathbf{E}_t$ contributes gradients---so the loss acts as a smoothness constraint on the current spell without backpropagating through all past embeddings. This design is novel: it imposes temporal ordering (DP2) and smooth drift (DP3) on the embedding trajectory without requiring cross-spell attention or an explicit recurrence.
+
+\textit{Optimisation.} Training uses AdamW (learning rate $10^{-3}$, weight decay $10^{-4}$) for 200 epochs with a linear warmup schedule (10\% of epochs) followed by cosine annealing to $10^{-5}$. Gradients are clipped to unit norm to stabilise training.
+
+\subsubsection{Shift Prediction via Post-Hoc EMA Extrapolation (Novel)}
+
+There is \textit{no learned shift-prediction head} in the DGT. Shift forecasting is performed post-hoc, after training, using the per-spell embeddings. For each term $v$, the sequence of observed cosine shifts across historical spell transitions is computed:
+\begin{equation}
+  c_{v,t} = 1 - \cos(\mathbf{e}_{v,t-1},\, \mathbf{e}_{v,t}), \quad t = 2, \ldots, T
+\end{equation}
+The predicted next-spell shift is then the recency-weighted EMA of historical shifts (decay $\gamma = 0.7$):
+\begin{equation}
+  \hat{y}_v = \sum_{t=2}^{T} w_t\, c_{v,t}, \quad w_t \propto \gamma^{T-t}, \quad \hat{y}_v \geq 0
+\end{equation}
+This approach uses no additional learned parameters beyond the encoder. Its novelty lies in the combination of structure-aware diachronic embeddings (which capture the \textit{direction} of semantic change, not just frequency) with a simple, interpretable extrapolation rule that is robust to outlier transitions. The design reflects a deliberate choice to separate representation learning (the encoder) from prediction (the EMA), keeping each component transparent and diagnosable.
 
 \subsection{Shift Prediction and Watchlist Generation}
 
-At inference, DGT produces a predicted next-spell cosine shift $\hat{y}_v$ for each of the 6,000 tracked terms. Terms are ranked by $\hat{y}_v$ and the top-$n$ are filtered through a curated security annotation dictionary---a hand-crafted mapping from stemmed terms to plain-English security interpretations covering AI/LLM safety bypass, access control, memory safety, credential theft, network infrastructure, and vendor-specific vulnerability patterns. Terms that pass through the filter form the \textit{DGT Watchlist}: a ranked, annotated list of terms predicted to undergo the greatest semantic realignment in the forthcoming spell, delivered to CTI analysts as an actionable intelligence product.
+At inference, the trained encoder produces per-spell embeddings for all 6,000 tracked terms; consecutive-spell cosine shifts are computed, and the EMA extrapolation (Section~4.3.4) produces a predicted next-spell shift $\hat{y}_v$ for each term. Terms are ranked by $\hat{y}_v$ and the top-$n$ are filtered through a curated security annotation dictionary---a hand-crafted mapping from stemmed terms to plain-English security interpretations covering AI/LLM safety bypass, access control, memory safety, credential theft, network infrastructure, and vendor-specific vulnerability patterns. Terms that pass through the filter form the \textit{DGT Watchlist}: a ranked, annotated list of terms predicted to undergo the greatest semantic realignment in the forthcoming spell, delivered to CTI analysts as an actionable intelligence product.
 
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Evaluation}
@@ -553,7 +592,7 @@ The watchlist reveals several actionable intelligence patterns. The continued hi
 
 This paper makes three theoretical contributions to the IS research literature.
 
-\textbf{A Novel DSR Artifact Pair.} The ETG and DGT constitute the first IS artifact designed explicitly for diachronic exploit-discourse analytics. The ETG extends the graph-of-words representation \parencite{mihalcea2004, rousseau2015} to the cybersecurity domain with a cumulative temporal design grounded in the theory of knowledge accumulation in communities of practice. The DGT extends the graph transformer paradigm \parencite{rampasek2022, kreuzer2021} with masked temporal attention and a shift-predictive objective, operationalising Design Science principles for the CTI use case. Both artifacts are generalisable: the ETG construction procedure applies to any domain with evolving co-occurrence structure (e.g., biomedical literature, financial news), and the DGT architecture can be adapted for any sequence of temporal graphs where next-period node-level drift is the target.
+\textbf{A Novel DSR Artifact Pair.} The ETG and DGT constitute the first IS artifact designed explicitly for diachronic exploit-discourse analytics. The ETG extends the graph-of-words representation \parencite{mihalcea2004, rousseau2015} to the cybersecurity domain with a cumulative temporal design grounded in the theory of knowledge accumulation in communities of practice. The DGT extends the graph transformer paradigm \parencite{rampasek2022, kreuzer2021} with three novel components: adjacency-constrained self-attention across co-occurring exploit terms, a recency-weighted EMA temporal context loss that enforces smooth embedding trajectories, and post-hoc EMA shift extrapolation for next-spell prediction---together operationalising the four Design Science principles for the CTI use case. Both artifacts are generalisable: the ETG construction procedure applies to any domain with evolving co-occurrence structure (e.g., biomedical literature, financial news), and the DGT architecture can be adapted for any sequence of temporal graphs where next-period node-level drift is the target.
 
 \textbf{Empirically Validated Design Principles.} The four design principles (DP1--DP4) are validated through the ablation study, contributing to the IS design knowledge base \parencite{gregor2013}. Most notably, the no-masked-attention ablation demonstrates that the cumulative temporal masking constraint is not merely computationally convenient but functionally necessary---its removal destroys the model's predictive capacity entirely. The no-cumulative-ETG ablation confirms that the accumulation of co-occurrence history is responsible for roughly half of DGT's performance advantage over static baselines ($\Delta = +0.072$ for the ablation vs.\ $\Delta = +0.044$ to $+0.073$ for static embedding methods). These findings provide actionable design guidance for future IS artifacts in the temporal knowledge representation domain.
 
@@ -580,7 +619,7 @@ Several limitations of the current study warrant acknowledgement. First, HackerS
 
 The cybersecurity threat landscape is not static, and the vocabulary through which hacker communities articulate it is not static either. Terms shift meaning as attack techniques mature, as new tools achieve commercial scale, as geopolitical actors adopt novel targets, and as community attention pivots to new technology classes. The Exploit Text Graph and Diachronic Graph Transformer, presented here as a Design Science Research artifact pair, operationalise the detection and prediction of these semantic shifts at scale.
 
-Over a decade of hacker forum discourse---1,783,276 posts across 12 temporal spells---DGT produces shift predictions that significantly outperform 20 of 38 benchmark models, including established diachronic semantic methods and five dynamic graph neural networks, while remaining competitive with the strongest temporal GNN baselines. Four design principles, validated through ablation, establish that cumulative graph encoding, masked temporal attention, a shift-predictive training objective, and multi-source corpus construction are individually necessary and jointly sufficient conditions for effective diachronic exploit analytics. A six-term case study anchored to verifiable real-world cybersecurity events---from the Mirai botnet through LLM jailbreaking---demonstrates that DGT's shift detections are not statistical artefacts but reflect genuine, practitioner-relevant changes in the threat landscape.
+Over a decade of hacker forum discourse---1,783,276 posts across 12 temporal spells---DGT produces shift predictions that significantly outperform 20 of 38 benchmark models, including established diachronic semantic methods and five dynamic graph neural networks, while remaining competitive with the strongest temporal GNN baselines. Four design principles, validated through ablation, establish that cumulative graph encoding, a recency-weighted temporal context loss, adjacency-constrained self-attention, and multi-source corpus construction are individually necessary and jointly sufficient conditions for effective diachronic exploit analytics. A six-term case study anchored to verifiable real-world cybersecurity events---from the Mirai botnet through LLM jailbreaking---demonstrates that DGT's shift detections are not statistical artefacts but reflect genuine, practitioner-relevant changes in the threat landscape.
 
 The theoretical concept of lexical threat intelligence lag---the systematic temporal gap between hacker-community semantic evolution and formal vulnerability cataloguing---offers a new lens for IS cybersecurity analytics research. Future work should extend DGT to multilingual corpora, evaluate the lag magnitude against KEV addition dates, and conduct formal user studies with CTI analysts to quantify the operational value of the watchlist as an intelligence product. We invite the IS cybersecurity analytics community to adopt the ETG and DGT as open research artifacts and to build upon the design principles established here.
 
@@ -632,21 +671,33 @@ S12 & Jan 2016 -- Apr 2026 & 1,783,276 & 30,000 & 300,000 & 55.7 & 271,275 \\
 
 \misqappendix{DGT Architecture Notation}
 
-Let $\mathcal{G}_t = (\mathcal{V}, \mathcal{E}_t, \mathbf{W}_t)$ denote the Exploit Text Graph at spell $t$, with $N = |\mathcal{V}| = 6{,}000$ tracked nodes. The node feature matrix is $\mathbf{X}_t \in \mathbb{R}^{N \times 7}$. Laplacian positional encodings are the $k = 16$ leading eigenvectors of the normalised graph Laplacian, $\mathbf{\Phi}_t \in \mathbb{R}^{N \times 16}$, giving augmented features $\tilde{\mathbf{X}}_t = [\mathbf{X}_t \| \mathbf{\Phi}_t] \in \mathbb{R}^{N \times 23}$.
+Let $\mathcal{G}_t = (\mathcal{V}, \mathcal{E}_t, \mathbf{W}_t)$ denote the Exploit Text Graph at spell $t$, with $N = |\mathcal{V}| = 6{,}000$ tracked nodes. The 9-dimensional base node feature matrix is $\mathbf{X}_t \in \mathbb{R}^{N \times 9}$ (log-transformed frequency and degree statistics plus three morphological flags). Laplacian positional encodings are the $k = 16$ eigenvectors of the \textit{normalised} graph Laplacian $\mathbf{L}_t = \mathbf{I} - \mathbf{D}_t^{-1/2}\mathbf{A}_t\mathbf{D}_t^{-1/2}$ corresponding to the $k$ smallest non-trivial eigenvalues, $\mathbf{\Phi}_t \in \mathbb{R}^{N \times 16}$, giving augmented features $\tilde{\mathbf{X}}_t = [\mathbf{X}_t \| \mathbf{\Phi}_t] \in \mathbb{R}^{N \times 25}$.
 
-The graph-attention encoder $\text{GAT}_\theta : \mathbb{R}^{N \times 23} \times \mathbb{R}^{N \times N} \rightarrow \mathbb{R}^{N \times d}$ (with $d = 128$, 4 heads, 2 layers) produces per-spell node embeddings $\mathbf{E}_t = \text{GAT}_\theta(\tilde{\mathbf{X}}_t, \mathbf{A}_t)$.
-
-Masked temporal attention aggregates across spells for each node $v$:
+The adjacency-masked transformer encoder $f_\theta : \mathbb{R}^{N \times 25} \times \{0,1\}^{N \times N} \times \mathbb{Z} \rightarrow \mathbb{R}^{N \times d}$ (with $d = 128$, 4 heads, 2 layers, GELU activation, 0.2 dropout) processes each spell independently. For spell $t$, the input projection adds a learned spell embedding $\mathbf{s}_t$:
 \begin{equation}
-  \mathbf{z}_{v,t} = \sum_{s=1}^{t} \alpha_{ts}\, \mathbf{e}_{v,s}, \quad \alpha_{ts} = \frac{\exp(\mathbf{q}_t^\top \mathbf{k}_s / \sqrt{d})}{\sum_{r=1}^{t} \exp(\mathbf{q}_t^\top \mathbf{k}_r / \sqrt{d})}
+  \mathbf{H}_t^{(0)} = \mathbf{W}_{\text{in}}\,\tilde{\mathbf{X}}_t + \mathbf{1}_N \mathbf{s}_t^\top, \quad \mathbf{s}_t = \text{Embedding}(t) \in \mathbb{R}^d
 \end{equation}
-where $\mathbf{q}_t, \mathbf{k}_s$ are query and key projections of the spell-$t$ and spell-$s$ embeddings, respectively. The causal mask ensures $\alpha_{ts} = 0$ for $s > t$.
+Self-attention is masked by the ETG adjacency: non-neighbours receive $-\infty$ attention logits. After two transformer layers, a residual bypass with learnable scalar $\alpha = \sigma(\theta)$ (initialised at $\alpha = 0.5$) blends transformer output and input:
+\begin{equation}
+  \mathbf{Z}_t = \alpha\, f_{\text{enc}}(\mathbf{H}_t^{(0)}) + (1-\alpha)\, \mathbf{H}_t^{(0)}
+\end{equation}
+Per-spell embeddings are produced by a two-layer MLP projection followed by L2 normalisation:
+\begin{equation}
+  \mathbf{E}_t = \text{L2}\!\bigl(\mathbf{W}_2\, \text{ReLU}(\mathbf{W}_1\, \mathbf{Z}_t)\bigr) \in \mathbb{R}^{N \times d}
+\end{equation}
 
 The composite training loss is:
+\begin{align}
+  \mathcal{L} &= \mathcal{L}_{\text{link}} + \lambda\,\mathcal{L}_{\text{temporal}}, \quad \lambda = 0.1 \notag \\
+  \mathcal{L}_{\text{link}} &= -\sum_{t=1}^{T}\sum_{(u,v)}\bigl[y_{uv}\log\sigma(\mathbf{e}_{u,t}^\top \mathbf{e}_{v,t}) + (1-y_{uv})\log(1-\sigma(\mathbf{e}_{u,t}^\top \mathbf{e}_{v,t}))\bigr] \notag \\
+  \mathcal{L}_{\text{temporal}} &= \sum_{t=2}^{T} \bigl\|\mathbf{E}_t - \bar{\mathbf{E}}_{<t}\bigr\|_F^2, \quad \bar{\mathbf{E}}_{<t} = \sum_{s<t} w_s\,\mathbf{E}_s,\; w_s \propto e^{-0.5(t-1-s)}
+\end{align}
+where $y_{uv} \in \{0,1\}$ is the edge label and $\bar{\mathbf{E}}_{<t}$ is the recency-weighted EMA of all past spell embeddings (detached from the computation graph). Training uses AdamW (lr $10^{-3}$, weight decay $10^{-4}$) with 10\% linear warmup followed by cosine annealing to $10^{-5}$; gradients are clipped to unit norm.
+
+Shift prediction is post-hoc (no learned prediction head). Observed cosine shifts $c_{v,t} = 1 - \cos(\mathbf{e}_{v,t-1}, \mathbf{e}_{v,t})$ are computed over the training window for each term $v$, and the predicted next-spell shift is the recency-weighted EMA with decay $\gamma = 0.7$:
 \begin{equation}
-  \mathcal{L} = \underbrace{\sum_{(u,v)\in\mathcal{E}_t} \text{BCE}\!\left(\sigma(\mathbf{e}_{u,t}^\top \mathbf{e}_{v,t}), y_{uv}\right)}_{\text{reconstruction}} + \lambda \underbrace{\frac{1}{N}\sum_{v=1}^{N} \left(1 - \frac{\mathbf{e}_{v,t} \cdot \mathbf{e}_{v,t+1}}{\|\mathbf{e}_{v,t}\|\|\mathbf{e}_{v,t+1}\|} - \hat{c}_{v,t}\right)^{\!2}}_{\text{temporal shift}}
+  \hat{y}_v = \sum_{t=2}^{T} w_t\, c_{v,t}, \quad w_t \propto \gamma^{T-t}, \quad \hat{y}_v = \max(0, \hat{y}_v)
 \end{equation}
-with $\lambda = 0.1$ and $\hat{c}_{v,t}$ the predicted cosine distance. The shift prediction head is $f_\theta(\mathbf{z}_{v,T}) = \sigma(\mathbf{W}_{\text{out}}\, \mathbf{z}_{v,T} + \mathbf{b}_{\text{out}})$, where $\sigma$ is a sigmoid scaled to $[0, 2]$.
 
 \misqappendix{Full Benchmark Leaderboard}
 
