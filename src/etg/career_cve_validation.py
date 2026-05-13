@@ -297,6 +297,110 @@ def run_cve_emergence_validation(
     }
 
 
+def run_cve_lag_analysis(
+    emb_dict: dict[str, np.ndarray],
+    snapshots: list[dict],
+    kev_entries: list[dict],
+    top_k: int = 50,
+    max_lag: int = 4,
+    stopwords: Optional[set[str]] = None,
+) -> dict:
+    """Test the lifecycle-lag hypothesis: do DGT-shifted terms at spell T
+    appear in CISA KEV entries at spell T+1+lag for lag > 0?
+
+    If hacker-community semantic drift precedes official CVE cataloguing,
+    we expect Precision@K to *increase* with lag (peak at lag=1 or lag=2)
+    rather than at lag=0 (simultaneous).
+
+    Parameters
+    ----------
+    emb_dict   : same format as run_cve_emergence_validation.
+    snapshots  : list of 12 spell dicts.
+    kev_entries: list of KEV dicts from fetch_kev.
+    top_k      : top-K shifted terms to check at each lag.
+    max_lag    : maximum number of spells to look ahead (0 = same spell as shift).
+    stopwords  : extra stop-words for tokenisation.
+
+    Returns
+    -------
+    dict with keys:
+      top_k, max_lag,
+      mean_precision_by_lag: {lag_int: mean_P@K across transitions},
+      per_transition: list of {transition, spell_from, lag_precisions: {lag: P@K}}.
+    """
+    if stopwords is None:
+        stopwords = set()
+
+    words: np.ndarray = emb_dict["words"]
+    n_spells = sum(1 for k in emb_dict if re.match(r"^G_\d+$", k))
+    vocab_set = set(words.tolist())
+
+    windows = _spell_windows_from_snapshots(snapshots)
+    kev_by_spell = _assign_kev_to_spells(kev_entries, windows)
+    all_shifts = _dgt_shift_scores(emb_dict, n_spells)
+
+    per_transition: list[dict] = []
+
+    for t in range(1, n_spells):
+        shift_scores = all_shifts[t - 1]          # shifts for G_t → G_{t+1}
+        top_k_actual = min(top_k, len(words))
+        top_indices = np.argsort(-shift_scores)[:top_k_actual]
+        top_words = set(words[top_indices].tolist())
+
+        lag_precisions: dict[int, float] = {}
+        for lag in range(max_lag + 1):
+            target_spell = t + 1 + lag
+            if target_spell > n_spells:
+                break
+            kev_in_target = kev_by_spell.get(target_spell, [])
+            if not kev_in_target:
+                continue
+
+            cve_terms: set[str] = set()
+            for entry in kev_in_target:
+                text = (
+                    entry.get("vulnerabilityName", "")
+                    + " " + entry.get("shortDescription", "")
+                    + " " + " ".join(entry.get("cwes", []))
+                )
+                cve_terms |= _tokenize_cve_text(text, stopwords) & vocab_set
+
+            if not cve_terms:
+                continue
+
+            hits = sum(1 for w in top_words if w in cve_terms)
+            lag_precisions[lag] = hits / top_k_actual
+
+        if lag_precisions:
+            per_transition.append({
+                "transition": f"G{t:02d}_to_G{t+1:02d}",
+                "spell_from": t,
+                "spell_to": t + 1,
+                "lag_precisions": lag_precisions,
+            })
+            log.info(
+                "Spell %d→%d lag P@%d: %s",
+                t, t + 1, top_k_actual,
+                {l: f"{p:.3f}" for l, p in lag_precisions.items()},
+            )
+
+    # Aggregate: mean P@K per lag across all transitions that have that lag
+    lag_sums: dict[int, list[float]] = {}
+    for tr in per_transition:
+        for lag, prec in tr["lag_precisions"].items():
+            lag_sums.setdefault(lag, []).append(prec)
+
+    mean_by_lag = {lag: float(np.mean(vals)) for lag, vals in sorted(lag_sums.items())}
+
+    return {
+        "top_k": top_k,
+        "max_lag": max_lag,
+        "mean_precision_by_lag": mean_by_lag,
+        "n_transitions": len(per_transition),
+        "per_transition": per_transition,
+    }
+
+
 def fetch_kev(cache_path: Optional[Path] = None) -> list[dict]:
     """Download the CISA KEV catalog. Caches to *cache_path* if provided."""
     if cache_path is not None:

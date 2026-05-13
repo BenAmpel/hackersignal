@@ -267,3 +267,88 @@ def run_task3_dgt_retrieval(
         result["bm25"]["R@5"], result["bm25"]["R@10"],
     )
     return result
+
+
+def run_task3_stratified_retrieval(
+    queries: list[dict],
+    corpus_texts: list[str],
+    corpus_cve_ids: list[str],
+    emb_dict: dict[str, np.ndarray],
+    spell_key: str = "G_12",
+    stopwords: Optional[set[str]] = None,
+) -> dict:
+    """Run DGT and BM25 retrieval broken down by query source.
+
+    Many task-3 queries originate from formal vulnerability databases
+    (github_advisory, cisa_kev) whose language closely matches the KEV
+    corpus, inflating BM25 scores.  This function separates results by
+    source so reviewers can see DGT's relative performance on each slice.
+
+    Parameters are identical to run_task3_dgt_retrieval.
+
+    Returns
+    -------
+    dict with keys:
+      'overall': same as run_task3_dgt_retrieval output,
+      'by_source': {source_name: {'dgt': metrics, 'bm25': metrics}},
+      'source_counts': {source_name: n_valid_queries},
+      'corpus_overlap_warning': explanation string.
+    """
+    sw = (stopwords or set()) | _STOPWORDS
+    vocab: np.ndarray = emb_dict["words"]
+    emb: np.ndarray = emb_dict[spell_key].astype(np.float32)
+    norms = np.linalg.norm(emb, axis=1, keepdims=True)
+    emb = emb / np.where(norms > 0, norms, 1.0)
+
+    cve_to_idx = {cid: i for i, cid in enumerate(corpus_cve_ids)}
+    valid_queries = [q for q in queries if q.get("cve_id") in cve_to_idx]
+
+    def _metrics(ranks: np.ndarray, n: int) -> dict:
+        return {
+            "MRR@10": _mrr_at_k(ranks, 10),
+            "R@1":   _hit_rate_at_k(ranks, 1),
+            "R@5":   _hit_rate_at_k(ranks, 5),
+            "R@10":  _hit_rate_at_k(ranks, 10),
+            "n_queries": n,
+        }
+
+    def _run_slice(slice_queries: list[dict]) -> dict:
+        if not slice_queries:
+            empty = {"MRR@10": None, "R@1": None, "R@5": None, "R@10": None, "n_queries": 0}
+            return {"dgt": empty, "bm25": empty}
+        qtexts = [q["text"] for q in slice_queries]
+        pos_idx = np.array([cve_to_idx[q["cve_id"]] for q in slice_queries])
+        dgt_r  = _dgt_ranks(qtexts, corpus_texts, vocab, emb, sw, pos_idx)
+        bm25_r = _bm25_ranks(qtexts, corpus_texts, pos_idx, stopwords=sw)
+        return {"dgt": _metrics(dgt_r, len(slice_queries)),
+                "bm25": _metrics(bm25_r, len(slice_queries))}
+
+    # Overall
+    overall = _run_slice(valid_queries)
+
+    # Per source
+    sources: dict[str, list[dict]] = {}
+    for q in valid_queries:
+        src = q.get("source", "unknown")
+        sources.setdefault(src, []).append(q)
+
+    by_source = {src: _run_slice(qs) for src, qs in sources.items()}
+    source_counts = {src: len(qs) for src, qs in sources.items()}
+
+    log.info("Stratified retrieval — overall DGT MRR@10=%.3f  BM25=%.3f",
+             overall["dgt"]["MRR@10"], overall["bm25"]["MRR@10"])
+    for src, res in by_source.items():
+        log.info("  [%s] n=%d  DGT MRR@10=%.3f  BM25 MRR@10=%.3f",
+                 src, source_counts[src],
+                 res["dgt"]["MRR@10"] or 0, res["bm25"]["MRR@10"] or 0)
+
+    return {
+        "overall": overall,
+        "by_source": by_source,
+        "source_counts": source_counts,
+        "corpus_overlap_warning": (
+            "Queries from 'cisa_kev' source are drawn from the same CISA KEV catalog "
+            "used as the retrieval corpus; BM25 scores on this slice reflect near-verbatim "
+            "text overlap and should be interpreted as an upper bound, not a fair comparison."
+        ),
+    }
