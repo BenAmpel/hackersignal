@@ -1,0 +1,300 @@
+% MISQ Template Style File
+% Custom commands and environments for MISQ submissions
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{misqstyle}[2024/01/01 MISQ Template Style]
+
+% Required packages
+\RequirePackage{geometry}
+\RequirePackage{setspace}
+\RequirePackage{iftex}
+\RequirePackage{xcolor}
+\RequirePackage{colortbl}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{graphicx}
+\RequirePackage{caption}
+\RequirePackage{ragged2e}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+
+% Page setup - adjust margins as needed for MISQ
+\geometry{letterpaper, margin=1in}
+
+% Font setup - automatically detects engine
+\ifXeTeX
+  % XeLaTeX version - use exact fonts
+  \RequirePackage{fontspec}
+  \setmainfont{Times New Roman}[Ligatures=TeX]
+  \newfontfamily\titlefont{Times New Roman}[Ligatures=TeX]
+  \newfontfamily\abstractfont{Times New Roman}[Ligatures=TeX]
+  \newfontfamily\bodyfont{Times New Roman}[Ligatures=TeX]
+  \newfontfamily\tablefont{Arial}[Ligatures=TeX]
+  \newfontfamily\figurefont{Arial}[Ligatures=TeX]
+\else
+  \ifLuaTeX
+    % LuaLaTeX version - use exact fonts
+    \RequirePackage{fontspec}
+    \setmainfont{Times New Roman}[Ligatures=TeX]
+    \newfontfamily\titlefont{Times New Roman}[Ligatures=TeX]
+    \newfontfamily\abstractfont{Times New Roman}[Ligatures=TeX]
+    \newfontfamily\bodyfont{Times New Roman}[Ligatures=TeX]
+    \newfontfamily\tablefont{Arial}[Ligatures=TeX]
+    \newfontfamily\figurefont{Arial}[Ligatures=TeX]
+  \else
+    % pdfLaTeX version - use standard fonts
+    \RequirePackage{times}
+    \RequirePackage{helvet}
+    \renewcommand{\familydefault}{\rmdefault}
+    \newcommand{\titlefont}{\rmfamily}
+    \newcommand{\abstractfont}{\rmfamily}
+    \newcommand{\bodyfont}{\rmfamily}
+    \newcommand{\tablefont}{\sffamily}
+    \newcommand{\figurefont}{\sffamily}
+  \fi
+\fi
+
+% Redefine abstract environment to use full width
+\makeatletter
+\renewenvironment{abstract}{%
+  \normalfont
+  \list{}{%
+    \setlength{\leftmargin}{0pt}%
+    \setlength{\rightmargin}{0pt}%
+    \setlength{\listparindent}{0pt}%
+    \setlength{\itemindent}{0pt}%
+    \setlength{\parsep}{0pt}%
+    \setlength{\topsep}{0pt}%
+  }%
+  \item\relax
+}{%
+  \endlist
+}
+\makeatother
+
+% Table counter for auto-numbering
+\newcounter{misqtable}
+\renewcommand{\themisqtable}{\arabic{misqtable}}
+
+% Custom table environment
+% Usage: \begin{misqtable}{num cols}{Table Title}{optional note}{column spec} ... table rows ... \end{misqtable}
+% If no note is needed, use empty braces: \begin{misqtable}{3}{Title}{} ... \end{misqtable}
+% Column spec (4th parameter): Use empty braces {} for default (all left-aligned), or specify custom widths
+%   Default: all columns left-aligned (l) with borders: use {} for 4th parameter
+%   Custom: {l|p{3cm}|c} for left-aligned, 3cm paragraph width, centered columns
+%   Options: l (left), c (center), r (right), p{width} (paragraph with specified width)
+%   Example: {l|p{4cm}|p{3cm}} for left-aligned, 4cm paragraph, 3cm paragraph columns
+%   Note: Borders (|) are automatically added, so you can omit them in the spec
+% All columns will have borders. Add \hline between rows for horizontal borders.
+% Example: \begin{misqtable}{3}{Title}{Note: Additional information}{} Column 1 & Column 2 & Column 3 \\ \hline ... \end{misqtable}
+\makeatletter
+\newenvironment{misqtable}[4]{%
+    \stepcounter{misqtable}%
+    \begin{table}[htbp]%
+    \def\@currentlabel{\themisqtable}%
+    \tablefont%
+    \fontsize{10}{12}\selectfont%
+    \centering%
+    % Store the table title with numbering
+    \def\misqtabletitle{Table \themisqtable: #2}%
+    % Store the note and column count for use in end part
+    \def\misqtablenote{#3}%
+    \@tempcnta=#1\relax%
+    \edef\misqnumcols{\the\@tempcnta}%
+    % Check if note is empty
+    \def\@tempa{#3}%
+    \def\@tempb{}%
+    \ifx\@tempa\@tempb%
+        \def\misqhasnote{0}%
+    \else%
+        \def\misqhasnote{1}%
+    \fi%
+    % Check if 4th parameter (column spec) is provided and not empty
+    \def\@tempspec{#4}%
+    \def\@tempempty{}%
+    % Create table without resizebox to avoid scaling issues
+    \ifx\@tempspec\@tempempty%
+        % Use default: all left-aligned columns with borders
+        \begin{tabular}{|*{#1}{l|}}%
+    \else%
+        % Use provided column spec - always add borders for consistency
+        % User can provide spec like: l|p{3cm}|c (borders between columns)
+        % We'll add outer borders: |l|p{3cm}|c|
+        \begin{tabular}{|#4|}%
+    \fi%
+    \hline%
+    % Header row with black background, white text, spanning all columns (left-aligned)
+    \multicolumn{#1}{|l|}{\cellcolor{black}\textcolor{white}{\bfseries \misqtabletitle}} \\%
+    \hline%
+}{%
+    % Add note footer if provided (not empty)
+    \ifnum\misqhasnote=1%
+        \hline%
+        % Use note spanning all columns
+        \multicolumn{\misqnumcols}{|p{0.95\textwidth}|}{\itshape \misqtablenote} \\%
+    \fi%
+    \hline%
+    \end{tabular}%
+    \end{table}%
+}
+\makeatother
+
+% Alternative table environment for 9pt tables
+% Usage: \begin{misqtableSmall}{num cols}{Table Title}{optional note}{column spec} ... table rows ... \end{misqtableSmall}
+% If no note is needed, use empty braces: \begin{misqtableSmall}{3}{Title}{}{} ... \end{misqtableSmall}
+% Column spec (4th parameter): Use empty braces {} for default (all left-aligned), or specify custom widths
+%   Default: all columns left-aligned (l) with borders: use {} for 4th parameter
+%   Custom: {l|p{3cm}|c} for left-aligned, 3cm paragraph width, centered columns
+%   Options: l (left), c (center), r (right), p{width} (paragraph with specified width)
+% All columns will have borders. Add \hline between rows for horizontal borders.
+\makeatletter
+\newenvironment{misqtableSmall}[4]{%
+    \stepcounter{misqtable}%
+    \begin{table}[htbp]%
+    \def\@currentlabel{\themisqtable}%
+    \tablefont%
+    \fontsize{9}{11}\selectfont%
+    \centering%
+    % Store the table title with numbering
+    \def\misqtabletitle{Table \themisqtable: #2}%
+    % Store the note and column count for use in end part
+    \def\misqtablenote{#3}%
+    \@tempcnta=#1\relax%
+    \edef\misqnumcols{\the\@tempcnta}%
+    % Check if note is empty
+    \def\@tempa{#3}%
+    \def\@tempb{}%
+    \ifx\@tempa\@tempb%
+        \def\misqhasnote{0}%
+    \else%
+        \def\misqhasnote{1}%
+    \fi%
+    % Check if 4th parameter (column spec) is provided and not empty
+    \def\@tempspec{#4}%
+    \def\@tempempty{}%
+    % Create table without resizebox to avoid scaling issues
+    \ifx\@tempspec\@tempempty%
+        % Use default: all left-aligned columns with borders
+        \begin{tabular}{|*{#1}{l|}}%
+    \else%
+        % Use provided column spec - always add borders for consistency
+        \begin{tabular}{|#4|}%
+    \fi%
+    \hline%
+    % Header row with black background, white text, spanning all columns (left-aligned)
+    \multicolumn{#1}{|l|}{\cellcolor{black}\textcolor{white}{\bfseries \misqtabletitle}} \\%
+    \hline%
+}{%
+    % Add note footer if provided (not empty)
+    \ifnum\misqhasnote=1%
+        \hline%
+        % Use note spanning all columns
+        \multicolumn{\misqnumcols}{|p{0.95\textwidth}|}{\itshape \misqtablenote} \\%
+    \fi%
+    \hline%
+    \end{tabular}%
+    \end{table}%
+}
+\makeatother
+
+% Figure counter for auto-numbering
+\newcounter{misqfigure}
+\renewcommand{\themisqfigure}{\arabic{misqfigure}}
+
+% Custom figure environment as 1x2 table
+% Usage: \begin{misqfigure}{Figure Caption} ... figure content ... \end{misqfigure}
+% The figure content goes in the top row, caption with numbering in bottom row
+\makeatletter
+\newenvironment{misqfigure}[1]{%
+    \stepcounter{misqfigure}%
+    \begin{table}[htbp]%
+    \def\@currentlabel{\themisqfigure}%
+    \figurefont%
+    \fontsize{10}{12}\selectfont%
+    \centering%
+    % Store the figure caption with numbering
+    \def\misqfigcaption{Figure \themisqfigure: #1}%
+    % Create a 1-column table with borders to match table style
+    \begin{tabular}{|p{0.95\textwidth}|}%
+    \hline%
+    % Top row: figure content (centered)
+    % Use a safe width for minipage that accounts for borders
+    \begin{minipage}{0.95\textwidth}%
+    \centering%
+}{%
+    \end{minipage} \\%
+    \hline%
+    % Bottom row: caption with black background and white text (left-aligned, wraps if needed)
+    \cellcolor{black}\textcolor{white}{\bfseries \misqfigcaption} \\%
+    \hline%
+    \end{tabular}%
+    \end{table}%
+}
+\makeatother
+
+% Section formatting
+% Sections: centered, numbered, bold, Times New Roman 12pt, all caps
+% Subsections: left-aligned, numbered, sentence case, bold
+\makeatletter
+% Ensure sections are numbered
+\setcounter{secnumdepth}{3}
+
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {1\baselineskip}%
+                                   {1.2ex \@plus .2ex}%
+                                   {\centering\normalfont\fontsize{12}{14}\selectfont\bfseries\bodyfont\MakeUppercase}}
+
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {0.6ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries\bodyfont\raggedright}}
+
+% Appendix counter and formatting
+\newcounter{misqappendix}
+\renewcommand{\themisqappendix}{\Alph{misqappendix}}
+
+% Appendix section command
+% Usage: \misqappendix{Appendix Title}
+\newcommand{\misqappendix}[1]{%
+    \stepcounter{misqappendix}%
+    \vspace{2.3ex \@plus .2ex}%
+    \noindent%
+    {\centering\normalfont\fontsize{12}{14}\selectfont\bfseries\bodyfont%
+     APPENDIX \themisqappendix: \MakeUppercase{#1}\par}%
+    \vspace{1.5ex}%
+}
+
+\makeatother
+
+% Paragraph formatting
+\setlength{\parindent}{0.5in}
+\setlength{\parskip}{0pt}
+
+% Adjust float placement parameters to allow tables on pages with text
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.7}
+
+% Reduce spacing around floats (tables and figures) to match double spacing
+\setlength{\floatsep}{0.5\baselineskip}
+\setlength{\textfloatsep}{0.5\baselineskip}
+\setlength{\intextsep}{0.5\baselineskip}
+
+% Line spacing for body text (double-spaced)
+\doublespacing
+
+% Fully justified text (both left and right aligned)
+\justifying
+% Disable hyphenation - prevent words from breaking
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+% Allow flexible spacing between words to fill lines
+\sloppy
+\tolerance=10000
+\emergencystretch=3em
+\hbadness=10000
+
+\endinput
