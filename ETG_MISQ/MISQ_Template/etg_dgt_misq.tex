@@ -68,7 +68,7 @@
 \justifying
 \itshape
 \abstractfont
-Cybersecurity threats emerge and evolve in hacker communities long before they are formally catalogued in vulnerability databases, yet existing threat-intelligence systems process static snapshots of hacker discourse, missing the temporal semantic drift that signals emerging attack patterns. We present the \textbf{Exploit Text Graph (ETG)}---a cumulative temporal co-occurrence graph of exploit vocabulary---and the \textbf{Diachronic Graph Transformer (DGT)}, a masked graph-attention model that embeds ETG nodes across successive temporal spells and predicts which terms will undergo the greatest semantic shift in the next observation window. Applied to HackerSignal, a 1,783,276-post multi-source corpus spanning 12 temporal spells from January 2016 through April 2026, DGT achieves a heldout mean absolute error of 0.0816 on next-spell shift prediction and significantly outperforms all 36 of 36 tested external benchmark models---including GloVe, PPMI, SGNS, and five dynamic graph neural network baselines---at a false-discovery-rate-corrected $q < 0.05$. Ablation experiments validate four design principles: cumulative graph encoding, adjacency-constrained self-attention with Laplacian positional encodings, a recency-weighted temporal context loss, and multi-source corpus construction. A six-term case study traces semantically pivotal cybersecurity events---from the Mirai botnet and WannaCry through the emergence of Ransomware-as-a-Service and LLM jailbreaking---demonstrating that DGT detects vocabulary realignment in real time and produces an actionable forward-looking watchlist of predicted next-spell shifts. Theoretical contributions, design principles, and practitioner implications for proactive cyber threat intelligence are discussed.
+Cybersecurity threats emerge and evolve in hacker communities long before they are formally catalogued in vulnerability databases, yet existing threat-intelligence systems process static snapshots of hacker discourse, missing the temporal semantic drift that signals emerging attack patterns. We present the \textbf{Exploit Text Graph (ETG)}---a cumulative temporal co-occurrence graph of exploit vocabulary---and the \textbf{Diachronic Graph Transformer (DGT)}, a masked graph-attention model that embeds ETG nodes across successive temporal spells and predicts which terms will undergo the greatest semantic shift in the next observation window. Applied to HackerSignal, a 1,783,276-post multi-source corpus spanning 12 temporal spells from January 2016 through April 2026, DGT achieves a heldout mean absolute error of 0.082 and a Spearman $\rho$ of 0.662 on next-spell shift prediction, significantly outperforming all 36 of 36 tested external benchmark models---including GloVe, PPMI, SGNS, and five dynamic graph neural network baselines---at a false-discovery-rate-corrected $q < 0.05$. Rank-based evaluation via Spearman $\rho$ is particularly discriminating: null-predictor models that achieve low MAE by predicting zero shift for all terms show $\rho < 0$, confirming they actively rank high-shift terms last and are counter-productive for watchlist generation. Ablation experiments validate four design principles: cumulative graph encoding, adjacency-constrained self-attention with Laplacian positional encodings, a recency-weighted temporal context loss, and multi-source corpus construction. A six-term case study traces semantically pivotal cybersecurity events---from the Mirai botnet and WannaCry through the emergence of Ransomware-as-a-Service and LLM jailbreaking---demonstrating that DGT detects vocabulary realignment in real time and produces an actionable forward-looking watchlist of predicted next-spell shifts. Theoretical contributions, design principles, and practitioner implications for proactive cyber threat intelligence are discussed.
 \end{abstract}
 
 \vspace{0.75cm}
@@ -363,163 +363,163 @@ At inference, the trained encoder produces per-spell embeddings for all 6,000 tr
 
 \subsection{Experimental Setup}
 
-All models are evaluated on the same vocabulary of 6,000 terms and the same heldout target: the observed cosine shift at Spell 12 (the most recent spell, held out from training). Primary evaluation metrics are the mean absolute error (MAE) and root mean squared error (RMSE) of next-spell shift prediction, supplemented by mean absolute percentage error (MAPE), $R^2$, and the Top-50 overlap---the proportion of the 50 terms with the highest predicted shift that also appear in DGT's top-50 predicted set. We note that $R^2$ is expected to be low in this setting because the shift distribution is heavy-tailed with many near-zero values (DGT $R^2 = 0.045$); MAE is the more informative primary metric.
+All models are evaluated on the same vocabulary of 6,000 terms and the same heldout target: the observed cosine shift at Spell 12 (the most recent spell, held out from training). Co-primary evaluation metrics are the mean absolute error (MAE) and Spearman $\rho$ (rank correlation between each model's predicted-shift ranking and DGT's observed heldout shifts, computed on all 6,000 common terms). Secondary metrics include RMSE, and the Top-50 overlap---the proportion of the 50 terms with the highest predicted shift that also appear in DGT's top-50 predicted set. We note that $R^2$ is expected to be low in this setting because the shift distribution is heavy-tailed with many near-zero values (DGT $R^2 = 0.045$) and is not reported as a primary metric. MAE and Spearman $\rho$ are complementary: MAE penalises absolute prediction error and is sensitive to magnitude calibration, while Spearman $\rho$ measures rank discrimination---the ability to correctly identify \textit{which} terms will shift most---which is the property that directly governs CTI watchlist utility.
 
 Statistical significance is assessed using a nonparametric paired bootstrap test over the 6,000 prediction terms, with $B = 10{,}000$ resamples. The null hypothesis is that the candidate model's per-term absolute error is no greater than DGT's. The resulting $p$-values are corrected for multiple comparisons using the Benjamini--Hochberg false discovery rate (FDR) procedure \parencite{benjamini1995} at $q = 0.05$. Effect sizes are reported as standardised mean difference (Cohen's $d$) in absolute error \parencite{cohen1988}. The complete benchmark encompasses 36 external models that were successfully run across four experiment tiers, plus 22 DGT component ablations; four contextual encoder models (CTI-BERT, CySecBERT, ModernBERT, SecBERT) were reserved for future work given their distinct text-level vs.\ graph-level representational paradigm.
 
 \subsection{A Note on Null Predictors}
 
-A recurring pattern in the benchmark---one that must be addressed to avoid misleading interpretation---is the \textit{null predictor}: a model that achieves low MAE by predicting near-zero shift for all terms. Because the heldout shift distribution is dominated by small values (the median cosine shift across 6,000 terms is modest), a model that predicts zero for every term can achieve an MAE competitive with or below DGT's. However, such models offer zero practical utility: they cannot identify \textit{which} terms are approaching a semantic pivot. MAPE for null predictors is extremely large (often exceeding 100), and their Top-50 overlap with any meaningful rank ordering is near zero. We identify null predictors empirically as models with Top-50 overlap $\leq 0.06$ and near-zero predicted shift variance, and we report them separately to preserve transparency. The interpretive conclusion is that DGT significantly outperforms all 36 tested external models at FDR $q < 0.05$; null predictors, though appearing to achieve low MAE on the full 6,000-term leaderboard via trivial zero-prediction, are conclusively worse than DGT under the paired bootstrap evaluation on common terms that underlies the significance test.
+A recurring pattern in the benchmark---one that must be addressed to avoid misleading interpretation---is the \textit{null predictor}: a model that achieves low MAE by predicting near-zero shift for all terms. Because the heldout shift distribution is dominated by small values, a model that predicts zero for every term can achieve an MAE competitive with or below DGT's. However, such models offer zero practical utility: they cannot identify \textit{which} terms are approaching a semantic pivot. Spearman $\rho$ unmasks null predictors directly: a constant-prediction model has $\rho \approx 0$ (no rank discrimination) or $\rho < 0$ (if the predictor correlates negatively with true shifts), regardless of its MAE. We identify null predictors empirically as models with Top-50 overlap $\leq 0.06$ and near-zero predicted shift variance, and we report them separately to preserve transparency. The interpretive conclusion is that DGT significantly outperforms all 36 tested external models at FDR $q < 0.05$; null predictors, though appearing to achieve low MAE on the full 6,000-term leaderboard via trivial zero-prediction, are conclusively worse than DGT under both the paired bootstrap evaluation and the Spearman $\rho$ rank comparison.
 
 \subsection{Experiment 1 --- Non-Neural Classic Baselines}
 
-\begin{misqtableSmall}{6}{Experiment 1: Non-Neural Classic Baseline Results}%
-{Note: MAE and $\Delta$ are computed on common-term paired evaluation (see Section 5.1). $\Delta$ = MAE$_\text{model}$ $-$ MAE$_\text{DGT}$; positive $\Delta$ = model worse than DGT. Sig.\ = DGT significantly better at FDR $q < 0.05$. NP = null predictor (Top-50 overlap $\leq 0.06$ and near-zero shift variance); these models predict zero shift and are informationally empty despite appearing to achieve low MAE on the full-vocabulary leaderboard. DGT MAE = 0.082; RMSE = 0.178.}%
-{l|c|c|c|c|c}
-\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
+\begin{misqtableSmall}{7}{Experiment 1: Non-Neural Classic Baseline Results}%
+{Note: MAE and $\Delta$ are computed on common-term paired evaluation (see Section 5.1). $\Delta$ = MAE$_\text{model}$ $-$ MAE$_\text{DGT}$; positive $\Delta$ = model worse than DGT. Sig.\ = DGT significantly better at FDR $q < 0.05$. NP = null predictor (Top-50 overlap $\leq 0.06$ and near-zero shift variance); these models predict zero shift and are informationally empty despite appearing to achieve low MAE on the full-vocabulary leaderboard. Spearman $\rho$ = rank correlation between each model's predicted-shift ranking and DGT's heldout shifts (ground truth; $n = 6{,}000$); negative $\rho$ indicates reverse-order ranking. DGT MAE = 0.082; RMSE = 0.178; $\rho = 0.662$.}%
+{l|c|c|c|c|c|c}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{Spearman $\rho$} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
 \hline
-GloVe Log-Cooccurrence SVD  & 0.116 & 0.149 & 0.00 & $+$0.034 & Yes \\
+GloVe Log-Cooccurrence SVD  & 0.116 & 0.149 & 0.00 & 0.410 & $+$0.034 & Yes \\
 \hline
-PPMI + SVD + Procrustes     & 0.115 & 0.160 & 0.02 & $+$0.034 & Yes \\
+PPMI + SVD + Procrustes     & 0.115 & 0.160 & 0.02 & 0.416 & $+$0.034 & Yes \\
 \hline
-SGNS Shifted PPMI SVD       & 0.115 & 0.159 & 0.02 & $+$0.034 & Yes \\
+SGNS Shifted PPMI SVD       & 0.115 & 0.159 & 0.02 & 0.417 & $+$0.034 & Yes \\
 \hline
-Kleinberg Burst Approx.     & 0.159 & 1.593 & 0.04 & $+$0.078 & Yes \\
+Kleinberg Burst Approx.     & 0.159 & 1.593 & 0.04 & $-$0.015 & $+$0.078 & Yes \\
 \hline
-ARIMA Trend (NP)            & 0.136 & $\approx$0 & 0.02 & $+$0.054 & Yes \\
+ARIMA Trend (NP)            & 0.136 & $\approx$0 & 0.02 & $-$0.161 & $+$0.054 & Yes \\
 \hline
-Degree Trend (NP)           & 0.136 & $\approx$0 & 0.02 & $+$0.054 & Yes \\
+Degree Trend (NP)           & 0.136 & $\approx$0 & 0.02 & $-$0.185 & $+$0.054 & Yes \\
 \hline
-ETS Trend (NP)              & 0.136 & $\approx$0 & 0.02 & $+$0.054 & Yes \\
+ETS Trend (NP)              & 0.136 & $\approx$0 & 0.02 & $-$0.178 & $+$0.054 & Yes \\
 \hline
-TF-IDF Slope (NP)           & 0.136 & 0.001 & 0.04 & $+$0.054 & Yes \\
+TF-IDF Slope (NP)           & 0.136 & 0.001 & 0.04 & $-$0.156 & $+$0.054 & Yes \\
 \hline
-PageRank Trend (NP)         & 0.136 & $\approx$0 & 0.02 & $+$0.054 & Yes \\
+PageRank Trend (NP)         & 0.136 & $\approx$0 & 0.02 & $-$0.146 & $+$0.054 & Yes \\
 \hline
-Raw Frequency Slope (NP)    & 0.136 & $\approx$0 & 0.02 & $+$0.054 & Yes \\
+Raw Frequency Slope (NP)    & 0.136 & $\approx$0 & 0.02 & $-$0.161 & $+$0.054 & Yes \\
 \hline
-Weighted Degree Trend (NP)  & 0.136 & $\approx$0 & 0.00 & $+$0.054 & Yes \\
+Weighted Degree Trend (NP)  & 0.136 & $\approx$0 & 0.00 & $-$0.192 & $+$0.054 & Yes \\
 \hline
-\textbf{DGT (proposed)}     & \textbf{0.082} & \textbf{0.178} & \textbf{1.00} & --- & --- \\
+\textbf{DGT (proposed)}     & \textbf{0.082} & \textbf{0.178} & \textbf{1.00} & \textbf{0.662} & --- & --- \\
 \hline
 \end{misqtableSmall}
 
-Table 4 reports Experiment 1 results. DGT significantly outperforms all three classical diachronic semantic baselines---GloVe log-cooccurrence SVD ($\Delta = +0.034$), PPMI+SVD+Procrustes ($\Delta = +0.034$), and SGNS-shifted PPMI SVD ($\Delta = +0.034$)---at FDR $q < 0.001$. These results confirm that incorporating graph structure and temporal masking produces meaningfully better shift predictions than aligning per-spell static embeddings using Procrustes rotation.
+Table 4 reports Experiment 1 results. DGT significantly outperforms all three classical diachronic semantic baselines---GloVe log-cooccurrence SVD ($\Delta = +0.034$, $\rho = 0.410$), PPMI+SVD+Procrustes ($\Delta = +0.034$, $\rho = 0.416$), and SGNS-shifted PPMI SVD ($\Delta = +0.034$, $\rho = 0.417$)---at FDR $q < 0.001$. These methods achieve moderate Spearman $\rho$ because Procrustes-aligned embeddings recover some cross-spell rank ordering, but all fall well short of DGT's $\rho = 0.662$, confirming that graph structure and temporal context loss produce meaningfully superior rank discrimination over aligned static embeddings.
 
-The Kleinberg burst approximation, a method designed to detect discrete frequency bursts rather than continuous semantic drift, performs extremely poorly ($\Delta = +0.078$), demonstrating that burst detection is not a substitute for cosine-shift prediction. Seven trend-based models (ARIMA, ETS, degree, TF-IDF, PageRank, frequency, weighted-degree) are identified as null predictors: on the full 6,000-term leaderboard their shift-variance is near zero, but the paired bootstrap on common terms reveals they are significantly worse than DGT ($\Delta = +0.054$ for all, FDR $q < 0.001$). These models are entirely uninformative for the CTI application despite appearing competitive on raw full-vocabulary MAE.
+The Kleinberg burst approximation performs poorly on both metrics ($\Delta = +0.078$, $\rho = -0.015$), demonstrating that burst detection is not a substitute for cosine-shift prediction. Seven trend-based models (ARIMA, ETS, degree, TF-IDF, PageRank, frequency, weighted-degree) are identified as null predictors: on the full 6,000-term leaderboard their shift-variance is near zero. The Spearman $\rho$ values for these models are all \textit{negative}---ranging from $-0.146$ to $-0.192$---revealing that they do not merely fail to identify high-shift terms but actively rank them last. A model with $\rho < 0$ is worse than randomly assigning shift predictions, meaning that any CTI practitioner who sorted the null-predictor output to find the next high-shift term would be directed to the least-shifting vocabulary. This finding, invisible under raw MAE, demonstrates definitively that trend-based models are not merely uninformative but are counter-productive for the CTI watchlist application.
 
 \subsection{Experiment 2 --- Graph Embedding and Dynamic GNN Baselines}
 
-\begin{misqtableSmall}{6}{Experiment 2: Graph Embedding and Dynamic GNN Baseline Results}%
-{Note: MAE and $\Delta$ are computed on common-term paired evaluation. DGT MAE = 0.082; RMSE = 0.178. All models significantly worse than DGT at FDR $q < 0.001$.}%
-{l|c|c|c|c|c}
-\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
+\begin{misqtableSmall}{7}{Experiment 2: Graph Embedding and Dynamic GNN Baseline Results}%
+{Note: MAE and $\Delta$ are computed on common-term paired evaluation. Spearman $\rho$ = rank correlation between each model's predicted-shift ranking and DGT's heldout shifts ($n = 6{,}000$). DGT MAE = 0.082; RMSE = 0.178; $\rho = 0.662$. All models significantly worse than DGT at FDR $q < 0.001$.}%
+{l|c|c|c|c|c|c}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{Spearman $\rho$} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
 \hline
-\multicolumn{6}{l}{\textit{Static Graph Embeddings}} \\
+\multicolumn{7}{l}{\textit{Static Graph Embeddings}} \\
 \hline
-DeepWalk SVD          & 0.123 & 0.155 & 0.02 & $+$0.041 & Yes \\
+DeepWalk SVD          & 0.123 & 0.155 & 0.02 & 0.308 & $+$0.041 & Yes \\
 \hline
-Node2Vec Biased Walk  & 0.113 & 0.147 & 0.00 & $+$0.032 & Yes \\
+Node2Vec Biased Walk  & 0.113 & 0.147 & 0.00 & 0.445 & $+$0.032 & Yes \\
 \hline
-LINE First Order      & 0.123 & 0.180 & 0.00 & $+$0.042 & Yes \\
+LINE First Order      & 0.123 & 0.180 & 0.00 & 0.285 & $+$0.042 & Yes \\
 \hline
-LINE Second Order     & 0.152 & 0.220 & 0.02 & $+$0.070 & Yes \\
+LINE Second Order     & 0.152 & 0.220 & 0.02 & 0.404 & $+$0.070 & Yes \\
 \hline
-\multicolumn{6}{l}{\textit{Static Graph Neural Networks}} \\
+\multicolumn{7}{l}{\textit{Static Graph Neural Networks}} \\
 \hline
-GAT Link Reconstr.\         & 0.130 & 0.103 & 0.08 & $+$0.048 & Yes \\
+GAT Link Reconstr.\         & 0.130 & 0.103 & 0.08 & 0.434 & $+$0.048 & Yes \\
 \hline
-GCN Link Reconstr.\         & 0.130 & 0.103 & 0.00 & $+$0.049 & Yes \\
+GCN Link Reconstr.\         & 0.130 & 0.103 & 0.00 & 0.408 & $+$0.049 & Yes \\
 \hline
-GraphSAGE Link Reconstr.\   & 0.128 & 0.095 & 0.00 & $+$0.047 & Yes \\
+GraphSAGE Link Reconstr.\   & 0.128 & 0.095 & 0.00 & 0.279 & $+$0.047 & Yes \\
 \hline
-\multicolumn{6}{l}{\textit{Dynamic Graph Neural Networks}} \\
+\multicolumn{7}{l}{\textit{Dynamic Graph Neural Networks}} \\
 \hline
-CAWN Causal Walk       & 0.111 & 0.127 & 0.00 & $+$0.029 & Yes \\
+CAWN Causal Walk       & 0.111 & 0.127 & 0.00 & 0.463 & $+$0.029 & Yes \\
 \hline
-DySAT Struct.\ Temp.\  & 0.111 & 0.130 & 0.02 & $+$0.029 & Yes \\
+DySAT Struct.\ Temp.\  & 0.111 & 0.130 & 0.02 & 0.471 & $+$0.029 & Yes \\
 \hline
-EvolveGCN Temp.\ Smooth & 0.110 & 0.123 & 0.04 & $+$0.028 & Yes \\
+EvolveGCN Temp.\ Smooth & 0.110 & 0.123 & 0.04 & 0.442 & $+$0.028 & Yes \\
 \hline
-GraphMixer Event Mix   & 0.110 & 0.133 & 0.02 & $+$0.029 & Yes \\
+GraphMixer Event Mix   & 0.110 & 0.133 & 0.02 & 0.469 & $+$0.029 & Yes \\
 \hline
-TGAT Time-Weighted     & 0.109 & 0.139 & 0.02 & $+$0.028 & Yes \\
+TGAT Time-Weighted     & 0.109 & 0.139 & 0.02 & 0.461 & $+$0.028 & Yes \\
 \hline
-JODIE Projected Drift  & 0.121 & 0.111 & 0.02 & $+$0.039 & Yes \\
+JODIE Projected Drift  & 0.121 & 0.111 & 0.02 & 0.359 & $+$0.039 & Yes \\
 \hline
-TGN Memory Smooth      & 0.111 & 0.119 & 0.02 & $+$0.029 & Yes \\
+TGN Memory Smooth      & 0.111 & 0.119 & 0.02 & 0.416 & $+$0.029 & Yes \\
 \hline
-\textbf{DGT (proposed)}        & \textbf{0.082} & \textbf{0.178} & \textbf{1.00} & --- & --- \\
+\textbf{DGT (proposed)}        & \textbf{0.082} & \textbf{0.178} & \textbf{1.00} & \textbf{0.662} & --- & --- \\
 \hline
 \end{misqtableSmall}
 
-Table 5 reveals a clear differentiation across model families. Static graph embedding methods (DeepWalk, Node2Vec, LINE) underperform DGT significantly ($\Delta = +0.032$ to $+0.070$), confirming that static embeddings lacking temporal sequence information cannot adequately model semantic drift. Static GNNs (GAT, GCN, GraphSAGE) trained on a single-spell snapshot, while appearing competitive on a naive full-vocabulary MAE evaluation, are significantly outperformed by DGT in the paired bootstrap ($\Delta = +0.047$ to $+0.049$); their Top-50 overlap of 0--8\% confirms they do not discriminate high-shift terms.
+Table 5 reveals a clear differentiation across model families. Static graph embedding methods (DeepWalk, Node2Vec, LINE) underperform DGT significantly ($\Delta = +0.032$ to $+0.070$; $\rho = 0.285$--$0.445$), confirming that static embeddings lacking temporal sequence information cannot adequately model semantic drift. Static GNNs (GAT, GCN, GraphSAGE) trained on a single-spell snapshot are significantly outperformed by DGT ($\Delta = +0.047$ to $+0.049$; $\rho = 0.279$--$0.434$); their Top-50 overlap of 0--8\% and Spearman $\rho$ substantially below DGT's $0.662$ confirm they do not discriminate high-shift terms.
 
-Among dynamic GNN models, DGT significantly outperforms all seven at FDR $q < 0.001$---including TGN ($\Delta = +0.029$) and JODIE ($\Delta = +0.039$), which were anticipated to be competitive. The paired evaluation on common terms exposes that TGN and JODIE, while showing favourable raw MAE on the full-vocabulary leaderboard, perform significantly worse than DGT when assessed on the same term vocabulary. Crucially, JODIE's Top-50 predicted-shift terms share zero overlap with DGT's, confirming that JODIE's lower raw MAE reflects non-discriminative prediction---fitting uniform noise rather than identifying which specific terms are approaching a semantic pivot---rather than superior shift identification, which is the key CTI-relevant capability.
+Among dynamic GNN models, DGT significantly outperforms all seven at FDR $q < 0.001$. DySAT ($\rho = 0.471$) and GraphMixer ($\rho = 0.469$) achieve the best rank discrimination among external models but remain 27\% below DGT's $\rho = 0.662$. JODIE ($\Delta = +0.039$, $\rho = 0.359$) and TGN ($\Delta = +0.029$, $\rho = 0.416$), which were anticipated to be competitive due to their temporal memory mechanisms, are significantly worse than DGT on both metrics. JODIE's $\rho = 0.359$ is particularly telling: despite achieving low raw MAE, JODIE's shift-rank ordering of 6,000 terms correlates weakly with the true shift ranking, confirming that its low prediction error reflects fitting to the noise floor of the shift distribution rather than identifying which specific terms are approaching a semantic pivot---the key CTI-relevant capability. Crucially, JODIE's Top-50 predicted-shift terms share zero overlap with DGT's, consistent with a $\rho$ gap of $0.303$ ($= 0.662 - 0.359$) separating the two models' rank orderings.
 
 The practical nature of this gap is established directly in the case study (Section~\ref{sec:baseline_case}, Table~9). We traced the six case-study shift events through JODIE's and TGN's top-50 shift rankings at each key spell transition. JODIE does not place any of the six terms (\textit{iot}, \textit{rce}, \textit{ransomware}, \textit{stealer}, \textit{ivanti}, \textit{jailbreak}) in its top-50 at the event's peak transition---zero of six events detected. TGN detects one of six (Ivanti at rank 23). At the same transitions, the terms that JODIE and TGN flag in their top-5 are Turkish-language forum tokens (\textit{ndan}, \textit{olarak}, \textit{seti}), CSS/HTML scraping artifacts (\textit{document.getelementsbytagname}, \textit{bookmarks.classlist.add}), and pseudonymous defacement handles (\textit{defacerfounder}, \textit{miladninja}). This failure is mechanistically traceable: JODIE and TGN apply temporal smoothing over raw aligned embeddings without adjacency-constrained attention (DP2), so their shift signal is dominated by whichever vocabulary subpopulation drifts most in raw frequency---Turkish forum subcultures and web-scraping noise in this corpus, not exploit discourse. DGT's adjacency-constrained self-attention suppresses this noise by restricting attention to ETG co-occurrence neighbours. DGT's advantage is therefore not marginal on a noisy benchmark metric but structural: it is the only model that detects the named cybersecurity events motivating the CTI use case.
 
 \subsection{Experiment 3 --- Modern Graph Transformers}
 
-\begin{misqtableSmall}{6}{Experiment 3: Modern Graph Transformer Results}%
-{Note: Contextual encoder models (CTI-BERT, CySecBERT, ModernBERT, SecBERT) were not run in this study; their graph-level counterparts require separate fine-tuning infrastructure and are reserved for future work. All run models significantly worse than DGT at FDR $q < 0.001$.}%
-{l|c|c|c|c|c}
-\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
+\begin{misqtableSmall}{7}{Experiment 3: Modern Graph Transformer Results}%
+{Note: Contextual encoder models (CTI-BERT, CySecBERT, ModernBERT, SecBERT) were not run in this study; their graph-level counterparts require separate fine-tuning infrastructure and are reserved for future work. Spearman $\rho$ = rank correlation between each model's predicted-shift ranking and DGT's heldout shifts ($n = 6{,}000$). DGT MAE = 0.082; $\rho = 0.662$. All run models significantly worse than DGT at FDR $q < 0.001$.}%
+{l|c|c|c|c|c|c}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{Spearman $\rho$} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
 \hline
-GraphGPS LapPE Proxy       & 0.128 & 0.095 & 0.00 & $+$0.047 & Yes \\
+GraphGPS LapPE Proxy       & 0.128 & 0.095 & 0.00 & 0.364 & $+$0.047 & Yes \\
 \hline
-GRIT RWPE Attention        & 0.130 & 0.124 & 0.00 & $+$0.048 & Yes \\
+GRIT RWPE Attention        & 0.130 & 0.124 & 0.00 & 0.475 & $+$0.048 & Yes \\
 \hline
-NodeFormer Kernelized      & 0.135 & 0.019 & 0.00 & $+$0.053 & Yes \\
+NodeFormer Kernelized      & 0.135 & 0.019 & 0.00 & $-$0.414 & $+$0.053 & Yes \\
 \hline
-SIGN Scalable Inception    & 0.121 & 0.145 & 0.04 & $+$0.039 & Yes \\
+SIGN Scalable Inception    & 0.121 & 0.145 & 0.04 & 0.208 & $+$0.039 & Yes \\
 \hline
-TokenGT Graph Token SVD    & 0.112 & 0.211 & 0.04 & $+$0.030 & Yes \\
+TokenGT Graph Token SVD    & 0.112 & 0.211 & 0.04 & 0.263 & $+$0.030 & Yes \\
 \hline
-\textbf{DGT (proposed)}    & \textbf{0.082} & \textbf{0.178} & \textbf{1.00} & --- & --- \\
+\textbf{DGT (proposed)}    & \textbf{0.082} & \textbf{0.178} & \textbf{1.00} & \textbf{0.662} & --- & --- \\
 \hline
 \end{misqtableSmall}
 
-All five modern graph transformer baselines are significantly outperformed by DGT at FDR $q < 0.001$. GraphGPS and GRIT, which apply attention with Laplacian or random-walk positional encodings on a \textit{single} graph snapshot, confirm that graph transformer architecture without temporal sequential modelling does not support shift prediction. TokenGT SVD treats graph tokens as a flat sequence and underperforms DGT significantly ($\Delta = +0.030$), demonstrating that unstructured token sequences are less effective than neighbourhood-aggregation for this task. All five graph transformer variants have Top-50 overlap of 0--4\%, versus DGT's 1.00, underscoring the same pattern observed in Experiments 1 and 2: architecturally sophisticated models that lack the temporal masked-attention design cannot identify which terms will shift most.
+All five modern graph transformer baselines are significantly outperformed by DGT at FDR $q < 0.001$. GRIT ($\rho = 0.475$) is the strongest among the five but remains $0.187$ Spearman $\rho$ below DGT, while NodeFormer ($\rho = -0.414$) exhibits the most extreme failure mode: its kernelized attention mechanism produces shift rankings that are \textit{inversely} correlated with actual shifts, worse than random assignment and worse than any null predictor in Experiment 1. TokenGT SVD ($\rho = 0.263$, $\Delta = +0.030$) and SIGN ($\rho = 0.208$) demonstrate that neither flat graph-token sequences nor multi-hop feature aggregation without temporal context can support accurate shift prediction. All five variants have Top-50 overlap of 0--4\% versus DGT's 1.00, and all Spearman $\rho$ values lie well below DGT's $0.662$: the combination of Laplacian positional encodings, adjacency-constrained attention, and multi-spell EMA training---not graph transformer architecture per se---is the source of DGT's predictive advantage.
 
 \subsection{Experiment 4 --- Ablation Study}\label{sec:exp4}
 
-\begin{misqtable}{5}{Experiment 4: Ablation Study and Design Principle Validation}%
-{Note: Each ablation removes or replaces one component of DGT. MAE and $\Delta$ computed on common-term paired evaluation against each model's own heldout spell. $\Delta$ = MAE$_\text{ablation}$ $-$ MAE$_\text{DGT}$; positive = ablation worse. Sig.\ = DGT significantly better at FDR $q < 0.05$. $^\dagger$DP4 ablation MAE is not directly comparable to DGT-full: removing multi-source data changes the evaluation target (mean heldout shift: HC-only = 0.298 vs.\ full = 0.136); DP4 validation relies on watchlist content analysis (see text).}%
-{l|l|c|c|c}
-\textbf{Design Principle} & \textbf{Ablation Variant} & \textbf{MAE} & \textbf{$\Delta$} & \textbf{Sig.} \\
+\begin{misqtable}{6}{Experiment 4: Ablation Study and Design Principle Validation}%
+{Note: Each ablation removes or replaces one component of DGT. MAE and $\Delta$ computed on common-term paired evaluation against each model's own heldout spell. $\Delta$ = MAE$_\text{ablation}$ $-$ MAE$_\text{DGT}$; positive = ablation worse. Spearman $\rho$ = rank correlation between ablation model's predicted-shift ranking and DGT-full's heldout shifts ($n = 6{,}000$). Sig.\ = DGT significantly better at FDR $q < 0.05$. N/A = constant predictions (undefined $\rho$). $^\dagger$DP4 ablation MAE is not directly comparable to DGT-full: removing multi-source data changes the evaluation target (mean heldout shift: HC-only = 0.298 vs.\ full = 0.136); DP4 validation relies on watchlist content analysis (see text).}%
+{l|l|c|c|c|c}
+\textbf{Design Principle} & \textbf{Ablation Variant} & \textbf{MAE} & \textbf{$\Delta$} & \textbf{Spearman $\rho$} & \textbf{Sig.} \\
 \hline
-DP1 --- Cumulative ETG  & No cumulative ETG (per-spell only)  & 0.123 & $+$0.042 & Yes \\
+DP1 --- Cumulative ETG  & No cumulative ETG (per-spell only)  & 0.123 & $+$0.042 & 0.285 & Yes \\
 \hline
-DP1 --- Cumulative ETG  & $k$-precedence window ($k=4$)        & 0.123 & $+$0.042 & Yes \\
+DP1 --- Cumulative ETG  & $k$-precedence window ($k=4$)        & 0.123 & $+$0.042 & 0.285 & Yes \\
 \hline
-DP1 --- Co-occurrence   & Same-post co-occurrence (no window)  & 0.123 & $+$0.042 & Yes \\
+DP1 --- Co-occurrence   & Same-post co-occurrence (no window)  & 0.123 & $+$0.042 & 0.285 & Yes \\
 \hline
-DP1 --- Edge weighting  & Unweighted edges                     & 0.113 & $+$0.031 & Yes \\
+DP1 --- Edge weighting  & Unweighted edges                     & 0.113 & $+$0.031 & 0.468 & Yes \\
 \hline
-DP1 --- Edge weighting  & Direct-precedence window ($w=1$)     & 0.113 & $+$0.031 & Yes \\
+DP1 --- Edge weighting  & Direct-precedence window ($w=1$)     & 0.113 & $+$0.031 & 0.468 & Yes \\
 \hline
-DP2 --- Adj.\ attention & No adjacency mask (full attention)   & 0.136 & $+$0.054 & Yes \\
+DP2 --- Adj.\ attention & No adjacency mask (full attention)   & 0.136 & $+$0.054 & N/A   & Yes \\
 \hline
-DP2 --- Laplacian PE    & No Laplacian PE                      & 0.191 & $+$0.109 & Yes \\
+DP2 --- Laplacian PE    & No Laplacian PE                      & 0.191 & $+$0.109 & 0.665 & Yes \\
 \hline
-DP3 --- EMA context loss & No temporal context loss (PPMI only) & 0.115 & $+$0.034 & Yes \\
+DP3 --- EMA context loss & No temporal context loss (PPMI only) & 0.115 & $+$0.034 & 0.416 & Yes \\
 \hline
-DP3 --- Temporal seq.   & Static graph transformer only        & 0.198 & $+$0.116 & Yes \\
+DP3 --- Temporal seq.   & Static graph transformer only        & 0.198 & $+$0.116 & 0.636 & Yes \\
 \hline
-DP4 --- Multi-source    & Hacker community only$^\dagger$      & 0.060$^\dagger$ & N/A$^\dagger$ & ---$^\dagger$ \\
+DP4 --- Multi-source    & Hacker community only$^\dagger$      & 0.060$^\dagger$ & N/A$^\dagger$ & 0.612$^\dagger$ & ---$^\dagger$ \\
 \hline
-\textbf{DGT full (proposed)} & ---                             & \textbf{0.082} & --- & --- \\
+\textbf{DGT full (proposed)} & ---                             & \textbf{0.082} & --- & \textbf{0.662} & --- \\
 \hline
 \end{misqtable}
 
 The ablation study (Table 7) provides the most direct validation of the four design principles, and yields several instructive findings.
 
-\textbf{DP1 (Cumulative Encoding)} is strongly validated. Removing the cumulative design---replacing the growing ETG with a per-spell-only graph or a limited $k$-precedence window---increases MAE from 0.082 to 0.123 ($\Delta = +0.042$, $p < 0.001$), confirming that accumulated co-occurrence history is essential to predictive performance. Using same-post co-occurrence (no sliding window) produces an identical degradation, underscoring that windowed co-occurrence captures syntactic proximity information absent from document-level co-occurrence.
+\textbf{DP1 (Cumulative Encoding)} is strongly validated. Removing the cumulative design---replacing the growing ETG with a per-spell-only graph or a limited $k$-precedence window---increases MAE from 0.082 to 0.123 ($\Delta = +0.042$, $p < 0.001$) and reduces Spearman $\rho$ from 0.662 to 0.285, confirming that accumulated co-occurrence history is essential for both prediction accuracy and rank discrimination. Using same-post co-occurrence (no sliding window) produces identical degradation on both metrics, underscoring that windowed co-occurrence captures syntactic proximity information absent from document-level co-occurrence.
 
-\textbf{DP2 (Adjacency-Constrained Self-Attention)} is validated by two ablations. The no-masked-attention ablation---replacing adjacency-constrained attention with full within-spell attention, allowing all nodes to attend to all other nodes regardless of co-occurrence structure---degrades MAE substantially ($\Delta = +0.054$, $p < 0.001$), confirming that constraining attention to ETG co-occurrence neighbours is a functional requirement rather than a mere architectural preference. More strikingly, removing Laplacian positional encodings increases MAE from 0.082 to 0.191 ($\Delta = +0.109$, $p < 0.001$)---the second-largest ablation effect in the study---demonstrating that spectral structural fingerprints are essential for the graph attention mechanism to distinguish terms with different network positions.
+\textbf{DP2 (Adjacency-Constrained Self-Attention)} is validated by two ablations. The no-masked-attention ablation---replacing adjacency-constrained attention with full within-spell attention---degrades MAE substantially ($\Delta = +0.054$, $p < 0.001$) and produces constant (near-zero) predictions, rendering Spearman $\rho$ undefined; this total collapse confirms that adjacency-constrained attention is a structural requirement. Removing Laplacian positional encodings increases MAE from 0.082 to 0.191 ($\Delta = +0.109$, $p < 0.001$)---the second-largest ablation effect---while $\rho$ remains near DGT's ($0.665$ vs.\ $0.662$). This divergence is interpretively important: without Laplacian PE, the model preserves the \textit{rank ordering} of high-shift terms but loses calibration of their absolute shift magnitudes. Laplacian PE is therefore necessary for well-calibrated predictions---not merely for coarse rank discrimination---an insight that raw MAE alone does not convey.
 
-\textbf{DP3 (Recency-Weighted Temporal Context Loss)} is validated by two ablations. Removing the EMA-based temporal context loss (replacing it with PPMI-only representations) significantly increases MAE ($\Delta = +0.034$, $p < 0.001$), confirming that the smoothness regulariser across spells---which enforces temporal ordering without requiring cross-spell attention---is necessary for learning stable diachronic trajectories. Most strikingly, the static-graph-transformer-only variant---which applies the DGT architecture to a single spell without any temporal training sequence---increases MAE to 0.198 ($\Delta = +0.116$, $p < 0.001$), the largest ablation effect in the study. This confirms that the temporally ordered EMA training objective across successive ETG snapshots---not graph transformer architecture per se---is the source of DGT's predictive advantage.
+\textbf{DP3 (Recency-Weighted Temporal Context Loss)} is validated by two ablations. Removing the EMA-based temporal context loss (replacing it with PPMI-only representations) significantly increases MAE ($\Delta = +0.034$, $p < 0.001$) and reduces $\rho$ from 0.662 to 0.416---a 37\% decline in rank discrimination---confirming that the EMA smoothness regulariser is necessary for learning stable diachronic trajectories across spells. Most strikingly, the static-graph-transformer-only variant---which applies the DGT architecture to a single spell without any temporal training sequence---increases MAE to 0.198 ($\Delta = +0.116$, $p < 0.001$, $\rho = 0.636$), the largest MAE ablation effect in the study. The Spearman $\rho$ drop here is more modest than the MAE penalty suggests: without the temporal sequence, the model still captures some within-spell structural rank ordering of terms but cannot produce well-calibrated shift magnitudes. This confirms that the temporally ordered EMA training objective across successive ETG snapshots provides both rank discrimination and absolute calibration; graph transformer architecture alone provides only partial rank ordering.
 
 \textbf{DP4 (Multi-Source Corpus)} is validated through watchlist content analysis rather than a direct MAE comparison. Training DGT exclusively on the 1,455,413 hacker-community posts (81.6\% of the corpus) yields MAE = 0.060 against its own single-source heldout---but this number is not comparable to DGT-full's 0.082 because removing the non-community layers changes the semantic distribution of the evaluation target: mean heldout shift rises from 0.136 (full corpus) to 0.298 (hacker-community-only), reflecting that single-source discourse exhibits larger but less structured vocabulary swings. The substantive evidence for DP4 emerges from Top-50 watchlist analysis: the hacker-community-only model and DGT-full share only 3 of 50 top-predicted-shift terms (6\% overlap). Inspection of the divergent lists is instructive---the hacker-community-only model surfaces Turkish-language defacement handles (\textit{tabanl}, \textit{dijital}, \textit{yapay}), forum pseudonyms (\textit{mrdev}, \textit{defacerfounder}), and non-English noise tokens as its highest-priority predicted shifts, none of which constitute actionable CTI. DGT-full, by contrast, identifies \textit{woocommerce} (WordPress supply-chain attacks), \textit{authorization} (broken access-control, OWASP A01), \textit{rsa} (cryptographic key exposure), and \textit{dell} (vendor-specific exploit campaigns)---terms whose emergence in the watchlist reflects the enriching role of NVD descriptions, advisory language, and exploit-archive co-occurrence that the hacker community alone does not provide. DP4 is therefore validated on the dimension that matters for CTI practice: multi-source corpus construction anchors the semantic shift radar to security-relevant vocabulary and suppresses the forum noise that would otherwise dominate a single-source watchlist.
 
@@ -669,7 +669,7 @@ From a \textbf{technical deployment} perspective, the DGT pipeline is accessible
 
 \subsection{Limitations and Future Research}
 
-Several limitations of the current study warrant acknowledgement. First, HackerSignal is an English-language corpus; multilingual hacker communities---particularly active in Eastern European, Chinese, and Arabic-language forums---are not represented. Future work should apply cross-lingual transfer learning \parencite{ebrahimi2022} to extend DGT to multilingual exploit discourse. Second, the ETG edge cap (300,000 per spell) may truncate rare but important co-occurrences involving low-frequency but high-specificity attack terms. Dynamic edge selection strategies, such as retaining edges by mutual information rather than raw count, are a promising avenue. Third, $R^2 = 0.045$ is low, reflecting the heavy-tailed shift distribution in which many terms exhibit near-zero drift. $R^2$ is not an appropriate primary metric for this distribution; MAE is our primary measure, and we recommend that future work in semantic shift prediction adopt rank-based metrics (Spearman $\rho$, NDCG) as additional evaluation criteria. Fourth, BERT-based contextual encoders were not benchmarked in this study due to the distinct fine-tuning infrastructure required for graph-level tasks; a thorough comparison with domain-specific models (CTI-BERT, SecBERT) is reserved for future work. Fifth, while the primary benchmark evaluation uses a single held-out spell (Spell 12), we conducted a five-fold walk-forward validation (training on Spells 1--$k$, evaluating on the held-out transition for $k \in \{7,8,9,10,11\}$) to confirm temporal stability. DGT achieves a mean walk-forward MAE of $0.060 \pm 0.008$ across all five folds with Top-50 overlap of 1.00 in every fold, and significantly outperforms all five baselines tested (PPMI, SGNS, GloVe, DeepWalk, frequency slope) on at least three of five paired $t$-tests ($p < 0.05$).
+Several limitations of the current study warrant acknowledgement. First, HackerSignal is an English-language corpus; multilingual hacker communities---particularly active in Eastern European, Chinese, and Arabic-language forums---are not represented. Future work should apply cross-lingual transfer learning \parencite{ebrahimi2022} to extend DGT to multilingual exploit discourse. Second, the ETG edge cap (300,000 per spell) may truncate rare but important co-occurrences involving low-frequency but high-specificity attack terms. Dynamic edge selection strategies, such as retaining edges by mutual information rather than raw count, are a promising avenue. Third, $R^2 = 0.045$ is low, reflecting the heavy-tailed shift distribution in which many terms exhibit near-zero drift; $R^2$ is not an appropriate primary metric for this distribution. We therefore report both MAE and Spearman $\rho$ as co-primary evaluation criteria throughout the benchmark (Tables 4--7). Future work should consider additionally adopting NDCG for position-weighted rank evaluation of the CTI watchlist. Fourth, BERT-based contextual encoders were not benchmarked in this study due to the distinct fine-tuning infrastructure required for graph-level tasks; a thorough comparison with domain-specific models (CTI-BERT, SecBERT) is reserved for future work. Fifth, while the primary benchmark evaluation uses a single held-out spell (Spell 12), we conducted a five-fold walk-forward validation (training on Spells 1--$k$, evaluating on the held-out transition for $k \in \{7,8,9,10,11\}$) to confirm temporal stability. DGT achieves a mean walk-forward MAE of $0.060 \pm 0.008$ across all five folds with Top-50 overlap of 1.00 in every fold, and significantly outperforms all five baselines tested (PPMI, SGNS, GloVe, DeepWalk, frequency slope) on at least three of five paired $t$-tests ($p < 0.05$).
 
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Conclusion}
