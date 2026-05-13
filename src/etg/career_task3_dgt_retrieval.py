@@ -28,7 +28,23 @@ from typing import Optional
 
 import numpy as np
 
-from etg.eval.metrics_ir import hit_rate_at_k, mrr_at_k, ranks_from_scores
+
+# ── inline IR metrics (no etg.eval dependency required on cluster) ─────────
+
+def _ranks_from_scores(scores: np.ndarray, positive_indices: np.ndarray) -> np.ndarray:
+    order = np.argsort(-scores, axis=1)
+    ranks = np.empty(scores.shape[0], dtype=np.int64)
+    for q in range(scores.shape[0]):
+        ranks[q] = int(np.where(order[q] == int(positive_indices[q]))[0][0]) + 1
+    return ranks
+
+
+def _mrr_at_k(ranks: np.ndarray, k: int) -> float:
+    return float(np.mean(np.where(ranks <= k, 1.0 / ranks, 0.0)))
+
+
+def _hit_rate_at_k(ranks: np.ndarray, k: int) -> float:
+    return float(np.mean(ranks <= k))
 
 
 # ── inline BM25Okapi (no rank_bm25 dependency required on cluster) ─────────
@@ -132,7 +148,7 @@ def _bm25_ranks(
     for qi, qtext in enumerate(query_texts):
         qtoks = _tokenize(qtext, sw)
         scores[qi] = bm25.get_scores(qtoks)
-    return ranks_from_scores(scores, positive_indices)
+    return _ranks_from_scores(scores, positive_indices)
 
 
 def _dgt_ranks(
@@ -153,7 +169,7 @@ def _dgt_ranks(
     # Cosine similarity (vectors already L2-normalised by _embed_text;
     # zero vectors will give 0 similarity to everything — harmless).
     scores = query_embs @ corpus_embs.T  # (Q, C)
-    return ranks_from_scores(scores, positive_indices)
+    return _ranks_from_scores(scores, positive_indices)
 
 
 def build_kev_corpus(kev_entries: list[dict]) -> tuple[list[str], list[str]]:
@@ -229,10 +245,10 @@ def run_task3_dgt_retrieval(
 
     def _metrics(ranks: np.ndarray, n: int) -> dict:
         return {
-            "MRR@10": mrr_at_k(ranks, 10),
-            "R@1":   hit_rate_at_k(ranks, 1),
-            "R@5":   hit_rate_at_k(ranks, 5),
-            "R@10":  hit_rate_at_k(ranks, 10),
+            "MRR@10": _mrr_at_k(ranks, 10),
+            "R@1":   _hit_rate_at_k(ranks, 1),
+            "R@5":   _hit_rate_at_k(ranks, 5),
+            "R@10":  _hit_rate_at_k(ranks, 10),
             "n_queries": n,
         }
 
