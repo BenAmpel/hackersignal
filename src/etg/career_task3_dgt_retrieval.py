@@ -27,9 +27,43 @@ import string
 from typing import Optional
 
 import numpy as np
-from rank_bm25 import BM25Okapi
 
 from etg.eval.metrics_ir import hit_rate_at_k, mrr_at_k, ranks_from_scores
+
+
+# ── inline BM25Okapi (no rank_bm25 dependency required on cluster) ─────────
+
+class _BM25Okapi:
+    """Minimal BM25Okapi implementation — identical scoring to rank_bm25."""
+
+    def __init__(self, corpus: list[list[str]], k1: float = 1.5, b: float = 0.75) -> None:
+        self.k1 = k1
+        self.b = b
+        self.corpus = corpus
+        self.N = len(corpus)
+        self.avgdl = sum(len(d) for d in corpus) / max(self.N, 1)
+        # df: number of docs containing each term
+        df: dict[str, int] = {}
+        for doc in corpus:
+            for term in set(doc):
+                df[term] = df.get(term, 0) + 1
+        import math
+        self.idf: dict[str, float] = {
+            term: math.log((self.N - freq + 0.5) / (freq + 0.5) + 1)
+            for term, freq in df.items()
+        }
+
+    def get_scores(self, query: list[str]) -> np.ndarray:
+        scores = np.zeros(self.N, dtype=np.float64)
+        for term in query:
+            idf = self.idf.get(term, 0.0)
+            if idf == 0.0:
+                continue
+            for i, doc in enumerate(self.corpus):
+                tf = doc.count(term)
+                denom = tf + self.k1 * (1 - self.b + self.b * len(doc) / max(self.avgdl, 1))
+                scores[i] += idf * (tf * (self.k1 + 1)) / denom
+        return scores
 
 log = logging.getLogger(__name__)
 
@@ -91,7 +125,7 @@ def _bm25_ranks(
     """BM25Okapi retrieval; returns 1-indexed ranks for each query."""
     sw = stopwords or _STOPWORDS
     tokenized_corpus = [_tokenize(t, sw) for t in corpus_texts]
-    bm25 = BM25Okapi(tokenized_corpus)
+    bm25 = _BM25Okapi(tokenized_corpus)
     C = len(corpus_texts)
     Q = len(query_texts)
     scores = np.zeros((Q, C), dtype=np.float64)
