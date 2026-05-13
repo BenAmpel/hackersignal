@@ -155,6 +155,7 @@ def _embedding_shifts(
         prev, curr = embeddings[t - 1], embeddings[t]
         cos = np.sum(prev * curr, axis=1) / (np.linalg.norm(prev, axis=1) * np.linalg.norm(curr, axis=1) + 1e-9)
         dist = 1.0 - cos
+        dist = np.nan_to_num(dist, nan=0.0, posinf=1.0, neginf=0.0)
         for idx, value in enumerate(dist):
             series[words[idx]].append(float(value))
         for rank, idx in enumerate(np.argsort(dist)[-top_k:][::-1], 1):
@@ -666,6 +667,7 @@ def _run_dgt_ablations(
     device: str,
     epochs: int,
     seed: int,
+    hacker_community_snapshots: list[dict] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     shift_frames, pred_frames = [], []
     baseline = dgt_result["shifts"].head(top_k).copy()
@@ -841,6 +843,42 @@ def _run_dgt_ablations(
     if ot_pred_rows2:
         pred_frames.append(pd.DataFrame(ot_pred_rows2))
 
+    # ── DP4 ablation: hacker community only (no NVD / advisory / exploit layers) ──
+    if hacker_community_snapshots is not None and len(hacker_community_snapshots) >= 2:
+        dp4_res = run_dgt_pipeline(
+            hacker_community_snapshots,
+            max_nodes=max_nodes,
+            hidden_dim=dim,
+            heads=4,
+            layers=2,
+            epochs=epochs,
+            lap_pe_k=lap_pe_k,
+            device=device,
+            output_dir=None,
+            seed=seed + 100,  # distinct seed from other ablations
+            temporal_loss_weight=0.1,
+        )
+        dp4_shifts = dp4_res["shifts"].head(top_k).copy()
+        dp4_shifts["experiment"] = "experiment_4_dgt_ablations"
+        dp4_shifts["tier"] = "dgt_ablation"
+        dp4_shifts["model"] = "dgt_hacker_community_only"
+        dp4_shifts["status"] = "run"
+        dp4_shifts["rank"] = np.arange(1, len(dp4_shifts) + 1)
+        dp4_shifts = dp4_shifts.rename(columns={"cosine_shift": "score"})
+        dp4_shifts["score_name"] = "cosine_shift"
+        dp4_shifts["note"] = (
+            "DP4 ablation: hacker community source layer only, "
+            "excluding NVD/advisory/exploit-archive/bug-bounty/fix-commit layers"
+        )
+        shift_frames.append(
+            dp4_shifts[["experiment", "tier", "model", "status", "transition", "rank", "word", "score", "score_name", "note"]]
+        )
+        dp4_preds = dp4_res["predictions"].copy()
+        dp4_preds["experiment"] = "experiment_4_dgt_ablations"
+        dp4_preds["tier"] = "dgt_ablation"
+        dp4_preds["model"] = "dgt_hacker_community_only"
+        pred_frames.append(dp4_preds)
+
     return pd.concat(shift_frames, ignore_index=True), pd.concat(pred_frames, ignore_index=True)
 
 
@@ -875,6 +913,19 @@ def _prediction_metrics(predictions: pd.DataFrame) -> dict:
         }
     y_true = predictions["heldout_shift"].astype(float).to_numpy()
     y_pred = predictions["predicted_next_shift"].astype(float).to_numpy()
+    mask = np.isfinite(y_true) & np.isfinite(y_pred)
+    y_true = y_true[mask]
+    y_pred = y_pred[mask]
+    if len(y_true) == 0:
+        return {
+            "mae": None,
+            "rmse": None,
+            "mape": None,
+            "r_squared": None,
+            "msle": None,
+            "quantile_loss_p50": None,
+            "n_prediction_terms": 0,
+        }
     denom = np.maximum(np.abs(y_true), 1e-9)
     q = 0.5
     err = y_true - y_pred
@@ -1124,16 +1175,51 @@ def _paired_dgt_significance(
     if predictions.empty or not required.issubset(predictions.columns):
         return pd.DataFrame()
 
-    dgt = predictions[predictions["model"] == "dgt_full"][["word", "abs_error"]].drop_duplicates("word")
-    if dgt.empty:
+    dgt_full_rows = (
+        predictions[predictions["model"] == "dgt_full"]
+        .drop_duplicates("word")
+    )
+    if dgt_full_rows.empty:
         return pd.DataFrame()
-    dgt = dgt.rename(columns={"abs_error": "dgt_abs_error"})
+    # dgt_abs_error: DGT's per-word |predicted - heldout| (denominator in delta)
+    dgt = dgt_full_rows[["word", "abs_error"]].rename(columns={"abs_error": "dgt_abs_error"})
+    # Universal evaluation target: DGT's observed heldout shift per word.
+    # All candidate models are evaluated against this same target so that the
+    # paired significance test compares apples to apples.  Without this, trend
+    # baselines (degree, pagerank, arima, …) that predict near-zero feature
+    # changes and are evaluated against their own near-zero heldout targets get
+    # abs_error ≈ 0 — not because they predict well, but because both sides of
+    # their abs_error are near-zero scalars in a completely different unit than
+    # DGT's cosine-distance shifts.
+    has_heldout = "heldout_shift" in dgt_full_rows.columns
+    if has_heldout:
+        dgt_targets = dgt_full_rows[["word", "heldout_shift"]].rename(
+            columns={"heldout_shift": "dgt_heldout_shift"}
+        )
+    has_predicted = "predicted_next_shift" in predictions.columns
     rng = np.random.default_rng(seed)
     rows = []
     for (experiment, tier, model), group in predictions.groupby(["experiment", "tier", "model"], dropna=False):
         if model == "dgt_full":
             continue
-        candidate = group[["word", "abs_error"]].drop_duplicates("word").rename(columns={"abs_error": "model_abs_error"})
+        # Evaluate this candidate against DGT's heldout shift (universal target)
+        # so that models predicting different feature spaces are penalized for
+        # being mis-calibrated, not rewarded for tracking a trivially predictable target.
+        if has_predicted and has_heldout and "predicted_next_shift" in group.columns:
+            cand_raw = group[["word", "predicted_next_shift"]].drop_duplicates("word")
+            cand_merged = cand_raw.merge(dgt_targets, on="word", how="inner")
+            cand_merged = cand_merged.dropna(subset=["predicted_next_shift", "dgt_heldout_shift"])
+            cand_merged["model_abs_error"] = (
+                cand_merged["predicted_next_shift"] - cand_merged["dgt_heldout_shift"]
+            ).abs()
+            candidate = cand_merged[["word", "model_abs_error"]]
+        else:
+            # Fallback: use each model's own pre-computed abs_error
+            candidate = (
+                group[["word", "abs_error"]]
+                .drop_duplicates("word")
+                .rename(columns={"abs_error": "model_abs_error"})
+            )
         paired = candidate.merge(dgt, on="word", how="inner").dropna()
         if len(paired) < 10:
             rows.append(
@@ -1215,6 +1301,7 @@ def run_rt1_benchmark_experiments(
     dgt_ablation_epochs: int = 2,
     seed: int = 1729,
     use_cache: bool = True,
+    hacker_community_snapshots: list[dict] | None = None,
 ) -> dict:
     """Run four reviewer-facing benchmark experiments for RT1.
 
@@ -1241,6 +1328,11 @@ def run_rt1_benchmark_experiments(
             "device": device,
             "dgt_ablation_epochs": dgt_ablation_epochs,
             "seed": seed,
+            "hacker_community_snapshots": (
+                snapshot_fingerprint(hacker_community_snapshots)
+                if hacker_community_snapshots
+                else None
+            ),
         }
     )
 
@@ -1260,6 +1352,7 @@ def run_rt1_benchmark_experiments(
                 device=device,
                 epochs=dgt_ablation_epochs,
                 seed=seed,
+                hacker_community_snapshots=hacker_community_snapshots,
             ),
         ),
     ]
