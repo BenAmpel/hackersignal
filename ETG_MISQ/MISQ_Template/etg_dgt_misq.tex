@@ -455,7 +455,9 @@ TGN Memory Smooth      & 0.111 & 0.119 & 0.02 & $+$0.029 & Yes \\
 
 Table 5 reveals a clear differentiation across model families. Static graph embedding methods (DeepWalk, Node2Vec, LINE) underperform DGT significantly ($\Delta = +0.032$ to $+0.070$), confirming that static embeddings lacking temporal sequence information cannot adequately model semantic drift. Static GNNs (GAT, GCN, GraphSAGE) trained on a single-spell snapshot, while appearing competitive on a naive full-vocabulary MAE evaluation, are significantly outperformed by DGT in the paired bootstrap ($\Delta = +0.047$ to $+0.049$); their Top-50 overlap of 0--8\% confirms they do not discriminate high-shift terms.
 
-Among dynamic GNN models, DGT significantly outperforms all seven at FDR $q < 0.001$---including TGN ($\Delta = +0.029$) and JODIE ($\Delta = +0.039$), which were anticipated to be competitive. The paired evaluation on common terms exposes that TGN and JODIE, while showing favourable raw MAE on the full-vocabulary leaderboard (where they predict only a subset of terms), perform significantly worse than DGT when assessed on the same term vocabulary. DGT's Top-50 overlap of 1.00---versus 0.00--0.04 for all dynamic GNN baselines---further demonstrates that DGT is the only model that correctly identifies which specific terms will undergo the greatest semantic shift.
+Among dynamic GNN models, DGT significantly outperforms all seven at FDR $q < 0.001$---including TGN ($\Delta = +0.029$) and JODIE ($\Delta = +0.039$), which were anticipated to be competitive. The paired evaluation on common terms exposes that TGN and JODIE, while showing favourable raw MAE on the full-vocabulary leaderboard, perform significantly worse than DGT when assessed on the same term vocabulary.
+
+The practical nature of this gap is established directly in the case study (Section~\ref{sec:baseline_case}, Table~9). We traced the six case-study shift events through JODIE's and TGN's top-50 shift rankings at each key spell transition. JODIE does not place any of the six terms (\textit{iot}, \textit{rce}, \textit{ransomware}, \textit{stealer}, \textit{ivanti}, \textit{jailbreak}) in its top-50 at the event's peak transition---zero of six events detected. TGN detects one of six (Ivanti at rank 23). At the same transitions, the terms that JODIE and TGN flag in their top-5 are Turkish-language forum tokens (\textit{ndan}, \textit{olarak}, \textit{seti}), CSS/HTML scraping artifacts (\textit{document.getelementsbytagname}, \textit{bookmarks.classlist.add}), and pseudonymous defacement handles (\textit{defacerfounder}, \textit{miladninja}). This failure is mechanistically traceable: JODIE and TGN apply temporal smoothing over raw aligned embeddings without adjacency-constrained attention (DP2), so their shift signal is dominated by whichever vocabulary subpopulation drifts most in raw frequency---Turkish forum subcultures and web-scraping noise in this corpus, not exploit discourse. DGT's adjacency-constrained self-attention suppresses this noise by restricting attention to ETG co-occurrence neighbours. DGT's advantage is therefore not marginal on a noisy benchmark metric but structural: it is the only model that detects the named cybersecurity events motivating the CTI use case.
 
 \subsection{Experiment 3 --- Modern Graph Transformers}
 
@@ -555,6 +557,31 @@ The benchmark evaluation establishes DGT's technical performance; the case study
 \begin{misqfigure}{Figure 2. DGT semantic shift trajectories for six curated terms, 2016--2026. Each panel shows the cosine distance between consecutive 9-month spell embeddings (semantic drift score). A score near zero indicates stable usage; higher scores indicate the term entered a new usage context. Annotated events mark the real-world development associated with each peak. Panels are coloured by term for visual discrimination.}
 \includegraphics[width=0.97\textwidth]{images/misq_case_study_shifts.pdf}
 \end{misqfigure}
+
+\subsection{Baseline Comparison at Key Spell Transitions}\label{sec:baseline_case}
+
+Before presenting the DGT shift trajectories, we address directly whether the strongest dynamic GNN baselines---JODIE and TGN, which achieved the lowest raw MAE among all external models in Experiment 2---produce equivalent case-study signals. For each of the six event terms we examine: (a) the DGT per-term cosine-shift trajectory showing a clear spike at the known event boundary, and (b) whether the event term appears in JODIE's and TGN's top-50 highest-shifting terms at that same boundary. Table 9 reports the top-5 terms flagged by each model at each key transition.
+
+\begin{misqtable}{3}{Baseline Comparison at Six Key Spell Transitions: Top-5 Terms Flagged by JODIE and TGN, and DGT Per-Term Shift at the Event Boundary}%
+{Note: JODIE and TGN top-5 are the five highest-ranked shift terms produced by each model at the named transition. DGT shift is the per-term cosine distance between consecutive DGT spell embeddings for the event term at its peak spell boundary. ``Not in top-50'' indicates the event term did not appear in that model's top-50 at this transition.}%
+{l|l|l|c}
+\textbf{Event (Transition)} & \textbf{JODIE Top-5 (event term)} & \textbf{TGN Top-5 (event term)} & \textbf{DGT shift} \\
+\hline
+IoT / Mirai (S01$\to$S02) & compliance, atlassian, tane, ilk, ayn (\textit{iot}: not in top-50) & compliance, atlassian, logger, sorun, olmak (\textit{iot}: not in top-50) & 1.016 \\
+\hline
+RCE / WannaCry (S02$\to$S03) & jit, pci, cors, sorun, evolv (\textit{rce}: not in top-50) & jit, pci, nce, mifare, reus (\textit{rce}: not in top-50) & 0.888 \\
+\hline
+Ransomware / RaaS (S04$\to$S05) & seti, ndan, olarak, arkada, lar (\textit{ransomware}: not in top-50) & ndan, seti, olarak, lar, arkada (\textit{ransomware}: not in top-50) & 1.117 \\
+\hline
+Stealer / RedLine (S06$\to$S07) & ntemleri, hamid2day, sorumluluk, xwiki, wacko (\textit{stealer}: not in top-50) & ntemleri, kazan, unblock, sso, stability (\textit{stealer}: not in top-50) & 0.766 \\
+\hline
+Ivanti zero-days (S09$\to$S10) & attributes, bosnia, lisan, defacerfounder, acts (\textit{ivanti}: not in top-50) & lms, defacerfounder, ddr3, desire, purposes (\textit{ivanti}: \#23) & 0.737 \\
+\hline
+LLM Jailbreak (S10$\to$S11) & bosnia, miladninja, carter, topcc, nin (\textit{jailbreak}: not in top-50) & li.thank, bookmarks.classlist.add, li.mybookmark, setaccount, document.get\ldots (\textit{jailbreak}: not in top-50) & 0.610 \\
+\hline
+\end{misqtable}
+
+The evidence is unambiguous. JODIE does not place any of the six event terms in its top-50 at any of the six key transitions (0 of 6). TGN detects one---\textit{ivanti} at rank 23---and misses the other five entirely. Neither model's top-5 contains a single recognisably security-relevant term: JODIE and TGN flag Turkish-language hacker-community tokens (\textit{ndan}, \textit{seti}, \textit{olarak}), CSS and JavaScript scraping artifacts (\textit{li.thank}, \textit{bookmarks.classlist.add}, \textit{document.get}\ldots), and pseudonymous defacement handles (\textit{miladninja}, \textit{defacerfounder}). DGT, by contrast, produces clear per-term shift spikes at the correct boundary for all six events (cosine shifts 0.61--1.12, all representing the highest point in each term's 11-spell trajectory; see Section 6.3). This is the practical meaning of JODIE's low MAE on the benchmark: it achieves low prediction error not by detecting security-relevant semantic shifts but by fitting to the uniform noise distribution of alignment artifacts, which averages out to a modest prediction error. A CTI practitioner using JODIE's top-50 output at any of these six transitions would receive an entirely noise-filled watchlist and would not have been alerted to the Mirai botnet, WannaCry, or LLM jailbreaking epochs.
 
 \subsection{Shift Trajectory Analysis}
 
