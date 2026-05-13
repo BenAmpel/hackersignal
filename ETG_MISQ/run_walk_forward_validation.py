@@ -18,7 +18,7 @@ Final outputs:
                            (paired across folds)
 
 Usage (from repo root):
-    python scripts/run_walk_forward_validation.py \\
+    python ETG_MISQ/run_walk_forward_validation.py \\
         --snapshots ETG_MISQ/output/cache/rt11_etg_snapshots.pkl \\
         --output    ETG_MISQ/output/walk_forward \\
         --dgt-epochs 100 \\
