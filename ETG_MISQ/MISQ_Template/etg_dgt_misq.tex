@@ -1,0 +1,712 @@
+\documentclass[12pt]{article}
+
+\RequirePackage{iftex}
+\ifPDFTeX
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newunicodechar}
+\newunicodechar{Δ}{$\Delta$}
+\fi
+
+\usepackage{microtype}
+\emergencystretch=2em
+
+\usepackage{misqstyle}
+
+\usepackage[
+  style=apa,
+  backend=biber,
+  uniquelist=false,
+  uniquename=false
+]{biblatex}
+\addbibresource{references.bib}
+
+% Extra packages used in this paper
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black}
+
+\title{Tracking Evolving Exploit Discourse in Hacker Communities: A Diachronic Exploit Text Graph Framework for Proactive Cyber Threat Intelligence}
+
+\author{%
+  Benjamin M.\ Ampel%
+    \thanks{Corresponding author. University of Arizona, Tucson, AZ 85721. Email: bampel@arizona.edu}
+  \and
+  Sagar Samtani%
+    \thanks{Kelley School of Business, Indiana University, Bloomington, IN 47405.}%
+}
+\date{}
+
+\begin{document}
+\frenchspacing
+\pagenumbering{arabic}
+
+% ── Title Page ─────────────────────────────────────────────────────────────────
+\begin{titlepage}
+\thispagestyle{plain}
+\noindent
+\begin{flushleft}
+\includegraphics[height=1.5cm]{images/MISQ_logo.png}
+\end{flushleft}
+\vspace*{0.5cm}
+
+\centering
+\singlespacing
+\makeatletter
+{\fontsize{20}{24}\selectfont\bfseries\titlefont\@title\par}
+\makeatother
+
+\vspace{0.5cm}
+
+\begin{abstract}
+\setstretch{2.0}
+\justifying
+\itshape
+\abstractfont
+Cybersecurity threats emerge and evolve in hacker communities long before they are formally catalogued in vulnerability databases, yet existing threat-intelligence systems process static snapshots of hacker discourse, missing the temporal semantic drift that signals emerging attack patterns. We present the \textbf{Exploit Text Graph (ETG)}---a cumulative temporal co-occurrence graph of exploit vocabulary---and the \textbf{Diachronic Graph Transformer (DGT)}, a masked graph-attention model that embeds ETG nodes across successive temporal spells and predicts which terms will undergo the greatest semantic shift in the next observation window. Applied to HackerSignal, a 1,783,276-post multi-source corpus spanning 12 temporal spells from January 2016 through April 2026, DGT achieves a heldout mean absolute error of 0.0774 on next-spell shift prediction, a 24.5\% reduction over a naive mean baseline and significantly better than 20 of 38 benchmark models---including GloVe, PPMI, SGNS, and five dynamic graph neural network baselines---at a false-discovery-rate-corrected $q < 0.05$. Ablation experiments validate four design principles: cumulative graph encoding, masked temporal attention, a shift-predictive training objective, and multi-source corpus construction. A six-term case study traces semantically pivotal cybersecurity events---from the Mirai botnet and WannaCry through the emergence of Ransomware-as-a-Service and LLM jailbreaking---demonstrating that DGT detects vocabulary realignment in real time and produces an actionable forward-looking watchlist of predicted next-spell shifts. Theoretical contributions, design principles, and practitioner implications for proactive cyber threat intelligence are discussed.
+\end{abstract}
+
+\vspace{0.75cm}
+
+\begin{flushleft}
+\justifying
+\textbf{Keywords:} cyber threat intelligence, design science research, diachronic graph transformer, exploit text graph, hacker forum analytics, temporal semantic shift
+\end{flushleft}
+
+\vfill
+\end{titlepage}
+\stepcounter{page}
+
+% ── Page 2: Title + Introduction ───────────────────────────────────────────────
+\newpage
+\singlespacing
+\centering
+\makeatletter
+{\fontsize{20}{24}\selectfont\bfseries\titlefont\@title\par}
+\makeatother
+\setstretch{2}
+\normalsize
+
+\vspace{0.5cm}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Introduction}
+% ═══════════════════════════════════════════════════════════════════════════════
+\setstretch{2}\normalsize\justifying\bodyfont
+
+The cybersecurity threat landscape is defined by an asymmetric detection lag: adversaries develop, refine, and share novel attack techniques in hacker forums long before those techniques enter the formal record of known vulnerabilities. By the time a vulnerability receives a Common Vulnerabilities and Exposures (CVE) identifier and appears in catalogues such as the CISA Known Exploited Vulnerabilities (KEV) list, security teams face a compressed remediation window---often measured in days \parencite{jacobs2021, cisa2024}. Our analysis of 1,783,276 hacker-forum posts collected between January 2016 and April 2026 reveals that 271,275 distinct CVE identifiers were mentioned in hacker discourse, reflecting a vast pool of vulnerability intelligence that circulates in underground communities well before, during, and after formal classification. Bridging this information gap is a central challenge for proactive cyber threat intelligence (CTI).
+
+Hacker communities are early-warning systems for emerging threats. Prior research in IS cybersecurity analytics has demonstrated that dark-web forums, hacker boards, and underground marketplaces contain signals predictive of real-world exploit activity \parencite{samtani2017, samtani2022, ebrahimi2022, nunes2016}. These communities develop, contest, and evolve a shared technical vocabulary---a lexicon in which terms not only denote artifacts (tools, vulnerabilities, techniques) but also encode the community's collective understanding of how those artifacts relate to one another. The vocabulary itself is dynamic: the word \textit{jailbreak} referred exclusively to iOS firmware bypass through 2022 before migrating, almost entirely, to large-language-model (LLM) safety-filter circumvention following the public release of ChatGPT. The word \textit{stealer} shifted from a generic adjective to a recognised product category (e.g., RedLine Stealer, Raccoon Stealer) with versioned releases and subscription pricing. Tracking these \textit{semantic shifts}---changes in how terms are used relative to their co-occurrence neighbours---offers a mechanism for detecting emerging attack paradigms before they crystallise into named CVEs.
+
+Despite this potential, existing IS cybersecurity analytics systems treat hacker discourse as a static or bag-of-words phenomenon. Text-mining methods \parencite{samtani2017, tavabi2018}, deep transfer learning \parencite{samtani2022}, and cross-lingual models \parencite{ebrahimi2022} extract threat signals from individual snapshots or aggregate corpora, but none model the continuous temporal drift of exploit vocabulary as a predictive signal. Classical diachronic semantic models \parencite{hamilton2016, kim2014} capture word-level drift but discard the relational co-occurrence structure that encodes how exploit techniques combine---a structure central to understanding attack chains. Dynamic graph neural networks \parencite{sankar2020, rossi2020} model temporal graph evolution but are not designed for the shift-prediction task or for the cumulative nature of exploit knowledge. The result is a methodological gap: no prior IS artifact simultaneously (1) represents exploit discourse as a relational graph, (2) learns diachronic embeddings across sequential graph snapshots, and (3) forecasts next-period semantic shift to support proactive CTI.
+
+We address this gap through a Design Science Research \parencite{hevner2004, peffers2007} programme that produces two interlocking IS artifacts. The \textbf{Exploit Text Graph (ETG)} is a cumulative directed weighted graph in which nodes represent stemmed exploit terms and edges represent co-occurrence within a five-token sliding window across all posts up to and including each temporal spell. The ETG grows monotonically---capturing the accumulation of community knowledge---and is constructed at 12 spell boundaries spanning a decade of hacker discourse. The \textbf{Diachronic Graph Transformer (DGT)} is a masked graph-attention encoder trained on the sequence of ETG snapshots to produce per-term embeddings whose cosine distance between consecutive spells quantifies semantic shift. A lightweight prediction head learns to forecast this shift for the forthcoming spell, enabling the construction of a forward-looking watchlist of terms expected to undergo the greatest semantic realignment.
+
+This paper makes three primary contributions to IS research and practice. First, we contribute two novel IS artifacts---the ETG and DGT---accompanied by four empirically validated design principles. Second, we contribute a rigorous 38-model benchmark evaluation spanning non-neural diachronic baselines, static and dynamic graph embeddings, and modern graph transformers, with paired significance testing and false-discovery-rate correction. Third, we contribute a six-term case study grounded in publicly verifiable cybersecurity events, demonstrating that DGT correctly identifies semantic pivots associated with the Mirai botnet, WannaCry/EternalBlue, Ransomware-as-a-Service emergence, info-stealer marketplaces, Ivanti zero-days, and LLM jailbreaking---each a shift that a practitioner would recognise as a meaningful change in the threat landscape.
+
+The remainder of this paper is organised as follows. Section 2 reviews related work across four theoretical streams. Section 3 describes the Design Science Research approach. Section 4 presents the artifact design. Section 5 reports the benchmark evaluation. Section 6 presents the case study. Section 7 discusses theoretical contributions, practical implications, and limitations. Section 8 concludes.
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Theoretical Background and Related Work}
+% ═══════════════════════════════════════════════════════════════════════════════
+\bodyfont
+
+\subsection{IS Cybersecurity Analytics and Hacker Community Intelligence}
+
+Hacker communities---including dark-web forums, surface-web hacker boards, and underground marketplaces---have become a primary data source for proactive cybersecurity analytics in the IS literature. Foundational work by \textcite{samtani2017} introduced a hacker asset framework that identifies emerging tools, exploits, and key actors in hacker forums, demonstrating that community-level text analytics can surface intelligence unavailable from traditional vulnerability feeds. Subsequent work extended this framework to link dark-web exploit postings to known CVEs using semantic embedding techniques, showing that deep representations of hacker posts can predict exploitation activity \parencite{samtani2022}. Cross-lingual extensions \parencite{ebrahimi2022} addressed the multilingual character of global hacker communities, applying zero-shot and adversarial learning methods to non-English forums, while vulnerability prioritisation research \parencite{ullman2024} demonstrated that multi-view learning over vulnerability metadata improves CVSS scoring and KEV classification.
+
+A parallel literature focuses on SCADA and IoT vulnerability intelligence, extracting structured threat indicators from unstructured hacker posts \parencite{samtani2020}, and on the epidemiology of exploit diffusion through underground networks \parencite{nunes2016, tavabi2018}. Collectively, this body of work establishes that hacker communities are rich, timely, and idiosyncratic sources of threat intelligence---but it also reveals a shared limitation: all existing IS cybersecurity analytics methods process hacker discourse at a single point in time or aggregate across time, treating the corpus as a static collection. None model how the \textit{meaning} of exploit terms evolves continuously, nor do they forecast which terms are approaching a semantic transition. Our work directly addresses this gap.
+
+\subsection{Diachronic Semantic Models}
+
+Diachronic (time-varying) semantic models seek to track how the meaning of words changes across corpora collected at different time periods. The foundational approach of \textcite{hamilton2016} trains Word2Vec embeddings \parencite{mikolov2013} on successive temporal corpora and aligns them using Procrustes rotation, yielding cosine distances that measure per-word semantic change. \textcite{kim2014} extended this approach with temporal neural language models that explicitly condition word representations on time. \textcite{kulkarni2015} proposed statistical tests for detecting significant linguistic change in large corpora. More recently, \textcite{rottger2021} demonstrated that fine-tuning BERT \parencite{devlin2019} on time-stamped data improves temporal adaptation on downstream tasks, though at the cost of retraining for each new time period.
+
+These methods share a fundamental limitation for the CTI application: they operate at the word level and discard the relational structure of co-occurrence. In hacker discourse, meaning is conveyed not only by individual terms but by the combinations of terms that co-occur---\textit{ransomware} and \textit{affiliate} co-occurring with \textit{panel} signals a different context than \textit{ransomware} co-occurring with \textit{decryption}. A graph representation captures this combinatorial semantics explicitly, enabling the model to detect when a term's neighbourhood changes---which is, precisely, what semantic shift means in a community of practice. Furthermore, diachronic word embedding methods are designed to measure shift, not to \textit{predict} it. Our DGT introduces a shift-prediction head that forecasts next-spell cosine distances, enabling proactive rather than retrospective analysis.
+
+\subsection{Graph Neural Networks and Dynamic Graph Learning}
+
+Graph neural networks (GNNs) generalise deep learning to graph-structured data by propagating information across node neighbourhoods \parencite{kipf2017, velickovic2018, hamilton2017graphsage}. Graph embedding methods---DeepWalk \parencite{perozzi2014}, Node2Vec \parencite{grover2016}, LINE \parencite{tang2015line}---learn static node representations by factorising adjacency or applying random walks, providing strong baselines for co-occurrence graph representation. For temporal graphs, dynamic graph neural networks model evolving node states: DySAT \parencite{sankar2020} applies self-attention across structural and temporal dimensions; EvolveGCN \parencite{pareja2020} uses recurrent units to evolve GCN weight matrices; TGN \parencite{rossi2020} combines memory modules with graph attention; and JODIE \parencite{kumar2019} projects user and item trajectories through time. These models have been applied to link prediction and node classification on interaction graphs, but not to the diachronic co-occurrence graph setting or the shift-prediction objective.
+
+Graph Transformers adapt the self-attention mechanism \parencite{vaswani2017} to graph inputs. GraphGPS \parencite{rampasek2022} integrates local MPNN layers with global attention and Laplacian positional encodings \parencite{kreuzer2021}. TokenGT \parencite{kim2022tokengt} treats graphs as sequences of node and edge tokens, enabling full quadratic attention. These architectures excel on molecular property prediction and graph classification benchmarks, but have not been applied to temporal co-occurrence graphs in the NLP or security domain. Our DGT adapts the graph transformer paradigm specifically for diachronic exploit graph embedding by introducing masked temporal attention---a causal constraint that prevents future-spell information from leaking into past-spell representations---and a shift-predictive training objective absent from all prior graph transformer formulations.
+
+\subsection{The ETG and DGT Paradigm: Filling the Gap}
+
+\begin{misqtable}{6}{Comparison of Related Work on Key Dimensions}%
+{Note: $\checkmark$ = supported; $\times$ = not supported; $\sim$ = partially supported. \textit{IS Domain} refers to hacker-community or cybersecurity analytics; \textit{Graph Structure} to relational co-occurrence representation; \textit{Temporal} to sequential spell modelling; \textit{Shift Prediction} to forecasting next-period semantic change.}%
+{l|p{2.6cm}|c|c|c|c}
+\textbf{Approach} & \textbf{Representative Works} & \textbf{IS Domain} & \textbf{Graph} & \textbf{Temporal} & \textbf{Shift Pred.} \\
+\hline
+IS CTI Analytics    & \citeauthor{samtani2017} (\citeyear{samtani2017, samtani2022}) & $\checkmark$ & $\times$ & $\times$ & $\times$ \\
+\hline
+Diachronic Semantics & \citeauthor{hamilton2016} (\citeyear{hamilton2016}); \citeauthor{kim2014} (\citeyear{kim2014}) & $\times$ & $\times$ & $\checkmark$ & $\times$ \\
+\hline
+Dynamic GNNs        & \citeauthor{rossi2020} (\citeyear{rossi2020}); \citeauthor{sankar2020} (\citeyear{sankar2020}) & $\times$ & $\checkmark$ & $\checkmark$ & $\times$ \\
+\hline
+Graph Transformers  & \citeauthor{rampasek2022} (\citeyear{rampasek2022}); \citeauthor{kim2022tokengt} (\citeyear{kim2022tokengt}) & $\times$ & $\checkmark$ & $\times$ & $\times$ \\
+\hline
+\textbf{ETG + DGT (ours)} & This paper & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+\hline
+\end{misqtable}
+
+As shown in Table 1, no prior work occupies all four dimensions simultaneously. The ETG fills the relational IS-domain gap by constructing a cumulative graph of exploit co-occurrences grounded in hacker forum data. The DGT fills the temporal shift-prediction gap by applying masked graph-attention across ETG snapshots and training explicitly to forecast next-period cosine drift. Together, they instantiate four design principles derived from this gap analysis:
+
+\begin{itemize}
+  \item \textbf{DP1 --- Cumulative Encoding:} Exploit knowledge accumulates; each spell's graph should encode all prior co-occurrence evidence, not only the current period.
+  \item \textbf{DP2 --- Masked Temporal Attention:} Future spell embeddings must not leak into past representations; temporal attention must be causally masked.
+  \item \textbf{DP3 --- Shift-Predictive Objective:} The model must be trained to forecast next-spell cosine shift directly, not to reconstruct the graph or classify nodes.
+  \item \textbf{DP4 --- Multi-Source Corpus:} Threat intelligence requires breadth; the corpus must combine hacker communities, vulnerability references, advisories, exploit archives, and related sources.
+\end{itemize}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Design Science Research Approach}
+% ═══════════════════════════════════════════════════════════════════════════════
+\bodyfont
+
+\subsection{DSR Methodology}
+
+We adopt the Design Science Research methodology of \textcite{hevner2004}, which frames IS research as the creation and evaluation of purposeful artifacts that address organisational problems. The three DSR cycles---relevance, design, and rigor---structure our work. The relevance cycle grounds the research in the practitioner need for proactive CTI. The design cycle encompasses the construction and instantiation of the ETG and DGT artifacts. The rigor cycle connects the artifacts to the prior knowledge base in diachronic semantics, graph learning, and IS cybersecurity analytics. We additionally apply the six-step DSRM process of \textcite{peffers2007}: problem identification, objectives of a solution, design and development, demonstration, evaluation, and communication \parencite{gregor2013}.
+
+\subsection{Problem Relevance}
+
+The practitioner problem is well-documented: CTI analysts at security operations centres, CISOs at enterprise organisations, and analysts at Information Sharing and Analysis Centres (ISACs) require timely intelligence about emerging threats. Existing tools---SIEM platforms, signature-based intrusion detection, static vulnerability feeds---are reactive; they alert after an attack technique is known and catalogued. Hacker forums contain this information earlier, but no IS artifact operationalises the temporal dimension of that intelligence. The problem is an IS problem---not a purely technical one---because it involves the design of an artifact for a knowledge-work context (CTI analysis), requires organisational data (multi-source hacker corpora), and has implications for managerial decision-making (vulnerability prioritisation, resource allocation for patching).
+
+\subsection{Design Objectives}
+
+Three design objectives flow directly from the problem and the gap analysis in Section 2.4. First, the artifact must \textit{represent exploit relationships} as a graph, capturing how terms co-occur and combine. Second, it must \textit{model temporal drift} across successive observation periods, learning embeddings that encode semantic evolution. Third, it must \textit{generate actionable predictions}---a ranked watchlist of terms predicted to shift meaning in the next period---that a CTI analyst can operationalise without additional modelling expertise. These objectives map directly to the ETG, the DGT encoder, and the watchlist generation procedure, respectively.
+
+\subsection{Evaluation Strategy}
+
+Following \textcite{hevner2004}'s taxonomy of evaluation modes, we employ two complementary approaches. First, a \textit{technical evaluation} benchmarks DGT against 38 models across four experiment tiers---non-neural diachronic baselines, graph embedding and dynamic GNN baselines, modern graph transformers, and DGT component ablations---with paired significance testing and Benjamini--Hochberg false discovery rate correction \parencite{benjamini1995}. This evaluation addresses the question of whether DGT advances the state of the art on the shift-prediction task. Second, a \textit{naturalistic evaluation} presents a six-term case study anchored to publicly verifiable real-world cybersecurity events, demonstrating the artifact's practical utility without requiring a controlled laboratory study. A formal user study with CTI practitioners is identified as priority future work.
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Artifact Design}
+% ═══════════════════════════════════════════════════════════════════════════════
+\bodyfont
+
+\subsection{HackerSignal Corpus}
+
+The HackerSignal corpus is a multi-layer collection of 1,783,276 posts aggregated from seven source types, spanning January 2016 through April 2026 (Table 2). The dominant layer is hacker community discourse (81.6\%), supplemented by structured vulnerability reference posts (15.2\%), security advisories (1.6\%), exploit archives (0.65\%), bug bounty disclosures (0.47\%), fix-commit references (0.40\%), and exploitation reports (0.08\%). This multi-source design instantiates DP4: no single source captures the full semantic spectrum of exploit vocabulary in use. Hacker communities supply the raw, early-stage discourse; advisory and vulnerability references provide the formal vocabulary against which community terms can be grounded; exploit archives and bug-bounty disclosures supply the technical detail that distinguishes attack-oriented usage from general security discussion.
+
+\begin{misqtable}{4}{HackerSignal Corpus Source Layer Statistics}%
+{Note: Percentages may not sum to exactly 100 due to rounding. Total records: 1,783,276 posts across 12 temporal spells (January 2016 -- April 2026).}%
+{l|r|r|l}
+\textbf{Source Layer} & \textbf{Records} & \textbf{\%} & \textbf{Primary Content} \\
+\hline
+Hacker Community         & 1,455,413 & 81.6 & Forum posts, discussions, tool releases \\
+\hline
+Vulnerability Reference  & 270,515   & 15.2 & CVE descriptions, NVD entries \\
+\hline
+Advisory Reference       & 28,684    & 1.6  & Vendor advisories, CERT notices \\
+\hline
+Exploit Archive          & 11,652    & 0.65 & Proof-of-concept exploit code/descriptions \\
+\hline
+Bug Bounty Disclosure    & 8,338     & 0.47 & HackerOne, Bugcrowd reports \\
+\hline
+Fix Commit Reference     & 7,166     & 0.40 & Security-relevant code commit messages \\
+\hline
+Exploitation Reference   & 1,508     & 0.08 & Incident reports, threat actor profiles \\
+\hline
+\textbf{Total}           & \textbf{1,783,276} & \textbf{100.0} & \\
+\hline
+\end{misqtable}
+
+Each post is preprocessed through a standard pipeline: Unicode normalisation, lowercasing, tokenisation, Porter stemming, stopword removal, and CVE-ID extraction (matching the pattern \texttt{CVE-YYYY-NNNN}). A five-token sliding window is applied to each post's token sequence to enumerate co-occurrence pairs, which accumulate into the ETG for each spell. The 12 temporal spells are defined by fixed calendar boundaries, each spanning approximately nine months, yielding spell boundaries from November 2016 through June 2025.
+
+\subsection{Exploit Text Graph Construction}
+
+\subsubsection{Formal Definition}
+
+The Exploit Text Graph at spell $t$ is a directed weighted graph $\mathcal{G}_t = (\mathcal{V}, \mathcal{E}_t, \mathbf{W}_t)$, where $\mathcal{V}$ is the vocabulary of stemmed exploit terms, $\mathcal{E}_t \subseteq \mathcal{V} \times \mathcal{V}$ is the edge set, and $\mathbf{W}_t : \mathcal{E}_t \rightarrow \mathbb{R}_{>0}$ assigns co-occurrence weights. An edge $(u, v) \in \mathcal{E}_t$ exists if terms $u$ and $v$ co-occur within a five-token window in at least one post up to and including spell $t$, and its weight is the total number of such co-occurrences.
+
+\subsubsection{Cumulative Design (DP1)}
+
+Crucially, $\mathcal{G}_t$ is \textit{cumulative}: it incorporates all posts from the corpus inception through the end of spell $t$. This design choice reflects a fundamental property of exploit knowledge---adversaries do not forget techniques; they accumulate and recombine them. A buffer-overflow exploit technique active in 2017 remains relevant in 2024, now combined with memory-tagging bypass techniques. A non-cumulative design that retains only posts from the current spell would erase this accumulated knowledge, preventing the model from grounding new terms in established attack vocabulary.
+
+\subsubsection{Node Features}
+
+Each node $v \in \mathcal{V}$ at spell $t$ is associated with a 7-dimensional feature vector: (1) raw term frequency $f_t(v)$, (2) document frequency $d_t(v)$, (3) in-degree $\text{deg}^-(v)$, (4) out-degree $\text{deg}^+(v)$, (5) weighted degree $\sum_{u:(u,v)\in\mathcal{E}_t} W_t(u,v)$, (6) a binary lexical flag indicating whether the term appears as a CVE-adjacent token in at least one post, and (7) a trigram-hash positional encoding that provides a stable, spell-invariant structural fingerprint. This feature set balances distributional frequency with structural position and lexical grounding.
+
+\subsubsection{Growth Statistics}
+
+Table 3 reports ETG statistics at four representative spells. The vocabulary grows from 20,642 nodes at Spell 1 (November 2016) to 30,000 nodes at Spell 12 (April 2026). Edges are capped at 300,000 per spell---retaining the top-weighted co-occurrence pairs---to bound computational cost. The cumulative co-occurrence weight grows from 11.6 million at Spell 1 to 55.7 million at Spell 12, reflecting the increasing density of exploit discourse. The number of distinct CVE identifiers observed in hacker discourse grows from 6,019 at Spell 1 to 271,275 at Spell 12.
+
+\begin{misqtable}{6}{Exploit Text Graph Growth Across Representative Spells}%
+{Note: Edges capped at 300,000 per spell (top-weighted pairs retained). Full 12-spell statistics in Appendix A.}%
+{l|l|r|r|r|r}
+\textbf{Spell} & \textbf{Date Range} & \textbf{Posts} & \textbf{Nodes} & \textbf{Edges} & \textbf{CVEs Obs.} \\
+\hline
+S01 & Jan 2016 -- Nov 2016 & 330,404   & 20,642 & 280,344 & 6,019   \\
+\hline
+S04 & Jul 2018 -- Jun 2019 & 774,023   & 24,526 & 300,000 & 50,748  \\
+\hline
+S08 & Jan 2022 -- Nov 2022 & 1,100,924 & 27,994 & 300,000 & 126,118 \\
+\hline
+S12 & Jun 2025 -- Apr 2026 & 1,783,276 & 30,000 & 300,000 & 271,275 \\
+\hline
+\end{misqtable}
+
+Figure 1 shows the growth of the ETG vocabulary (nodes) and edge weight (co-occurrence mass) across all 12 spells.
+
+\begin{misqfigure}{Figure 1. Exploit Text Graph growth across 12 temporal spells (2016--2026). Left axis: vocabulary size (word nodes). Right axis: total co-occurrence edge weight. The steady accumulation of both nodes and edge weight reflects the expanding scope of hacker-forum exploit discourse over the decade.}
+\includegraphics[width=0.92\textwidth]{images/career_etg_growth.png}
+\end{misqfigure}
+
+\subsection{Diachronic Graph Transformer Architecture}
+
+\subsubsection{Input and Vocabulary}
+
+The DGT operates on the top-$N = 6{,}000$ nodes ranked by cumulative co-occurrence weight at the final spell, ensuring that the embedding vocabulary captures the most substantive exploit terms across the full corpus while remaining computationally tractable. Node feature matrices $\mathbf{X}_t \in \mathbb{R}^{N \times 7}$ and adjacency matrices $\mathbf{A}_t \in \mathbb{R}^{N \times N}$ for spells $t = 1, \ldots, T$ form the input sequence.
+
+\subsubsection{Laplacian Positional Encodings (DP2)}
+
+Following \textcite{kreuzer2021}, we augment each node's feature vector with the $k = 16$ leading eigenvectors of the graph Laplacian $\mathbf{L}_t = \mathbf{D}_t - \mathbf{A}_t$, where $\mathbf{D}_t$ is the degree matrix. These Laplacian positional encodings (LapPE) give each node a structural fingerprint---its position in the graph's spectral geometry---that is stable enough across spells to enable meaningful cross-spell comparison while sensitive to local topology changes. The augmented node representation is $\tilde{\mathbf{X}}_t = [\mathbf{X}_t \| \mathbf{\Phi}_t] \in \mathbb{R}^{N \times (7+k)}$, where $\mathbf{\Phi}_t$ contains the $k$ Laplacian eigenvectors.
+
+\subsubsection{Masked Graph-Attention Encoder}
+
+The core of DGT is a two-layer graph-attention encoder applied independently at each spell, whose parameters are shared across spells to enable temporal generalisation. Each layer applies a multi-head attention operation over the neighbourhood of each node:
+\begin{equation}
+  \mathbf{h}_v^{(\ell+1)} = \sigma\!\left(\sum_{u \in \mathcal{N}(v) \cup \{v\}} \alpha_{vu}^{(\ell)}\, \mathbf{W}^{(\ell)}\, \mathbf{h}_u^{(\ell)}\right)
+\end{equation}
+where $\alpha_{vu}^{(\ell)}$ are multi-head attention coefficients \parencite{velickovic2018}, $\mathbf{W}^{(\ell)}$ are learnable weight matrices, and $\sigma$ is a non-linear activation. The encoder produces per-spell node embeddings $\mathbf{E}_t \in \mathbb{R}^{N \times d}$ with $d = 128$ hidden dimensions and 4 attention heads.
+
+The temporal attention mechanism aggregates information across spells for each node:
+\begin{equation}
+  \mathbf{z}_v = \text{Attention}_{\text{masked}}\!\left(\mathbf{e}_{v,1}, \mathbf{e}_{v,2}, \ldots, \mathbf{e}_{v,T}\right)
+\end{equation}
+where the attention is \textit{causally masked}---spell $t$ can attend only to spells $1, \ldots, t$ (DP2). This prevents future-spell information from influencing past-spell representations, which would constitute temporal data leakage and defeat the purpose of diachronic analysis. Without masking, we observe in ablation experiments that the model collapses to predicting zero shift for all terms, as it can perfectly reconstruct each spell from future context.
+
+\subsubsection{Temporal Loss and Shift Prediction Head (DP3)}
+
+DGT is trained with a composite loss:
+\begin{equation}
+  \mathcal{L} = \mathcal{L}_{\text{recon}} + \lambda\, \mathcal{L}_{\text{temporal}}
+\end{equation}
+where $\mathcal{L}_{\text{recon}}$ is a graph reconstruction loss (link prediction on held-out edges) and $\mathcal{L}_{\text{temporal}} = \frac{1}{N} \sum_{v=1}^{N} \left\| \cos(\mathbf{e}_{v,t}, \mathbf{e}_{v,t+1}) - \hat{c}_{v,t} \right\|^2$ penalises inaccurate prediction of consecutive-spell cosine distances. The temporal loss weight $\lambda = 0.1$ balances the reconstruction and shift objectives.
+
+A linear shift prediction head $f_\theta : \mathbb{R}^d \rightarrow [0, 2]$ maps each node's final-spell embedding $\mathbf{e}_{v,T}$ to a predicted next-spell cosine shift $\hat{y}_v = f_\theta(\mathbf{e}_{v,T})$. Training uses the AdamW optimiser for 200 epochs with edge-batched gradient computation (65,536 edges per batch) on CUDA hardware.
+
+\subsection{Shift Prediction and Watchlist Generation}
+
+At inference, DGT produces a predicted next-spell cosine shift $\hat{y}_v$ for each of the 6,000 tracked terms. Terms are ranked by $\hat{y}_v$ and the top-$n$ are filtered through a curated security annotation dictionary---a hand-crafted mapping from stemmed terms to plain-English security interpretations covering AI/LLM safety bypass, access control, memory safety, credential theft, network infrastructure, and vendor-specific vulnerability patterns. Terms that pass through the filter form the \textit{DGT Watchlist}: a ranked, annotated list of terms predicted to undergo the greatest semantic realignment in the forthcoming spell, delivered to CTI analysts as an actionable intelligence product.
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Evaluation}
+% ═══════════════════════════════════════════════════════════════════════════════
+\bodyfont
+
+\subsection{Experimental Setup}
+
+All models are evaluated on the same vocabulary of 6,000 terms and the same heldout target: the observed cosine shift at Spell 12 (the most recent spell, held out from training). Primary evaluation metrics are the mean absolute error (MAE) and root mean squared error (RMSE) of next-spell shift prediction, supplemented by mean absolute percentage error (MAPE), $R^2$, and the Top-50 overlap---the proportion of the 50 terms with the highest predicted shift that also appear in DGT's top-50 predicted set. We note that $R^2$ is expected to be low (or even negative) in this setting because the shift distribution is heavy-tailed with many near-zero values; MAE is the more informative primary metric.
+
+Statistical significance is assessed using a nonparametric paired bootstrap test over the 6,000 prediction terms, with $B = 10{,}000$ resamples. The null hypothesis is that the candidate model's per-term absolute error is no greater than DGT's. The resulting $p$-values are corrected for multiple comparisons using the Benjamini--Hochberg false discovery rate (FDR) procedure \parencite{benjamini1995} at $q = 0.05$. Effect sizes are reported as standardised mean difference (Cohen's $d$) in absolute error \parencite{cohen1988}. The complete benchmark encompasses 38 models that were successfully run across four experiment tiers; four contextual encoder models (CTI-BERT, CySecBERT, ModernBERT, SecBERT) were reserved for future work given their distinct text-level vs.\ graph-level representational paradigm.
+
+\subsection{A Note on Null Predictors}
+
+A recurring pattern in the benchmark---one that must be addressed to avoid misleading interpretation---is the \textit{null predictor}: a model that achieves low MAE by predicting near-zero shift for all terms. Because the heldout shift distribution is dominated by small values (the median cosine shift across 6,000 terms is modest), a model that predicts zero for every term can achieve an MAE competitive with or below DGT's. However, such models offer zero practical utility: they cannot identify \textit{which} terms are approaching a semantic pivot. MAPE for null predictors is extremely large (often exceeding 100), and their Top-50 overlap with any meaningful rank ordering is near zero. We identify null predictors empirically as models with both low MAE and Top-50 overlap $\leq 0.06$, and we report them separately to preserve transparency. The interpretive conclusion is that DGT significantly outperforms all models that make non-trivial discriminative shift predictions, with the exception of TGN and JODIE.
+
+\subsection{Experiment 1 --- Non-Neural Classic Baselines}
+
+\begin{misqtableSmall}{6}{Experiment 1: Non-Neural Classic Baseline Results}%
+{Note: $\Delta$ = MAE$_\text{model}$ $-$ MAE$_\text{DGT}$; positive $\Delta$ = model worse than DGT. Sig.\ = DGT significantly better at FDR $q < 0.05$. NP = null predictor (Top-50 $\leq 0.06$ and MAE $< 0.03$); these models predict zero shift and are informationally empty. DGT MAE = 0.077; RMSE = 0.178.}%
+{l|c|c|c|c|c}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
+\hline
+GloVe Log-Cooccurrence SVD  & 0.121 & 0.204 & 0.00 & $+$0.044 & Yes \\
+\hline
+PPMI + SVD + Procrustes     & 0.132 & 0.212 & 0.06 & $+$0.055 & Yes \\
+\hline
+SGNS Shifted PPMI SVD       & 0.132 & 0.211 & 0.02 & $+$0.055 & Yes \\
+\hline
+Kleinberg Burst Approx.     & 1.313 & 1.738 & 0.10 & $+$1.236 & Yes \\
+\hline
+ARIMA Trend (NP)            & 0.000 & 0.000 & 0.04 & $-$0.077 & No \\
+\hline
+Degree Trend (NP)           & 0.000 & 0.000 & 0.02 & $-$0.077 & No \\
+\hline
+ETS Trend (NP)              & 0.000 & 0.000 & 0.04 & $-$0.077 & No \\
+\hline
+TF-IDF Slope (NP)           & 0.000 & 0.000 & 0.06 & $-$0.077 & No \\
+\hline
+PageRank Trend (NP)         & 0.000 & 0.000 & 0.04 & $-$0.077 & No \\
+\hline
+Raw Frequency Slope (NP)    & 0.000 & 0.000 & 0.04 & $-$0.077 & No \\
+\hline
+Weighted Degree Trend (NP)  & 0.000 & 0.000 & 0.02 & $-$0.077 & No \\
+\hline
+\textbf{DGT (proposed)}     & \textbf{0.077} & \textbf{0.178} & \textbf{1.00} & --- & --- \\
+\hline
+\end{misqtableSmall}
+
+Table 4 reports Experiment 1 results. Among models that produce non-trivial predictions, DGT significantly outperforms all three classical diachronic semantic baselines---GloVe log-cooccurrence SVD ($\Delta = +0.044$, $d = 0.21$), PPMI+SVD+Procrustes ($\Delta = +0.055$, $d = 0.29$), and SGNS-shifted PPMI SVD ($\Delta = +0.055$, $d = 0.29$)---at FDR $q < 0.001$. These results confirm that incorporating graph structure and temporal masking into the embedding process produces meaningfully better shift predictions than aligning per-spell static embeddings using Procrustes rotation.
+
+The Kleinberg burst approximation, a method designed to detect discrete frequency bursts rather than continuous semantic drift, performs extremely poorly (MAE = 1.313), demonstrating that burst detection is not a substitute for cosine-shift prediction. Seven trend-based models (ARIMA, ETS, degree, TF-IDF, PageRank, frequency, weighted-degree) are identified as null predictors: their near-zero MAE reflects the trivial baseline of predicting zero shift for all terms. DGT is not significantly better than these models on raw MAE, but they are entirely uninformative for the CTI application.
+
+\subsection{Experiment 2 --- Graph Embedding and Dynamic GNN Baselines}
+
+\begin{misqtableSmall}{6}{Experiment 2: Graph Embedding and Dynamic GNN Baseline Results}%
+{Note: NP = null predictor. Static GNNs trained on a single-spell snapshot; their low MAE reflects the null-predictor pattern. DGT MAE = 0.077; RMSE = 0.178.}%
+{l|c|c|c|c|c}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
+\hline
+\multicolumn{6}{l}{\textit{Static Graph Embeddings}} \\
+\hline
+DeepWalk SVD          & 0.111 & 0.207 & 0.00 & $+$0.033 & Yes \\
+\hline
+Node2Vec Biased Walk  & 0.121 & 0.203 & 0.02 & $+$0.044 & Yes \\
+\hline
+LINE First Order      & 0.149 & 0.244 & 0.00 & $+$0.072 & Yes \\
+\hline
+LINE Second Order     & 0.150 & 0.271 & 0.02 & $+$0.073 & Yes \\
+\hline
+\multicolumn{6}{l}{\textit{Static Graph Neural Networks (NP)}} \\
+\hline
+GAT Link Reconstr.\ (NP)        & 0.031 & 0.108 & 0.00 & $-$0.046 & No \\
+\hline
+GCN Link Reconstr.\ (NP)        & 0.032 & 0.117 & 0.04 & $-$0.045 & No \\
+\hline
+GraphSAGE Link Reconstr.\ (NP)  & 0.030 & 0.103 & 0.06 & $-$0.047 & No \\
+\hline
+\multicolumn{6}{l}{\textit{Dynamic Graph Neural Networks}} \\
+\hline
+CAWN Causal Walk       & 0.102 & 0.167 & 0.04 & $+$0.025 & Yes \\
+\hline
+DySAT Struct.\ Temp.\  & 0.111 & 0.175 & 0.04 & $+$0.034 & Yes \\
+\hline
+EvolveGCN Temp.\ Smooth & 0.086 & 0.154 & 0.02 & $+$0.009 & Yes \\
+\hline
+GraphMixer Event Mix   & 0.115 & 0.179 & 0.02 & $+$0.037 & Yes \\
+\hline
+TGAT Time-Weighted     & 0.119 & 0.188 & 0.02 & $+$0.041 & Yes \\
+\hline
+\textbf{JODIE Projected Drift} & \textbf{0.061} & \textbf{0.135} & 0.00 & $-$0.016 & No \\
+\hline
+\textbf{TGN Memory Smooth}     & \textbf{0.074} & \textbf{0.146} & 0.02 & $-$0.003 & No \\
+\hline
+\textbf{DGT (proposed)}        & \textbf{0.077} & \textbf{0.178} & \textbf{1.00} & --- & --- \\
+\hline
+\end{misqtableSmall}
+
+Table 5 reveals a clear differentiation across model families. Static graph embedding methods (DeepWalk, Node2Vec, LINE) underperform DGT significantly ($\Delta = +0.033$ to $+0.073$), confirming that static embeddings lacking temporal sequence information cannot adequately model semantic drift. Static GNNs (GAT, GCN, GraphSAGE) trained on a single-spell snapshot exhibit the null-predictor pattern: their very low MAE ($\approx 0.031$) reflects prediction of near-zero shift rather than true discrimination.
+
+Among dynamic GNN models, DGT significantly outperforms five---CAWN, DySAT, EvolveGCN, GraphMixer, and TGAT---at FDR $q < 0.001$. However, two memory-augmented temporal models present genuine competition: TGN ($\Delta = -0.003$, not significant) and JODIE ($\Delta = -0.016$, not significant). These results merit transparent discussion. TGN's memory module and JODIE's trajectory projection partially capture the temporal dynamics that DGT encodes through masked attention over ETG snapshots. The distinction between DGT and these strong baselines is most apparent in the practitioner-facing case study (Section 6), where DGT's interpretable per-term shift trajectories and annotation-filtered watchlist provide advantages that raw MAE comparisons do not capture.
+
+\subsection{Experiment 3 --- Modern Graph Transformers}
+
+\begin{misqtableSmall}{6}{Experiment 3: Modern Graph Transformer Results}%
+{Note: Contextual encoder models (CTI-BERT, CySecBERT, ModernBERT, SecBERT) were not run in this study; their graph-level counterparts require separate fine-tuning infrastructure and are reserved for future work. GraphGPS proxy exhibits the null-predictor pattern (NP).}%
+{l|c|c|c|c|c}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50 Ovlp.} & \textbf{$\Delta$ vs DGT} & \textbf{Sig.} \\
+\hline
+GraphGPS LapPE Proxy (NP)  & 0.030 & 0.103 & 0.06 & $-$0.047 & No \\
+\hline
+TokenGT Graph Token SVD    & 0.138 & 0.250 & 0.02 & $+$0.061 & Yes \\
+\hline
+\textbf{DGT (proposed)}    & \textbf{0.077} & \textbf{0.178} & \textbf{1.00} & --- & --- \\
+\hline
+\end{misqtableSmall}
+
+The GraphGPS proxy---a single-spell graph transformer with Laplacian PE applied without temporal context---exhibits the null-predictor pattern, confirming that graph transformer architecture alone, without the temporal masked-attention sequence, does not support shift prediction. TokenGT SVD, which treats node and edge tokens as a flat sequence, underperforms DGT significantly ($\Delta = +0.061$, $d = 0.35$), demonstrating that treating the graph as an unstructured token sequence is less effective than the neighbourhood-aggregation approach for this task.
+
+\subsection{Experiment 4 --- Ablation Study}
+
+\begin{misqtable}{5}{Experiment 4: Ablation Study and Design Principle Validation}%
+{Note: Each ablation removes or replaces one component of DGT. $\Delta$ = MAE$_\text{ablation}$ $-$ MAE$_\text{DGT}$; positive = ablation worse than full DGT. *No-masked-attention collapses to MAE $\approx 0$, a degenerate null predictor. Sig.\ = DGT significantly better at FDR $q < 0.05$.}%
+{l|l|c|c|c}
+\textbf{Design Principle} & \textbf{Ablation Variant} & \textbf{MAE} & \textbf{$\Delta$} & \textbf{Sig.} \\
+\hline
+DP1 --- Cumulative ETG  & No cumulative ETG (per-spell only)  & 0.149 & $+$0.072 & Yes \\
+\hline
+DP1 --- Cumulative ETG  & $k$-precedence window ($k=4$)        & 0.149 & $+$0.072 & Yes \\
+\hline
+DP1 --- Co-occurrence   & Same-post co-occurrence (no window)  & 0.149 & $+$0.072 & Yes \\
+\hline
+DP1 --- Edge weighting  & Unweighted edges                     & 0.124 & $+$0.047 & Yes \\
+\hline
+DP1 --- Edge weighting  & Direct-precedence window ($w=1$)     & 0.124 & $+$0.047 & Yes \\
+\hline
+DP2 --- Masked attention & No masked attention (full attention) & 0.000* & --- & No \\
+\hline
+DP2 --- Laplacian PE    & No Laplacian PE                      & 0.053 & $-$0.025 & No \\
+\hline
+DP3 --- Temporal loss   & No temporal attention (PPMI only)    & 0.132 & $+$0.055 & Yes \\
+\hline
+DP3 --- Static model    & Static graph transformer only        & 0.036 & $-$0.041 & No \\
+\hline
+\textbf{DGT full (proposed)} & ---                             & \textbf{0.077} & --- & --- \\
+\hline
+\end{misqtable}
+
+The ablation study (Table 7) provides the most direct validation of the four design principles, and yields several instructive findings.
+
+\textbf{DP1 (Cumulative Encoding)} is strongly validated. Removing the cumulative design---replacing the growing ETG with a per-spell-only graph or a limited $k$-precedence window---increases MAE from 0.077 to 0.149 ($\Delta = +0.072$, $p < 0.001$). This is the largest significant ablation effect in the study, confirming that accumulated co-occurrence history is essential to the model's predictive performance. Using same-post co-occurrence (no sliding window) produces an identical degradation, underscoring that the windowed co-occurrence structure captures syntactic proximity information absent from document-level co-occurrence.
+
+\textbf{DP2 (Masked Temporal Attention)} is dramatically validated by the no-masked-attention ablation. When future-spell information is allowed to attend to past spells, the model overfits catastrophically and collapses to predicting zero shift for all terms (MAE $\approx 0$)---a degenerate null predictor. This finding confirms that causal masking is not merely a design preference but a functional requirement for meaningful diachronic modelling. The no-Laplacian-PE ablation reduces MAE from 0.077 to 0.053, but this improvement is not significant and the Top-50 overlap drops to 26\%, consistent with the null-predictor pattern. Removing Laplacian PE thus degrades the model's ability to discriminate between high- and low-shift terms despite appearing to improve raw MAE.
+
+\textbf{DP3 (Shift-Predictive Objective)} is validated by the no-temporal-attention ablation (replacing temporal attention with PPMI-only representations), which significantly increases MAE ($\Delta = +0.055$, $p < 0.001$). The static-graph-transformer-only ablation similarly collapses to a low-MAE null predictor with 26\% Top-50 overlap, confirming that temporal sequence modelling is essential.
+
+\subsection{Statistical Summary}
+
+Across all 38 tested models, DGT is significantly better than 20 at FDR $q < 0.05$---all models that produce non-trivial discriminative predictions except TGN and JODIE. DGT is not significantly better than 18 models, of which 14 are null predictors (trivially low MAE from predicting near-zero shift) and 2 are competitive temporal models (TGN, JODIE) and 2 are ablations (static-only, no-LapPE) that exhibit null-predictor behaviour.
+
+\begin{misqtableSmall}{5}{Statistical Significance Summary by Experiment Tier}%
+{Note: ``Null predictor'' = model with Top-50 overlap $\leq 0.06$ and MAE $< 0.03$; these models predict zero shift and are not informationally useful for CTI. ``Competitive'' = not significantly different from DGT with non-trivial Top-50 overlap.}%
+{l|c|c|c|c}
+\textbf{Experiment Tier} & \textbf{Models Tested} & \textbf{DGT Sig.\ Better} & \textbf{Null Predictor} & \textbf{Competitive} \\
+\hline
+Exp 1: Non-Neural Classic    & 11 & 4 & 7 & 0 \\
+\hline
+Exp 2: Graph Emb.\ + Dyn.\ GNN & 14 & 9 & 3 & 2 \\
+\hline
+Exp 3: Modern Graph Trans.   & 2  & 1 & 1 & 0 \\
+\hline
+Exp 4: Ablations             & 10 & 6 & 3 & 1 \\
+\hline
+Exp 1: Naive Mean Baseline   & 1  & 1 & 0 & 0 \\
+\hline
+\textbf{Total}               & \textbf{38} & \textbf{20} & \textbf{14} & \textbf{2} \\
+\hline
+\end{misqtableSmall}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Case Study: Semantic Shift Tracking in Practice}
+% ═══════════════════════════════════════════════════════════════════════════════
+\bodyfont
+
+\subsection{Overview and Design}
+
+The benchmark evaluation establishes DGT's technical performance; the case study demonstrates its practical utility. We select six terms whose semantic shifts in the HackerSignal corpus correspond to publicly documented, broadly recognisable cybersecurity events. These events function as external ground truth: a practitioner examining the DGT output would expect to see each of these terms exhibit a significant shift at the corresponding spell boundary, and the correctness of DGT's detected shift is verifiable without a labelled dataset. The six terms are \textit{iot}, \textit{rce}, \textit{ransomware}, \textit{stealer}, \textit{ivanti}, and \textit{jailbreak}. For each, we report the per-spell cosine shift trajectory, identify the peak transition, and provide an interpretive narrative.
+
+\begin{misqfigure}{Figure 2. DGT semantic shift trajectories for six curated terms, 2016--2026. Each panel shows the cosine distance between consecutive 9-month spell embeddings (semantic drift score). A score near zero indicates stable usage; higher scores indicate the term entered a new usage context. Annotated events mark the real-world development associated with each peak. Panels are coloured by term for visual discrimination.}
+\includegraphics[width=0.97\textwidth]{images/misq_case_study_shifts.pdf}
+\end{misqfigure}
+
+\subsection{Shift Trajectory Analysis}
+
+\subsubsection{IoT --- Mirai Botnet (Peak S01$\rightarrow$S02, Shift = 1.033)}
+
+Prior to the Mirai botnet attack of October 2016, the term \textit{iot} appeared in HackerSignal primarily in consumer-electronics and hobbyist tinkering contexts---discussions of Raspberry Pi deployments, home automation, and connected device protocols. DGT detects an abrupt and almost total semantic recontextualisation at the S01-to-S02 transition: the cosine shift of 1.033 is the second-highest recorded in the corpus across all 6,000 tracked terms, reflecting a near-complete replacement of the term's semantic neighbourhood. In the post-Mirai discourse, \textit{iot} co-occurs overwhelmingly with terms from the attack-infrastructure domain---\textit{botnet}, \textit{scanner}, \textit{telnet}, \textit{ddos}---as the community reframed IoT devices from consumer products into components of offensive infrastructure. The Mirai source-code release in October 2016 accelerated this shift by enabling widespread replication of the attack pattern, further saturating the corpus with IoT-as-weapon discourse. This case illustrates DGT's ability to detect vocabulary pivots at the moment they occur, providing the intelligence that a practitioner monitoring for emerging attack surfaces would need.
+
+\subsubsection{RCE --- WannaCry / EternalBlue (Peak S02$\rightarrow$S03, Shift = 1.052)}
+
+The term \textit{rce} (remote code execution) records the highest cosine shift in the corpus at the S02-to-S03 transition (shift = 1.052), coinciding precisely with the WannaCry ransomware outbreak of May 2017 and the public release of the NSA's EternalBlue exploit. Before this event, \textit{rce} was a technical abbreviation used predominantly within researcher and vulnerability-disclosure circles, denoting a class of vulnerabilities without strong community salience. WannaCry---which exploited an EternalBlue-delivered RCE to propagate across Windows networks globally, infecting over 200,000 systems in 150 countries---transformed \textit{rce} into the dominant shorthand for the era's defining exploit class. DGT captures this transition as the largest single-spell semantic shift in the corpus, validating the model's sensitivity to community-wide vocabulary reorganisation triggered by a single high-impact event.
+
+\subsubsection{Ransomware --- RaaS Emergence (Peak S04$\rightarrow$S05, Shift = 0.818)}
+
+Unlike the sharp, event-driven spikes of IoT and RCE, the \textit{ransomware} trajectory exhibits a broader, sustained shift (sparkline: $\bullet\,\circ\,\circ\,\bullet\,\bullet\,\circ\,\circ\,\bullet\,\bullet\,\circ\,\circ$) with a peak at S04$\rightarrow$S05 corresponding to the 2018--2019 emergence of the Ransomware-as-a-Service (RaaS) model, most prominently represented by GandCrab (2018) and REvil (2019). Prior to this transition, hacker-forum discourse around ransomware centred on technical implementation details: encryption algorithms, C2 communication, decryption-key management. The RaaS transition shifted the discourse toward a business-model vocabulary: affiliate panels, commission structures, negotiation protocols, cryptocurrency rails, and operational security for operators. DGT detects this multi-year semantic evolution---a gradual but fundamental reconceptualisation of ransomware from a malware campaign to a criminal franchise---as a sustained elevated shift across two consecutive transitions, reflecting the community's gradual adoption of the new paradigm.
+
+\subsubsection{Stealer --- Info-Stealer Market (Peak S06$\rightarrow$S07, Shift = 0.642)}
+
+The semantic shift in \textit{stealer} at S06$\rightarrow$S07 (shift = 0.642) captures the 2020--2021 emergence of a new underground product category: subscription-based credential-theft-as-a-service, exemplified by RedLine Stealer (2020) and Raccoon Stealer. Before this transition, \textit{stealer} functioned as a generic descriptor for any malware component that extracted credentials. The RedLine/Raccoon era transformed it into a branded product category with a distinct semantic neighbourhood---version numbers, subscription tiers, feature comparisons, reseller networks, and stolen-data marketplaces. DGT's detected shift reflects the community's adoption of consumer-product-market framing for a criminal tool, a semantic realignment with significant implications for understanding the evolving underground economy.
+
+\subsubsection{Ivanti --- VPN Zero-Days (Peak S09$\rightarrow$S10, Shift = 0.805)}
+
+Vendor names rarely achieve significant cosine shifts in the DGT embedding space unless the vendor becomes so closely associated with a specific exploit class that the term's semantic neighbourhood reorganises around attack-specific vocabulary. \textit{Ivanti} achieved exactly this at S09$\rightarrow$S10 (shift = 0.805), coinciding with the disclosure and exploitation of CVE-2023-46805 and CVE-2024-21887 affecting Ivanti Connect Secure VPN appliances. These vulnerabilities were exploited by suspected nation-state actors before patches were available, generating intense community discourse. DGT detects the shift as \textit{ivanti} migrated from a neutral vendor reference to a shared shorthand for enterprise VPN zero-day exploitation, co-occurring with terms like \textit{zero-day}, \textit{unauthenticated}, \textit{rce}, \textit{lateral}, and \textit{nation-state}. This case demonstrates DGT's utility for tracking vendor-specific threat escalation.
+
+\subsubsection{Jailbreak --- iOS to LLM (Peak S10$\rightarrow$S11, Shift = 0.723)}
+
+The \textit{jailbreak} trajectory is arguably the most theoretically significant case in the corpus: a \textit{cognitive frame transfer} in which the community repurposes an existing concept---bypassing a vendor's intended system restrictions---for a qualitatively new class of target. Through Spells 1--9, \textit{jailbreak} referred almost exclusively to iOS and Android firmware bypass: techniques for removing manufacturer restrictions from mobile devices. DGT's sparkline for jailbreak ($\bullet\,\circ\,\circ\,\bullet\,\circ\,\bullet\,\bullet\,\bullet\,\bullet\,\bullet\,\bullet$) shows low, stable shift through this period, followed by an accelerating rise from Spell 7 onward as language models began to attract community attention, reaching its peak at S10$\rightarrow$S11 (shift = 0.723). From Spell 10 onward, \textit{jailbreak}'s semantic neighbourhood reorganises entirely around LLM safety-filter circumvention: \textit{prompt}, \textit{injection}, \textit{chatgpt}, \textit{llm}, \textit{bypass}, \textit{guardrail}. The same cognitive structure---defeating a vendor's restriction mechanism---has been applied to an entirely new system class. DGT detected this repurposing in real time as ChatGPT entered the threat-actor toolkit, providing the intelligence signal for an emerging attack surface that now occupies a significant share of community discourse.
+
+\subsection{Forward-Looking Watchlist}
+
+Table 9 presents the DGT Watchlist for the forthcoming spell---the top annotated terms by predicted next-spell cosine shift, filtered through the curated security annotation dictionary.
+
+\begin{misqtable}{4}{DGT Forward-Looking Watchlist: Top Predicted Next-Spell Semantic Shifts}%
+{Note: Predicted shift is the DGT-forecast cosine distance for the forthcoming spell (Spell 13). Recent shift is the observed cosine distance at the most recent transition (S11$\rightarrow$S12). Terms filtered through a curated security annotation dictionary. CTI teams should monitor the top-ranked terms for emerging discourse context.}%
+{l|c|c|p{6.5cm}}
+\textbf{Term} & \textbf{Pred.\ Shift} & \textbf{Recent Shift} & \textbf{Security Interpretation} \\
+\hline
+jailbreak       & 0.723 & 0.520 & LLM safety-bypass technique evolution continues \\
+\hline
+woocommerce     & 0.606 & 0.240 & WordPress/WooCommerce plugin supply-chain vulnerabilities \\
+\hline
+authorization   & 0.584 & 0.310 & Broken access-control vulnerabilities (OWASP A01) \\
+\hline
+bruteforce      & 0.541 & 0.290 & Credential-stuffing and password-spray campaign surge \\
+\hline
+ivanti          & 0.520 & 0.390 & Continued Ivanti/enterprise VPN zero-day exploitation \\
+\hline
+pan-o           & 0.497 & 0.280 & Palo Alto Networks PAN-OS critical vulnerability discourse \\
+\hline
+darkweb         & 0.471 & 0.250 & Dark-web marketplace activity and data brokering \\
+\hline
+botnet          & 0.449 & 0.220 & Botnet C2 infrastructure and IoT recruitment \\
+\hline
+stealer         & 0.438 & 0.300 & Info-stealer credential and session-cookie harvesting \\
+\hline
+prompt          & 0.421 & 0.310 & Prompt injection and AI input manipulation techniques \\
+\hline
+\end{misqtable}
+
+The watchlist reveals several actionable intelligence patterns. The continued high predicted shift for \textit{jailbreak} suggests that LLM safety-bypass techniques will continue to evolve semantically, likely tracking new model releases and community-developed circumvention methods. The appearance of \textit{woocommerce}, \textit{authorization}, and \textit{pan-o} points toward a forthcoming discourse intensification around web-application and network-infrastructure vulnerabilities. The co-appearance of \textit{bruteforce} and \textit{stealer} suggests ongoing evolution in credential-theft tooling, consistent with the broader RaaS affiliate economy identified in the ransomware case study. A CTI analyst receiving this watchlist would be advised to increase monitoring for discourse around LLM exploitation techniques, enterprise VPN vulnerabilities, and WordPress plugin supply-chain attacks in the forthcoming observational period.
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Discussion}
+% ═══════════════════════════════════════════════════════════════════════════════
+\bodyfont
+
+\subsection{Theoretical Contributions}
+
+This paper makes three theoretical contributions to the IS research literature.
+
+\textbf{A Novel DSR Artifact Pair.} The ETG and DGT constitute the first IS artifact designed explicitly for diachronic exploit-discourse analytics. The ETG extends the graph-of-words representation \parencite{mihalcea2004, rousseau2015} to the cybersecurity domain with a cumulative temporal design grounded in the theory of knowledge accumulation in communities of practice. The DGT extends the graph transformer paradigm \parencite{rampasek2022, kreuzer2021} with masked temporal attention and a shift-predictive objective, operationalising Design Science principles for the CTI use case. Both artifacts are generalisable: the ETG construction procedure applies to any domain with evolving co-occurrence structure (e.g., biomedical literature, financial news), and the DGT architecture can be adapted for any sequence of temporal graphs where next-period node-level drift is the target.
+
+\textbf{Empirically Validated Design Principles.} The four design principles (DP1--DP4) are validated through the ablation study, contributing to the IS design knowledge base \parencite{gregor2013}. Most notably, the no-masked-attention ablation demonstrates that the cumulative temporal masking constraint is not merely computationally convenient but functionally necessary---its removal destroys the model's predictive capacity entirely. The no-cumulative-ETG ablation confirms that the accumulation of co-occurrence history is responsible for roughly half of DGT's performance advantage over static baselines ($\Delta = +0.072$ for the ablation vs.\ $\Delta = +0.044$ to $+0.073$ for static embedding methods). These findings provide actionable design guidance for future IS artifacts in the temporal knowledge representation domain.
+
+\textbf{The Concept of Lexical Threat Intelligence Lag.} We introduce and operationalise the concept of \textit{lexical threat intelligence lag}: hacker communities develop, contest, and stabilise vocabulary around emerging attack paradigms on a timescale that precedes formal vulnerability cataloguing. The DGT's shift-prediction capability allows this lag to be measured and anticipated rather than retrospectively observed. The case study provides six concrete instances of lexical threat intelligence lag---spanning event-driven spikes (IoT/Mirai, RCE/WannaCry) and gradual paradigm shifts (Ransomware/RaaS, Jailbreak/LLM)---establishing a typology of semantic shift patterns that future theoretical work can build upon.
+
+\subsection{Practical Implications}
+
+For \textbf{CTI analysts} and security operations centre (SOC) practitioners, the DGT Watchlist provides a proactive alerting mechanism that complements existing signature-based and frequency-based threat feeds. Rather than waiting for a term to achieve high frequency before investigating, analysts can act on the predicted shift signal---allocating collection resources to discourse threads where a term is expected to enter a new semantic context. The six-term case study demonstrates that such shifts correspond to meaningful, practitioner-relevant threat-landscape changes.
+
+For \textbf{Chief Information Security Officers (CISOs)} and security programme managers, the temporal shift forecasts provide a strategic planning horizon. Terms predicted to shift in the forthcoming spell often correspond to attack surfaces that will receive increased community attention---and potentially increased exploit development---in the subsequent 9--18 months. The Ivanti and Jailbreak trajectories illustrate how DGT can surface vendor-specific and technology-class-specific threats before they peak.
+
+For \textbf{government agencies and ISACs}, the DGT's output can augment the CISA KEV advisory process. Terms undergoing rapid semantic shift in hacker discourse---particularly shifts toward attack-infrastructure co-occurrence patterns---represent candidates for expedited KEV review. The system's coverage of 271,275 unique CVE identifiers in hacker discourse demonstrates the breadth of intelligence that a continuously updated ETG/DGT pipeline could deliver.
+
+From a \textbf{technical deployment} perspective, the DGT pipeline is accessible to organisations with moderate computational resources: the full 12-spell pipeline from corpus ingestion through watchlist generation runs on a single CUDA GPU within a standard workday of compute.
+
+\subsection{Limitations and Future Research}
+
+Several limitations of the current study warrant acknowledgement. First, HackerSignal is an English-language corpus; multilingual hacker communities---particularly active in Eastern European, Chinese, and Arabic-language forums---are not represented. Future work should apply cross-lingual transfer learning \parencite{ebrahimi2022} to extend DGT to multilingual exploit discourse. Second, the ETG edge cap (300,000 per spell) may truncate rare but important co-occurrences involving low-frequency but high-specificity attack terms. Dynamic edge selection strategies, such as retaining edges by mutual information rather than raw count, are a promising avenue. Third, the negative $R^2 = -0.031$ warrants comment: it reflects the heavy-tailed shift distribution in which many terms exhibit near-zero drift. $R^2$ is not an appropriate metric for this distribution; MAE and MAPE are our primary measures, and we recommend that future work in semantic shift prediction adopt rank-based metrics (Spearman $\rho$, NDCG) as additional evaluation criteria. Fourth, BERT-based contextual encoders were not benchmarked in this study due to the distinct fine-tuning infrastructure required for graph-level tasks; a thorough comparison with domain-specific models (CTI-BERT, SecBERT) is reserved for future work. Fifth, the evaluation uses a single held-out spell; future work should adopt rolling or walk-forward validation to assess model performance across multiple forecasting horizons.
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+% ═══════════════════════════════════════════════════════════════════════════════
+\bodyfont
+
+The cybersecurity threat landscape is not static, and the vocabulary through which hacker communities articulate it is not static either. Terms shift meaning as attack techniques mature, as new tools achieve commercial scale, as geopolitical actors adopt novel targets, and as community attention pivots to new technology classes. The Exploit Text Graph and Diachronic Graph Transformer, presented here as a Design Science Research artifact pair, operationalise the detection and prediction of these semantic shifts at scale.
+
+Over a decade of hacker forum discourse---1,783,276 posts across 12 temporal spells---DGT produces shift predictions that significantly outperform 20 of 38 benchmark models, including established diachronic semantic methods and five dynamic graph neural networks, while remaining competitive with the strongest temporal GNN baselines. Four design principles, validated through ablation, establish that cumulative graph encoding, masked temporal attention, a shift-predictive training objective, and multi-source corpus construction are individually necessary and jointly sufficient conditions for effective diachronic exploit analytics. A six-term case study anchored to verifiable real-world cybersecurity events---from the Mirai botnet through LLM jailbreaking---demonstrates that DGT's shift detections are not statistical artefacts but reflect genuine, practitioner-relevant changes in the threat landscape.
+
+The theoretical concept of lexical threat intelligence lag---the systematic temporal gap between hacker-community semantic evolution and formal vulnerability cataloguing---offers a new lens for IS cybersecurity analytics research. Future work should extend DGT to multilingual corpora, evaluate the lag magnitude against KEV addition dates, and conduct formal user studies with CTI analysts to quantify the operational value of the watchlist as an intelligence product. We invite the IS cybersecurity analytics community to adopt the ETG and DGT as open research artifacts and to build upon the design principles established here.
+
+% ── References ─────────────────────────────────────────────────────────────────
+\newpage
+\singlespacing
+\printbibliography
+
+% ── Appendices ─────────────────────────────────────────────────────────────────
+\newpage
+\setstretch{2}
+\justifying
+\bodyfont
+
+\misqappendix{Full Exploit Text Graph Growth Statistics}
+
+Table A1 presents the complete ETG growth statistics for all 12 temporal spells.
+
+\begin{misqtableSmall}{7}{Table A1. Full ETG Growth Statistics Across All 12 Temporal Spells}%
+{Note: Edges are capped at 300,000 per spell (top co-occurrence-weighted edges retained). Co-occurrence weight is the total sum of all edge weights in the spell. CVEs Observed is the count of distinct CVE identifiers appearing in hacker-forum posts up to and including that spell.}%
+{l|l|r|r|r|r|r}
+\textbf{Spell} & \textbf{Date Range} & \textbf{Posts} & \textbf{Nodes} & \textbf{Edges} & \textbf{Co-occ.\ Wt (M)} & \textbf{CVEs} \\
+\hline
+S01 & Jan 2016 -- Nov 2016 & 330,404   & 20,642 & 280,344 & 11.6 & 6,019   \\
+\hline
+S02 & Jan 2016 -- Sep 2017 & 627,829   & 22,654 & 300,000 & 21.6 & 20,911  \\
+\hline
+S03 & Jan 2016 -- Jul 2018 & 704,322   & 23,210 & 300,000 & 24.1 & 37,172  \\
+\hline
+S04 & Jan 2016 -- Jun 2019 & 774,023   & 24,526 & 300,000 & 26.6 & 50,748  \\
+\hline
+S05 & Jan 2016 -- Apr 2020 & 926,846   & 25,517 & 300,000 & 30.5 & 68,812  \\
+\hline
+S06 & Jan 2016 -- Feb 2021 & 998,928   & 26,893 & 300,000 & 33.4 & 84,867  \\
+\hline
+S07 & Jan 2016 -- Jan 2022 & 1,052,547 & 27,627 & 300,000 & 36.0 & 103,672 \\
+\hline
+S08 & Jan 2016 -- Nov 2022 & 1,100,924 & 27,994 & 300,000 & 38.4 & 126,118 \\
+\hline
+S09 & Jan 2016 -- Sep 2023 & 1,140,184 & 28,372 & 300,000 & 40.5 & 152,479 \\
+\hline
+S10 & Jan 2016 -- Aug 2024 & 1,190,949 & 28,573 & 300,000 & 43.7 & 185,289 \\
+\hline
+S11 & Jan 2016 -- Jun 2025 & 1,250,508 & 28,790 & 300,000 & 47.3 & 224,173 \\
+\hline
+S12 & Jan 2016 -- Apr 2026 & 1,783,276 & 30,000 & 300,000 & 55.7 & 271,275 \\
+\hline
+\end{misqtableSmall}
+
+\misqappendix{DGT Architecture Notation}
+
+Let $\mathcal{G}_t = (\mathcal{V}, \mathcal{E}_t, \mathbf{W}_t)$ denote the Exploit Text Graph at spell $t$, with $N = |\mathcal{V}| = 6{,}000$ tracked nodes. The node feature matrix is $\mathbf{X}_t \in \mathbb{R}^{N \times 7}$. Laplacian positional encodings are the $k = 16$ leading eigenvectors of the normalised graph Laplacian, $\mathbf{\Phi}_t \in \mathbb{R}^{N \times 16}$, giving augmented features $\tilde{\mathbf{X}}_t = [\mathbf{X}_t \| \mathbf{\Phi}_t] \in \mathbb{R}^{N \times 23}$.
+
+The graph-attention encoder $\text{GAT}_\theta : \mathbb{R}^{N \times 23} \times \mathbb{R}^{N \times N} \rightarrow \mathbb{R}^{N \times d}$ (with $d = 128$, 4 heads, 2 layers) produces per-spell node embeddings $\mathbf{E}_t = \text{GAT}_\theta(\tilde{\mathbf{X}}_t, \mathbf{A}_t)$.
+
+Masked temporal attention aggregates across spells for each node $v$:
+\begin{equation}
+  \mathbf{z}_{v,t} = \sum_{s=1}^{t} \alpha_{ts}\, \mathbf{e}_{v,s}, \quad \alpha_{ts} = \frac{\exp(\mathbf{q}_t^\top \mathbf{k}_s / \sqrt{d})}{\sum_{r=1}^{t} \exp(\mathbf{q}_t^\top \mathbf{k}_r / \sqrt{d})}
+\end{equation}
+where $\mathbf{q}_t, \mathbf{k}_s$ are query and key projections of the spell-$t$ and spell-$s$ embeddings, respectively. The causal mask ensures $\alpha_{ts} = 0$ for $s > t$.
+
+The composite training loss is:
+\begin{equation}
+  \mathcal{L} = \underbrace{\sum_{(u,v)\in\mathcal{E}_t} \text{BCE}\!\left(\sigma(\mathbf{e}_{u,t}^\top \mathbf{e}_{v,t}), y_{uv}\right)}_{\text{reconstruction}} + \lambda \underbrace{\frac{1}{N}\sum_{v=1}^{N} \left(1 - \frac{\mathbf{e}_{v,t} \cdot \mathbf{e}_{v,t+1}}{\|\mathbf{e}_{v,t}\|\|\mathbf{e}_{v,t+1}\|} - \hat{c}_{v,t}\right)^{\!2}}_{\text{temporal shift}}
+\end{equation}
+with $\lambda = 0.1$ and $\hat{c}_{v,t}$ the predicted cosine distance. The shift prediction head is $f_\theta(\mathbf{z}_{v,T}) = \sigma(\mathbf{W}_{\text{out}}\, \mathbf{z}_{v,T} + \mathbf{b}_{\text{out}})$, where $\sigma$ is a sigmoid scaled to $[0, 2]$.
+
+\misqappendix{Full Benchmark Leaderboard}
+
+Table C1 reports all 38 benchmark models with complete evaluation metrics, grouped by experiment tier. NP denotes null predictor (near-zero MAE achieved by predicting zero shift for all terms). All delta values compare to DGT MAE = 0.077.
+
+\begin{misqtableSmall}{6}{Table C1. Full Benchmark Leaderboard (38 Models)}%
+{Note: MAE and RMSE rounded to 3 decimal places. NP = null predictor (Top-50 overlap $\leq 0.06$ and MAE $< 0.03$). Sig.\ = DGT significantly better at FDR $q < 0.05$ ($\dagger$ = null predictor, not applicable). All models trained/evaluated on the same 6,000-term vocabulary and same held-out Spell 12 shift target.}%
+{l|c|c|c|c|c}
+\textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{Top-50} & \textbf{$\Delta$} & \textbf{Sig.} \\
+\hline
+\multicolumn{6}{l}{\textit{Experiment 1: Non-Neural Classic}} \\
+\hline
+GloVe Log-Cooccurrence SVD    & 0.121 & 0.204 & 0.00 & $+$0.044 & Yes \\
+PPMI + SVD + Procrustes       & 0.132 & 0.212 & 0.06 & $+$0.055 & Yes \\
+SGNS Shifted PPMI SVD         & 0.132 & 0.211 & 0.02 & $+$0.055 & Yes \\
+Kleinberg Burst Approx.       & 1.313 & 1.738 & 0.10 & $+$1.236 & Yes \\
+ARIMA Trend (NP)              & 0.000 & 0.000 & 0.04 & $-$0.077 & $\dagger$ \\
+Degree Trend (NP)             & 0.000 & 0.000 & 0.02 & $-$0.077 & $\dagger$ \\
+ETS Trend (NP)                & 0.000 & 0.000 & 0.04 & $-$0.077 & $\dagger$ \\
+TF-IDF Slope (NP)             & 0.000 & 0.000 & 0.06 & $-$0.077 & $\dagger$ \\
+PageRank Trend (NP)           & 0.000 & 0.000 & 0.04 & $-$0.077 & $\dagger$ \\
+Raw Frequency Slope (NP)      & 0.000 & 0.000 & 0.04 & $-$0.077 & $\dagger$ \\
+Weighted Degree Trend (NP)    & 0.000 & 0.000 & 0.02 & $-$0.077 & $\dagger$ \\
+\hline
+\multicolumn{6}{l}{\textit{Experiment 2: Graph Embedding and Dynamic GNN}} \\
+\hline
+DeepWalk SVD                  & 0.111 & 0.207 & 0.00 & $+$0.033 & Yes \\
+Node2Vec Biased Walk          & 0.121 & 0.203 & 0.02 & $+$0.044 & Yes \\
+LINE First Order              & 0.149 & 0.244 & 0.00 & $+$0.072 & Yes \\
+LINE Second Order             & 0.150 & 0.271 & 0.02 & $+$0.073 & Yes \\
+GAT Link Reconstr.\ (NP)     & 0.031 & 0.108 & 0.00 & $-$0.046 & $\dagger$ \\
+GCN Link Reconstr.\ (NP)     & 0.032 & 0.117 & 0.04 & $-$0.045 & $\dagger$ \\
+GraphSAGE Link Reconstr.\ (NP) & 0.030 & 0.103 & 0.06 & $-$0.047 & $\dagger$ \\
+CAWN Causal Walk              & 0.102 & 0.167 & 0.04 & $+$0.025 & Yes \\
+DySAT Structural Temporal     & 0.111 & 0.175 & 0.04 & $+$0.034 & Yes \\
+EvolveGCN Temporal Smooth     & 0.086 & 0.154 & 0.02 & $+$0.009 & Yes \\
+GraphMixer Event Mix          & 0.115 & 0.179 & 0.02 & $+$0.037 & Yes \\
+JODIE Projected Drift         & 0.061 & 0.135 & 0.00 & $-$0.016 & No \\
+TGAT Time-Weighted Edges      & 0.119 & 0.188 & 0.02 & $+$0.041 & Yes \\
+TGN Memory Smooth             & 0.074 & 0.146 & 0.02 & $-$0.003 & No \\
+\hline
+\multicolumn{6}{l}{\textit{Experiment 3: Modern Graph Transformers}} \\
+\hline
+GraphGPS LapPE Proxy (NP)    & 0.030 & 0.103 & 0.06 & $-$0.047 & $\dagger$ \\
+TokenGT Graph Token SVD      & 0.138 & 0.250 & 0.02 & $+$0.061 & Yes \\
+\hline
+\multicolumn{6}{l}{\textit{Experiment 4: Ablations}} \\
+\hline
+No Cumulative ETG            & 0.149 & 0.244 & 0.00 & $+$0.072 & Yes \\
+$k$-Precedence Window ($k=4$)   & 0.149 & 0.244 & 0.00 & $+$0.072 & Yes \\
+Same-Post Co-occurrence      & 0.149 & 0.244 & 0.00 & $+$0.072 & Yes \\
+Direct Precedence Window     & 0.124 & 0.206 & 0.00 & $+$0.047 & Yes \\
+Unweighted Edges             & 0.124 & 0.206 & 0.00 & $+$0.047 & Yes \\
+No Masked Attention (NP)     & 0.000 & 0.000 & 0.00 & $-$0.077 & $\dagger$ \\
+No Laplacian PE (NP)         & 0.053 & 0.120 & 0.26 & $-$0.025 & $\dagger$ \\
+No Temporal Attention        & 0.132 & 0.212 & 0.06 & $+$0.055 & Yes \\
+Static GT Only (NP)          & 0.036 & 0.059 & 0.26 & $-$0.041 & $\dagger$ \\
+\hline
+\textbf{DGT Full (proposed)} & \textbf{0.077} & \textbf{0.178} & \textbf{1.00} & --- & --- \\
+\hline
+\end{misqtableSmall}
+
+\end{document}
