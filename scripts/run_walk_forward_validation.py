@@ -40,7 +40,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from scipy import sparse
-from scipy.stats import wilcoxon
+from scipy.stats import ttest_rel
 from sklearn.decomposition import TruncatedSVD
 from tqdm import tqdm
 
@@ -421,7 +421,7 @@ def run_walk_forward(
 # ═══════════════════════════════════════════════════════════════════════════
 
 def aggregate_results(df: pd.DataFrame, output_dir: Path) -> pd.DataFrame:
-    """Compute mean ± std across folds; Wilcoxon tests vs DGT."""
+    """Compute mean ± std across folds; paired one-tailed t-tests vs DGT."""
     agg = (
         df.groupby("model")[["mae", "rmse", "top50_overlap", "spearman_rho"]]
         .agg(["mean", "std"])
@@ -432,7 +432,7 @@ def aggregate_results(df: pd.DataFrame, output_dir: Path) -> pd.DataFrame:
     agg.to_csv(output_dir / "wf_aggregate.csv")
     print(f"[WF] Aggregate → {output_dir / 'wf_aggregate.csv'}")
 
-    # Per-fold MAE pivot for Wilcoxon
+    # Per-fold MAE pivot for paired t-test
     pivot = df.pivot(index="fold", columns="model", values="mae")
     dgt_col = pivot["dgt"].values if "dgt" in pivot.columns else None
 
@@ -446,7 +446,10 @@ def aggregate_results(df: pd.DataFrame, output_dir: Path) -> pd.DataFrame:
             p = float("nan")
         else:
             try:
-                _, p = wilcoxon(dgt_col[valid], other[valid], alternative="less")
+                # One-tailed paired t-test: H1 = DGT MAE < baseline MAE
+                _, p_two = ttest_rel(dgt_col[valid], other[valid])
+                # Convert two-tailed p to one-tailed in the direction DGT < baseline
+                p = float(p_two / 2) if float(np.mean(dgt_col[valid])) < float(np.mean(other[valid])) else 1.0
             except Exception:
                 p = float("nan")
         delta = float(np.nanmean(other) - np.nanmean(dgt_col)) if dgt_col is not None else float("nan")
@@ -455,7 +458,7 @@ def aggregate_results(df: pd.DataFrame, output_dir: Path) -> pd.DataFrame:
             "mean_mae": float(np.nanmean(other)),
             "dgt_mean_mae": float(np.nanmean(dgt_col)) if dgt_col is not None else float("nan"),
             "delta_vs_dgt": delta,
-            "wilcoxon_p": p,
+            "ttest_p": p,
             "sig_dgt_better": (p < 0.05) if not np.isnan(p) else False,
         })
     sig_df = pd.DataFrame(sig_rows).sort_values("delta_vs_dgt", ascending=False)
