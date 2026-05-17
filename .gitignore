@@ -94,3 +94,6 @@ paper/*.pdf
 
 # Session logs (internal)
 CC-Session-Logs/
+
+# Internal planning/spec docs (not for distribution)
+docs/superpowers/
