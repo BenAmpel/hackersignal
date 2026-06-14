@@ -8,15 +8,21 @@ Model ladder:
     - SecBERT embedding (domain-specific)
     - Hybrid BM25 + dense (practical strong)
 
-  Task 2 (Classification + Retrieval):
-    - Majority baseline
-    - TF-IDF + Logistic Regression
-    - SecBERT fine-tuned classifier
-    - DeBERTa-v3-base classifier
-    - GPT-5-mini zero-shot (if API key available)
+  Task 2 (8-class Exploit Type Classification):
+    Bag-of-words classifiers (TF-IDF features):
+      - Decision Tree (max_depth=30, class_weight=balanced)
+      - TF-IDF + Logistic Regression (C=1.0, class_weight=balanced)
+      - Linear SVM (max_iter=2000, class_weight=balanced)
+    Recurrent neural networks (word-level, 128-dim emb/hidden):
+      - RNN, GRU, LSTM, BiLSTM
+    Domain-specific transformer:
+      - SecBERT (jackaduma/SecBERT) fine-tuned
+
+  Metrics: macro-F1, weighted-F1, accuracy, and per-class F1.
 
 Usage:
     python3 src/etg/benchmark/run_baselines_v2.py --data-dir data/benchmark_v2/
+    python3 src/etg/benchmark/run_baselines_v2.py --task 2          # Task 2 only
 """
 
 from __future__ import annotations
@@ -32,6 +38,28 @@ from typing import Optional
 
 # Suppress tokenizer parallelism warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+SEED = 42
+
+# Canonical 8-class exploit-type taxonomy (fixed order for per-class reporting).
+EXPLOIT_TYPE_CLASSES = [
+    "injection", "xss", "memory_corruption", "dos",
+    "file_inclusion", "auth_access", "rce", "info_disclosure",
+]
+
+
+def set_seed(seed: int = SEED) -> None:
+    """Seed Python, NumPy, and (if available) PyTorch for reproducibility."""
+    import random
+    random.seed(seed)
+    np.random.seed(seed)
+    try:
+        import torch
+        torch.manual_seed(seed)
+        if torch.backends.mps.is_available():
+            torch.mps.manual_seed(seed)
+    except ImportError:
+        pass
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -59,20 +87,6 @@ def mrr(rankings: list[list[str]], gold: list[str]) -> float:
                 total += 1.0 / (i + 1)
                 break
     return total / len(gold) if gold else 0.0
-
-
-# ============================================================================
-# CLASSIFICATION METRICS
-# ============================================================================
-
-def f1_binary(preds: list[int], labels: list[int], pos_label: int = 1) -> dict:
-    tp = sum(1 for p, l in zip(preds, labels) if p == pos_label and l == pos_label)
-    fp = sum(1 for p, l in zip(preds, labels) if p == pos_label and l != pos_label)
-    fn = sum(1 for p, l in zip(preds, labels) if p != pos_label and l == pos_label)
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
-    return {"precision": precision, "recall": recall, "f1": f1}
 
 
 # ============================================================================
@@ -209,50 +223,243 @@ def run_hybrid_retrieval(queries: list[dict], corpus: list[dict],
 
 
 # ============================================================================
-# TF-IDF + LOGISTIC REGRESSION (Classification)
+# MULTICLASS CLASSIFICATION METRICS
 # ============================================================================
 
-def run_tfidf_lr(train_data: list[dict], test_data: list[dict]) -> list[int]:
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.linear_model import LogisticRegression
+def multiclass_metrics(preds: list[str], labels: list[str]) -> dict:
+    """Macro-F1, weighted-F1, accuracy, and per-class F1 over EXPLOIT_TYPE_CLASSES."""
+    from sklearn.metrics import f1_score, accuracy_score
 
-    print("    Training TF-IDF + LR...")
+    macro = f1_score(labels, preds, average="macro", zero_division=0)
+    weighted = f1_score(labels, preds, average="weighted", zero_division=0)
+    acc = accuracy_score(labels, preds)
+    per_class_arr = f1_score(labels, preds, average=None,
+                             labels=EXPLOIT_TYPE_CLASSES, zero_division=0)
+    per_class = {c: round(float(v), 4) for c, v in zip(EXPLOIT_TYPE_CLASSES, per_class_arr)}
+    return {
+        "macro_f1": round(float(macro), 4),
+        "weighted_f1": round(float(weighted), 4),
+        "accuracy": round(float(acc), 4),
+        "per_class_f1": per_class,
+    }
+
+
+def _print_clf_metrics(name: str, m: dict) -> None:
+    print(f"    {name}: macro-F1={m['macro_f1']:.3f}, "
+          f"weighted-F1={m['weighted_f1']:.3f}, acc={m['accuracy']:.3f}")
+
+
+# ============================================================================
+# BAG-OF-WORDS CLASSIFIERS (Decision Tree, TF-IDF + LR, Linear SVM)
+# ============================================================================
+
+def run_bow_classifier(train_data: list[dict], test_data: list[dict],
+                       kind: str) -> list[str]:
+    """Train a TF-IDF bag-of-words classifier and return string-label predictions.
+
+    kind in {"decision_tree", "logreg", "svm"}. Hyperparameters follow the paper
+    appendix: TfidfVectorizer(max_features=50000, ngram_range=(1,2)); all
+    classifiers use class_weight="balanced".
+    """
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.tree import DecisionTreeClassifier
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.svm import LinearSVC
+
     vectorizer = TfidfVectorizer(max_features=50000, ngram_range=(1, 2))
     X_train = vectorizer.fit_transform([d["text"][:2000] for d in train_data])
     y_train = [d["label"] for d in train_data]
 
-    clf = LogisticRegression(max_iter=1000, C=1.0, class_weight="balanced")
-    clf.fit(X_train, y_train)
+    if kind == "decision_tree":
+        clf = DecisionTreeClassifier(max_depth=30, class_weight="balanced",
+                                     random_state=SEED)
+    elif kind == "logreg":
+        clf = LogisticRegression(C=1.0, max_iter=1000, class_weight="balanced",
+                                 random_state=SEED)
+    elif kind == "svm":
+        clf = LinearSVC(max_iter=2000, class_weight="balanced", random_state=SEED)
+    else:
+        raise ValueError(f"unknown BoW classifier kind: {kind}")
 
+    clf.fit(X_train, y_train)
     X_test = vectorizer.transform([d["text"][:2000] for d in test_data])
-    preds = clf.predict(X_test).tolist()
-    return preds
+    return clf.predict(X_test).tolist()
 
 
 # ============================================================================
-# TRANSFORMER CLASSIFIER (SecBERT / DeBERTa)
+# RECURRENT NEURAL CLASSIFIERS (RNN / GRU / LSTM / BiLSTM)
+# ============================================================================
+
+def _build_vocab(train_data: list[dict], min_freq: int = 3) -> dict:
+    """Word-level vocabulary from training texts; index 0=<pad>, 1=<unk>."""
+    counts = Counter()
+    for d in train_data:
+        counts.update(d["text"].lower().split())
+    vocab = {"<pad>": 0, "<unk>": 1}
+    for tok, c in counts.items():
+        if c >= min_freq:
+            vocab[tok] = len(vocab)
+    return vocab
+
+
+def _encode(text: str, vocab: dict, max_len: int = 300) -> list[int]:
+    ids = [vocab.get(tok, 1) for tok in text.lower().split()[:max_len]]
+    if len(ids) < max_len:
+        ids += [0] * (max_len - len(ids))
+    return ids
+
+
+def run_rnn_classifier(train_data: list[dict], val_data: list[dict],
+                       test_data: list[dict], cell: str, bidirectional: bool,
+                       epochs: int = 8, batch_size: int = 128, lr: float = 1e-3,
+                       max_len: int = 300, embed_dim: int = 128,
+                       hidden_dim: int = 128) -> list[str]:
+    """Word-level recurrent classifier with class-weighted CE and best-val-F1 checkpoint.
+
+    cell in {"rnn", "gru", "lstm"}; bidirectional=True gives BiLSTM when cell=="lstm".
+    Hyperparameters follow the paper appendix.
+    """
+    import torch
+    import torch.nn as nn
+    from torch.utils.data import DataLoader, TensorDataset
+    from sklearn.metrics import f1_score
+    from sklearn.utils.class_weight import compute_class_weight
+
+    set_seed(SEED)
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+
+    vocab = _build_vocab(train_data, min_freq=3)
+    label2id = {c: i for i, c in enumerate(EXPLOIT_TYPE_CLASSES)}
+    id2label = {i: c for c, i in label2id.items()}
+    num_classes = len(label2id)
+
+    def to_tensors(data):
+        X = torch.tensor([_encode(d["text"], vocab, max_len) for d in data],
+                         dtype=torch.long)
+        y = torch.tensor([label2id[d["label"]] for d in data], dtype=torch.long)
+        return X, y
+
+    X_tr, y_tr = to_tensors(train_data)
+    X_val, y_val = to_tensors(val_data)
+    X_te, y_te = to_tensors(test_data)
+
+    train_loader = DataLoader(TensorDataset(X_tr, y_tr), batch_size=batch_size,
+                              shuffle=True)
+
+    # Class-weighted cross-entropy (balanced over present classes)
+    present = np.array(sorted(set(y_tr.tolist())))
+    cw = compute_class_weight("balanced", classes=present, y=y_tr.numpy())
+    weight = torch.ones(num_classes)
+    for cls, w in zip(present, cw):
+        weight[cls] = w
+    criterion = nn.CrossEntropyLoss(weight=weight.to(device))
+
+    class RNNClassifier(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.embed = nn.Embedding(len(vocab), embed_dim, padding_idx=0)
+            rnn_cls = {"rnn": nn.RNN, "gru": nn.GRU, "lstm": nn.LSTM}[cell]
+            self.rnn = rnn_cls(embed_dim, hidden_dim, batch_first=True,
+                               bidirectional=bidirectional)
+            self.fc = nn.Linear(hidden_dim * (2 if bidirectional else 1), num_classes)
+
+        def forward(self, x):
+            emb = self.embed(x)
+            out, hidden = self.rnn(emb)
+            if cell == "lstm":
+                hidden = hidden[0]  # (h_n, c_n) -> h_n
+            if bidirectional:
+                last = torch.cat([hidden[-2], hidden[-1]], dim=1)
+            else:
+                last = hidden[-1]
+            return self.fc(last)
+
+    model = RNNClassifier().to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+    def predict(X):
+        model.eval()
+        preds = []
+        with torch.no_grad():
+            for i in range(0, len(X), batch_size):
+                xb = X[i:i + batch_size].to(device)
+                logits = model(xb)
+                preds.extend(torch.argmax(logits, dim=-1).cpu().tolist())
+        return preds
+
+    best_val_f1 = -1.0
+    best_state = None
+    for epoch in range(epochs):
+        model.train()
+        total_loss = 0.0
+        for xb, yb in train_loader:
+            xb, yb = xb.to(device), yb.to(device)
+            optimizer.zero_grad()
+            loss = criterion(model(xb), yb)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            optimizer.step()
+            total_loss += loss.item()
+        val_preds = predict(X_val)
+        val_f1 = f1_score(y_val.tolist(), val_preds, average="macro", zero_division=0)
+        print(f"      Epoch {epoch+1}/{epochs}: loss={total_loss/len(train_loader):.4f}, "
+              f"val macro-F1={val_f1:.4f}")
+        if val_f1 > best_val_f1:
+            best_val_f1 = val_f1
+            best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+
+    if best_state is not None:
+        model.load_state_dict(best_state)
+    test_pred_ids = predict(X_te)
+
+    del model
+    if torch.backends.mps.is_available():
+        torch.mps.empty_cache()
+
+    return [id2label[i] for i in test_pred_ids]
+
+
+# ============================================================================
+# TRANSFORMER CLASSIFIER (SecBERT)
 # ============================================================================
 
 def run_transformer_classifier(train_data: list[dict], test_data: list[dict],
                                model_name: str, epochs: int = 3,
                                batch_size: int = 16, lr: float = 2e-5,
-                               max_len: int = 256) -> list[int]:
+                               max_len: int = 256, weight_decay: float = 0.01,
+                               warmup_ratio: float = 0.1,
+                               subsample: Optional[int] = 15000) -> list[str]:
+    """Fine-tune a transformer for 8-class exploit-type classification.
+
+    Follows the paper appendix: AdamW(lr, weight_decay), linear warmup over
+    warmup_ratio of steps, optional train subsample. Returns string labels.
+    """
     import torch
     from torch.utils.data import DataLoader, Dataset
-    from transformers import AutoTokenizer, AutoModelForSequenceClassification
+    from transformers import (AutoTokenizer, AutoModelForSequenceClassification,
+                              get_linear_schedule_with_warmup)
 
+    set_seed(SEED)
     device = "mps" if torch.backends.mps.is_available() else "cpu"
     print(f"    Training {model_name} on {device}...")
 
+    label2id = {c: i for i, c in enumerate(EXPLOIT_TYPE_CLASSES)}
+    id2label = {i: c for c, i in label2id.items()}
+
+    if subsample and len(train_data) > subsample:
+        rng = np.random.default_rng(SEED)
+        idx = rng.choice(len(train_data), size=subsample, replace=False)
+        train_data = [train_data[i] for i in idx]
+
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSequenceClassification.from_pretrained(
-        model_name, num_labels=2
+        model_name, num_labels=len(label2id)
     ).to(device)
 
     class TextDataset(Dataset):
         def __init__(self, data):
             self.texts = [d["text"][:1000] for d in data]
-            self.labels = [min(d["label"], 1) for d in data]  # Binary: 0 or 1
+            self.labels = [label2id[d["label"]] for d in data]
 
         def __len__(self):
             return len(self.texts)
@@ -265,7 +472,11 @@ def run_transformer_classifier(train_data: list[dict], test_data: list[dict],
     train_ds = TextDataset(train_data)
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
+    total_steps = len(train_loader) * epochs
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer, num_warmup_steps=int(warmup_ratio * total_steps),
+        num_training_steps=total_steps)
     model.train()
 
     for epoch in range(epochs):
@@ -278,6 +489,7 @@ def run_transformer_classifier(train_data: list[dict], test_data: list[dict],
             loss = outputs.loss
             loss.backward()
             optimizer.step()
+            scheduler.step()
             optimizer.zero_grad()
             total_loss += loss.item()
 
@@ -303,7 +515,7 @@ def run_transformer_classifier(train_data: list[dict], test_data: list[dict],
     if torch.backends.mps.is_available():
         torch.mps.empty_cache()
 
-    return all_preds
+    return [id2label[i] for i in all_preds]
 
 
 # ============================================================================
@@ -397,65 +609,58 @@ def evaluate_retrieval_task(task_name: str, task_dir: Path, results: dict):
     results[task_name] = task_results
 
 
-def evaluate_classification_task(task_dir: Path, results: dict):
-    """Run all classification baselines for Task 2."""
+def evaluate_classification_task(task_dir: Path, results: dict, skip_neural: bool = False):
+    """Run the 8-class exploit-type classification ladder for Task 2."""
     print(f"\n{'='*60}")
-    print("  Task 2: Signal Detection (Classification)")
+    print("  Task 2: Exploit Type Classification (8-class)")
     print(f"{'='*60}")
 
     train_data = load_jsonl(task_dir / "train.jsonl")
+    val_data = load_jsonl(task_dir / "val.jsonl")
     test_data = load_jsonl(task_dir / "test.jsonl")
-    test_labels = [min(d["label"], 1) for d in test_data]
+    test_labels = [d["label"] for d in test_data]
 
     task_results = {}
 
-    # Majority baseline
-    train_labels = [min(d["label"], 1) for d in train_data]
-    majority = Counter(train_labels).most_common(1)[0][0]
-    majority_preds = [majority] * len(test_labels)
-    task_results["majority"] = f1_binary(majority_preds, test_labels)
-    print(f"\n  [Majority]: F1={task_results['majority']['f1']:.3f}")
+    # ── Bag-of-words classifiers ──────────────────────────────────────────────
+    for kind, label in [("decision_tree", "Decision Tree"),
+                        ("logreg", "TF-IDF + LR"),
+                        ("svm", "SVM")]:
+        print(f"\n  [{label}]")
+        preds = run_bow_classifier(train_data, test_data, kind)
+        task_results[label] = multiclass_metrics(preds, test_labels)
+        _print_clf_metrics(label, task_results[label])
 
-    # TF-IDF + LR
-    print("\n  [TF-IDF + LR]")
-    tfidf_preds = run_tfidf_lr(train_data, test_data)
-    tfidf_preds_binary = [min(p, 1) for p in tfidf_preds]
-    task_results["tfidf_lr"] = f1_binary(tfidf_preds_binary, test_labels)
-    print(f"    F1={task_results['tfidf_lr']['f1']:.3f}, "
-          f"P={task_results['tfidf_lr']['precision']:.3f}, "
-          f"R={task_results['tfidf_lr']['recall']:.3f}")
+    # ── Recurrent neural classifiers ──────────────────────────────────────────
+    if not skip_neural:
+        for cell, bidir, label in [("rnn", False, "RNN"),
+                                   ("gru", False, "GRU"),
+                                   ("lstm", False, "LSTM"),
+                                   ("lstm", True, "BiLSTM")]:
+            print(f"\n  [{label}]")
+            try:
+                preds = run_rnn_classifier(train_data, val_data, test_data,
+                                           cell=cell, bidirectional=bidir)
+                task_results[label] = multiclass_metrics(preds, test_labels)
+                _print_clf_metrics(label, task_results[label])
+            except Exception as e:
+                print(f"    FAILED: {e}")
+                task_results[label] = {"macro_f1": None, "error": str(e)}
 
-    # SecBERT classifier
-    print("\n  [SecBERT]")
-    try:
-        secbert_preds = run_transformer_classifier(
-            train_data, test_data, "jackaduma/SecBERT",
-            epochs=3, batch_size=16, max_len=256
-        )
-        task_results["secbert"] = f1_binary(secbert_preds, test_labels)
-        print(f"    F1={task_results['secbert']['f1']:.3f}, "
-              f"P={task_results['secbert']['precision']:.3f}, "
-              f"R={task_results['secbert']['recall']:.3f}")
-    except Exception as e:
-        print(f"    FAILED: {e}")
-        task_results["secbert"] = {"f1": None, "error": str(e)}
+        # ── SecBERT transformer ───────────────────────────────────────────────
+        print("\n  [SecBERT]")
+        try:
+            secbert_preds = run_transformer_classifier(
+                train_data, test_data, "jackaduma/SecBERT",
+                epochs=3, batch_size=16, max_len=256, subsample=15000
+            )
+            task_results["SecBERT"] = multiclass_metrics(secbert_preds, test_labels)
+            _print_clf_metrics("SecBERT", task_results["SecBERT"])
+        except Exception as e:
+            print(f"    FAILED: {e}")
+            task_results["SecBERT"] = {"macro_f1": None, "error": str(e)}
 
-    # DeBERTa-v3-base
-    print("\n  [DeBERTa-v3-base]")
-    try:
-        deberta_preds = run_transformer_classifier(
-            train_data, test_data, "microsoft/deberta-v3-base",
-            epochs=3, batch_size=8, max_len=256
-        )
-        task_results["deberta_v3_base"] = f1_binary(deberta_preds, test_labels)
-        print(f"    F1={task_results['deberta_v3_base']['f1']:.3f}, "
-              f"P={task_results['deberta_v3_base']['precision']:.3f}, "
-              f"R={task_results['deberta_v3_base']['recall']:.3f}")
-    except Exception as e:
-        print(f"    FAILED: {e}")
-        task_results["deberta_v3_base"] = {"f1": None, "error": str(e)}
-
-    results["task2_signal_detection"] = task_results
+    results["task2_exploit_type"] = task_results
 
 
 def main():
@@ -464,9 +669,12 @@ def main():
     parser.add_argument("--data-dir", type=Path, default=Path("data/benchmark_v2"))
     parser.add_argument("--output", type=Path, default=Path("data/benchmark_v2/results.json"))
     parser.add_argument("--skip-dense", action="store_true", help="Skip dense retrieval (slow)")
+    parser.add_argument("--skip-neural", action="store_true",
+                        help="Task 2: skip RNN/GRU/LSTM/BiLSTM/SecBERT (BoW only)")
     parser.add_argument("--task", choices=["1", "2", "3", "all"], default="all")
     args = parser.parse_args()
 
+    set_seed(SEED)
     results = {}
 
     if args.task in ("1", "all"):
@@ -474,7 +682,8 @@ def main():
                                args.data_dir / "task1_cve_linkage", results)
 
     if args.task in ("2", "all"):
-        evaluate_classification_task(args.data_dir / "task2_signal_detection", results)
+        evaluate_classification_task(args.data_dir / "task2_exploit_type", results,
+                                     skip_neural=args.skip_neural)
 
     if args.task in ("3", "all"):
         evaluate_retrieval_task("task3_temporal_generalization",
