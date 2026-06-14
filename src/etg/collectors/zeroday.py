@@ -43,9 +43,10 @@ def _extract_cves(raw: object) -> list[str]:
 
 
 def collect(
-    h5_path: Path = Path(
-        "/Users/benampel/Library/CloudStorage/OneDrive-Personal/"
-        "Academic Resources/Code/Exploit Source Code/0DayData.h5"
+    h5_path: Path = (
+        Path.home()
+        / "Library/CloudStorage/OneDrive-Personal/Academic Resources/Code/"
+          "Exploit Source Code/0DayData.h5"
     ),
     output: Path = Path("data/zeroday_posts.jsonl"),
     cve_index_output: Path = Path("data/zeroday_cve_index.jsonl"),
