@@ -83,13 +83,13 @@ A large-scale, multi-source dataset linking hacker community discourse, exploit 
 from datasets import load_dataset
 
 # Load the 10K stratified sample (24 MB)
-sample = load_dataset("DatasetSubmission/HackerSignal", "sample")
+sample = load_dataset("BenAmpel/HackerSignal", "sample")
 
 # Load a benchmark task
-task1 = load_dataset("DatasetSubmission/HackerSignal", "task1_cve_linkage")
+task1 = load_dataset("BenAmpel/HackerSignal", "task1_cve_linkage")
 
 # Load the full corpus (12 GB)
-full = load_dataset("DatasetSubmission/HackerSignal", "default")
+full = load_dataset("BenAmpel/HackerSignal", "default")
 ```
 
 ## Source Layers

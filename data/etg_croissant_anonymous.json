@@ -13,7 +13,7 @@
   "dct:conformsTo": "http://mlcommons.org/croissant/1.0",
   "name": "HackerSignal",
   "description": "HackerSignal is a large-scale, multi-source dataset linking hacker community discourse, exploit databases, vulnerability advisories, and fix commits through a shared CVE identifier space. It spans 64 public forum/source identifiers across eight source layers, covers 1991\u20132026, and supports three benchmark tasks: (1) CVE linkage retrieval (cross-source temporal out-of-distribution entity grounding over 340K NVD descriptions), (2) exploit type classification (8-class vulnerability type prediction with temporal OOD evaluation), and (3) temporal CVE-disjoint generalization (prospective retrieval where the gold CVE sets in train and test are disjoint).",
-  "url": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal",
+  "url": "https://huggingface.co/datasets/BenAmpel/HackerSignal",
   "version": "1.0.0",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "usageInfo": "Code and metadata are CC BY 4.0 unless otherwise noted. Source text follows source-specific release modes documented in docs/release_governance.md; terms-ambiguous sources may be metadata_or_pointer_only.",
@@ -117,7 +117,7 @@
       "@type": "cr:FileObject",
       "@id": "hf-repo",
       "name": "HuggingFace Repository",
-      "contentUrl": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal",
+      "contentUrl": "https://huggingface.co/datasets/BenAmpel/HackerSignal",
       "encodingFormat": "application/jsonlines",
       "sha256": "See versioned manifest checksums in the HuggingFace repository."
     },
@@ -126,7 +126,7 @@
       "@id": "public-jsonl",
       "name": "unified_hacker_communities_neurips_public.jsonl",
       "description": "Governed public release file enforcing source-level release modes from data/release/source_release_manifest.json.",
-      "contentUrl": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal/resolve/main/data/unified_hacker_communities_neurips_public.jsonl",
+      "contentUrl": "https://huggingface.co/datasets/BenAmpel/HackerSignal/resolve/main/data/unified_hacker_communities_neurips_public.jsonl",
       "encodingFormat": "application/jsonlines",
       "sha256": "bd409acd7ffc37ced54ac8d4808cb0a1339cb7cb8c7dd229e73b32d706805e4f"
     },
@@ -135,7 +135,7 @@
       "@id": "source-manifest",
       "name": "source_release_manifest.json",
       "description": "Machine-readable source provenance and release-mode manifest with checksums and row counts.",
-      "contentUrl": "https://huggingface.co/datasets/DatasetSubmission/HackerSignal/resolve/main/data/release/source_release_manifest.json",
+      "contentUrl": "https://huggingface.co/datasets/BenAmpel/HackerSignal/resolve/main/data/release/source_release_manifest.json",
       "encodingFormat": "application/json",
       "sha256": "ae692c8fe41af184ac13b324d48adb39dc49bfc88876c67086eac947c6a1d500"
     }

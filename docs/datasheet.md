@@ -153,10 +153,10 @@ Earlier, smaller versions of the hacker forum data were used in prior work (ISI 
 ## Distribution
 
 **Will the dataset be distributed to third parties?**
-Yes. The dataset will be publicly available on HuggingFace Datasets at `DatasetSubmission/HackerSignal`.
+Yes. The dataset will be publicly available on HuggingFace Datasets at `BenAmpel/HackerSignal`.
 
 **How will the dataset be distributed?**
-As governed JSONL files on HuggingFace Hub, accessible via the `datasets` library: `load_dataset("DatasetSubmission/HackerSignal")`. The default public artifact is `data/unified_hacker_communities_neurips_public.jsonl`, which enforces source-level release modes from `data/release/source_release_manifest.json`.
+As governed JSONL files on HuggingFace Hub, accessible via the `datasets` library: `load_dataset("BenAmpel/HackerSignal")`. The default public artifact is `data/unified_hacker_communities_neurips_public.jsonl`, which enforces source-level release modes from `data/release/source_release_manifest.json`.
 
 **When will the dataset be distributed?**
 Concurrent with camera-ready submission following peer review.

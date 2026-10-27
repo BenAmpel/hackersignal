@@ -6,8 +6,8 @@
 
 [![NeurIPS 2026](https://img.shields.io/badge/NeurIPS%202026-Evaluations%20%26%20Datasets%20Track-8A2BE2)](https://neurips.cc/Conferences/2026)
 [![arXiv](https://img.shields.io/badge/arXiv-2605.03158-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2605.03158)
-[![Hugging Face Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-HackerSignal-FFD21E)](https://huggingface.co/datasets/DatasetSubmission/HackerSignal)
-[![Croissant](https://img.shields.io/badge/metadata-Croissant%20%F0%9F%A5%90-orange)](https://huggingface.co/datasets/DatasetSubmission/HackerSignal/blob/main/etg_croissant.json)
+[![Hugging Face Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-HackerSignal-FFD21E)](https://huggingface.co/datasets/BenAmpel/HackerSignal)
+[![Croissant](https://img.shields.io/badge/metadata-Croissant%20%F0%9F%A5%90-orange)](https://huggingface.co/datasets/BenAmpel/HackerSignal/blob/main/etg_croissant.json)
 [![Datasheet](https://img.shields.io/badge/docs-Datasheet%20for%20Datasets-blue)](docs/datasheet.md)
 [![Data license: CC BY 4.0](https://img.shields.io/badge/data%20license-CC%20BY%204.0-lightgrey)](LICENSE-DATA)
 [![Code license: MIT](https://img.shields.io/badge/code%20license-MIT-green)](LICENSE)
@@ -22,7 +22,7 @@
 [![Last commit](https://img.shields.io/github/last-commit/BenAmpel/hackersignal)](https://github.com/BenAmpel/hackersignal/commits/main)
 
 [Paper (arXiv)](https://arxiv.org/abs/2605.03158) ·
-[Dataset](https://huggingface.co/datasets/DatasetSubmission/HackerSignal) ·
+[Dataset](https://huggingface.co/datasets/BenAmpel/HackerSignal) ·
 [Benchmark tasks](#benchmark-tasks) ·
 [Quick start](#quick-start) ·
 [Reproduce](#reproducing-the-baselines) ·
@@ -86,7 +86,7 @@ the Hugging Face Hub as JSONL files:
 ```python
 from datasets import load_dataset
 
-base = "hf://datasets/DatasetSubmission/HackerSignal/benchmark_v2"
+base = "hf://datasets/BenAmpel/HackerSignal/benchmark_v2"
 task1 = load_dataset("json", data_files={
     "train": f"{base}/task1_cve_linkage/train.jsonl",
     "validation": f"{base}/task1_cve_linkage/val.jsonl",
@@ -170,7 +170,7 @@ three-task benchmark for linking hacker, exploit and advisory text to CVE identi
 shift.
 
 **Where do I download it?** From the Hugging Face Hub at
-[DatasetSubmission/HackerSignal](https://huggingface.co/datasets/DatasetSubmission/HackerSignal). The test splits
+[BenAmpel/HackerSignal](https://huggingface.co/datasets/BenAmpel/HackerSignal). The test splits
 are also in this repository.
 
 **How are the labels made?** From platform metadata, not manual annotation: source-provided CVE links for Tasks 1
