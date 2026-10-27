@@ -61,7 +61,7 @@ data/full_crawl_*.jsonl
 data/broad_crawl_*.jsonl
 
 # Large benchmark artifacts — embeddings, corpora, train/val splits
-# Full data (train/val/corpus) available on HuggingFace: DatasetSubmission/HackerSignal
+# Full data (train/val/corpus) available on HuggingFace: BenAmpel/HackerSignal
 # Only test splits are included here for reproducibility verification.
 data/benchmark_v2/*.npy
 data/benchmark_v2/task1_cve_linkage/corpus.jsonl

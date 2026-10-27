@@ -12,7 +12,7 @@ authors:
     affiliation: Indiana University Bloomington
     email: ssamtani@iu.edu
 repository-code: "https://github.com/BenAmpel/hackersignal"
-url: "https://huggingface.co/datasets/DatasetSubmission/HackerSignal"
+url: "https://huggingface.co/datasets/BenAmpel/HackerSignal"
 license: CC-BY-4.0
 identifiers:
   - type: doi
