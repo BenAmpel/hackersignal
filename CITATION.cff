@@ -1,0 +1,45 @@
+cff-version: 1.2.0
+message: "If you use HackerSignal, please cite the NeurIPS 2026 paper below."
+title: "HackerSignal"
+type: dataset
+authors:
+  - family-names: Ampel
+    given-names: Benjamin M.
+    affiliation: Georgia State University
+    email: bampel@gsu.edu
+  - family-names: Samtani
+    given-names: Sagar
+    affiliation: Indiana University Bloomington
+    email: ssamtani@iu.edu
+repository-code: "https://github.com/BenAmpel/hackersignal"
+url: "https://huggingface.co/datasets/DatasetSubmission/HackerSignal"
+license: CC-BY-4.0
+identifiers:
+  - type: doi
+    value: 10.48550/arXiv.2605.03158
+    description: arXiv preprint
+keywords:
+  - cyber threat intelligence
+  - cybersecurity
+  - hacker forums
+  - CVE linkage
+  - entity linking
+  - exploit classification
+  - temporal distribution shift
+  - benchmark
+  - dataset
+preferred-citation:
+  type: conference-paper
+  title: "HackerSignal: A Large-Scale Multi-Source Dataset Linking Hacker Community Discourse to the CVE Vulnerability Lifecycle"
+  authors:
+    - family-names: Ampel
+      given-names: Benjamin M.
+    - family-names: Samtani
+      given-names: Sagar
+  collection-title: "Advances in Neural Information Processing Systems (NeurIPS), Evaluations and Datasets Track"
+  conference:
+    name: "NeurIPS 2026"
+  year: 2026
+  identifiers:
+    - type: doi
+      value: 10.48550/arXiv.2605.03158

@@ -1,294 +1,214 @@
-# HackerSignal — Replication Guide
+<div align="center">
 
-Anonymous repository for:  
-**"HackerSignal: A Temporally Structured, Multi-Source Benchmark for Cybersecurity Threat Intelligence"**  
-*NeurIPS 2026 Evaluations & Datasets Track (under review)*
+# HackerSignal
 
-Dataset (full + test splits): [`DatasetSubmission/HackerSignal`](https://huggingface.co/datasets/DatasetSubmission/HackerSignal)
+**A Large-Scale Multi-Source Dataset Linking Hacker Community Discourse to the CVE Vulnerability Lifecycle**
+
+[![NeurIPS 2026](https://img.shields.io/badge/NeurIPS%202026-Evaluations%20%26%20Datasets%20Track-8A2BE2)](https://neurips.cc/Conferences/2026)
+[![arXiv](https://img.shields.io/badge/arXiv-2605.03158-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2605.03158)
+[![Hugging Face Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-HackerSignal-FFD21E)](https://huggingface.co/datasets/DatasetSubmission/HackerSignal)
+[![Croissant](https://img.shields.io/badge/metadata-Croissant%20%F0%9F%A5%90-orange)](https://huggingface.co/datasets/DatasetSubmission/HackerSignal/blob/main/etg_croissant.json)
+[![Datasheet](https://img.shields.io/badge/docs-Datasheet%20for%20Datasets-blue)](docs/datasheet.md)
+[![Data license: CC BY 4.0](https://img.shields.io/badge/data%20license-CC%20BY%204.0-lightgrey)](LICENSE-DATA)
+[![Code license: MIT](https://img.shields.io/badge/code%20license-MIT-green)](LICENSE)
+<br>
+[![Documents](https://img.shields.io/badge/documents-7.45M-success)](#at-a-glance)
+[![Sources](https://img.shields.io/badge/sources-64-success)](#at-a-glance)
+[![CVEs](https://img.shields.io/badge/NVD%20CVEs-340%2C536-success)](#at-a-glance)
+[![Tasks](https://img.shields.io/badge/benchmark%20tasks-3-success)](#benchmark-tasks)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![GitHub stars](https://img.shields.io/github/stars/BenAmpel/hackersignal?style=social)](https://github.com/BenAmpel/hackersignal)
+[![Last commit](https://img.shields.io/github/last-commit/BenAmpel/hackersignal)](https://github.com/BenAmpel/hackersignal/commits/main)
+
+[Paper (arXiv)](https://arxiv.org/abs/2605.03158) ·
+[Dataset](https://huggingface.co/datasets/DatasetSubmission/HackerSignal) ·
+[Benchmark tasks](#benchmark-tasks) ·
+[Quick start](#quick-start) ·
+[Reproduce](#reproducing-the-baselines) ·
+[Citation](#citation)
+
+</div>
 
 ---
 
-## Table of Contents
+**HackerSignal** is a cyber threat intelligence (CTI) dataset and benchmark that links what hackers discuss in
+underground and security communities to the vulnerabilities those discussions concern. It aggregates
+**7,447,646 exact-deduplicated documents from 64 public forum and source identifiers** across eight source
+layers, from hacker forums and exploit archives to NVD CVE descriptions, security advisories, bug-bounty reports,
+fix commits and CISA Known Exploited Vulnerabilities. On top of the corpus it defines **three benchmark tasks with
+temporal train/validation/test splits**: CVE linkage retrieval, 8-class exploit type classification, and
+CVE-disjoint temporal generalization to vulnerabilities published after training.
 
-1. [Repository layout](#1-repository-layout)
-2. [Prerequisites](#2-prerequisites)
-3. [Data download](#3-data-download)
-4. [Replicating the baselines (Tables 2–4)](#4-replicating-the-baselines)
-5. [Regenerating figures](#5-regenerating-figures)
-6. [Regenerating LaTeX paper](#6-regenerating-the-latex-paper)
-7. [Collecting new data](#7-collecting-new-data)
-8. [Expected runtimes](#8-expected-runtimes)
+HackerSignal is published in the **NeurIPS 2026 Evaluations & Datasets Track**. Preprint:
+[arXiv:2605.03158](https://arxiv.org/abs/2605.03158).
 
----
+## At a glance
 
-## 1. Repository layout
+| | |
+|---|---|
+| Documents | 7,447,646 (exact-deduplicated) |
+| Sources | 64 public forum / source identifiers in 8 source layers |
+| Hacker-community layer | 6,966,014 posts (largest forums: Gayanku, Antichat, Evolution, AntiOnline, HackForums) |
+| Vulnerability reference | 340,536 NVD CVE descriptions (the retrieval corpus for Tasks 1 and 3) |
+| Other layers | Exploit archives, exploit Q&A, advisories, bug-bounty disclosures, fix commits, CISA KEV |
+| Languages | Mostly English, with Russian and Chinese forum content |
+| Splits | Temporal: test data postdate training data in every task |
+| Metadata | Croissant JSON-LD, Datasheet for Datasets, source release manifest |
+| License | Data CC BY 4.0 ([LICENSE-DATA](LICENSE-DATA)), code MIT ([LICENSE](LICENSE)); per-source terms in [release governance](docs/release_governance.md) |
+
+## Benchmark tasks
+
+| Task | Type | Train | Val | Test | Corpus / total | Metrics |
+|---|---|---:|---:|---:|---:|---|
+| 1. CVE Linkage Retrieval (CVE-R) | Retrieval | 56,692 | 2,584 | 1,990 | 340,536 | R@1, R@5, R@10, MRR |
+| 2. Exploit Type Classification (ETC) | 8-class classification | 64,413 | 4,735 | 1,735 | 70,883 | Macro-F1, per-class F1 |
+| 3. Temporal Generalization (TG) | CVE-disjoint retrieval | 56,833 | 2,535 | 1,898 | 340,536 | R@1, R@5, R@10, MRR |
+
+- **Task 1 (CVE-R):** given exploit, advisory, fix-commit or bug-bounty text, retrieve the CVE it refers to from all
+  340,536 NVD descriptions. Gold links come from source metadata.
+- **Task 2 (ETC):** classify exploit text into injection, XSS, memory corruption, denial of service, file inclusion,
+  authentication and access control, remote code execution, or information disclosure. Train < 2020,
+  validation 2020–2022, test ≥ 2023.
+- **Task 3 (TG):** the Task 1 retrieval problem with strictly disjoint gold CVE sets: training CVEs were published
+  before 2022, validation CVEs in 2022–2023, and test CVEs in 2024 or later. The Task 3 test queries are a subset
+  of the Task 1 test queries.
+
+The baseline ladder covers BM25, four dense bi-encoders (all-MiniLM-L6-v2, all-mpnet-base-v2, BGE-base-en-v1.5,
+E5-base-v2) and a BM25 + dense hybrid for retrieval, and Decision Tree, TF-IDF + logistic regression, linear SVM,
+RNN, GRU, LSTM, BiLSTM and SecBERT for classification. Baseline scores are reported in the paper (Tables 4–6).
+
+## Quick start
+
+The test splits are committed in `data/benchmark_v2/`. Training and validation splits and the full corpus are on
+the Hugging Face Hub as JSONL files:
+
+```python
+from datasets import load_dataset
+
+base = "hf://datasets/DatasetSubmission/HackerSignal/benchmark_v2"
+task1 = load_dataset("json", data_files={
+    "train": f"{base}/task1_cve_linkage/train.jsonl",
+    "validation": f"{base}/task1_cve_linkage/val.jsonl",
+    "test": f"{base}/task1_cve_linkage/test.jsonl",
+})
+corpus = load_dataset("json", data_files=f"{base}/task1_cve_linkage/corpus.jsonl", split="train")
+
+print(task1["test"][0]["text"][:200], "->", task1["test"][0]["cve_id"])
+```
+
+Replace `task1_cve_linkage` with `task2_exploit_type` (fields `text`, `label`) or
+`task3_temporal_generalization` (fields `text`, `cve_id`) for the other tasks.
+
+## Reproducing the baselines
+
+```bash
+git clone https://github.com/BenAmpel/hackersignal.git
+cd hackersignal
+pip install -e ".[sentence-transformers]"
+```
+
+Place the train, validation and corpus files from the Hub under `data/benchmark_v2/<task>/`, then run:
+
+```bash
+# all three tasks; --task 1|2|3 runs one task, --skip-dense / --skip-neural shorten the run
+PYTHONPATH=src python3 -m etg.benchmark.run_baselines_v2 \
+    --data-dir data/benchmark_v2 \
+    --output data/benchmark_v2/results.json
+```
+
+Neural models use Apple MPS when it is available and fall back to CPU. Dense encoding of the 340K-document corpus
+takes from a few minutes (MiniLM) to tens of minutes (base-sized encoders) per model on a recent GPU or Apple
+Silicon machine.
+
+## Repository layout
 
 ```
-exploit-text-graph/
+hackersignal/
 ├── src/etg/
-│   ├── collectors/         # Data collection scripts (see §7)
-│   ├── benchmark/          # Baseline models and evaluation
-│   │   ├── baselines.py            # TF-IDF, BM25, bi-encoder, SecBERT classifiers
-│   │   ├── run_baselines_v2.py     # Per-task baseline runner
-│   │   ├── serious_baselines.py    # Orchestrated multi-seed overnight runner
-│   │   └── splits.py              # Temporal split construction
-│   ├── data/
-│   │   ├── dataset_stats.py       # Generates data/stats/
-│   │   └── unify_hacker_communities.py  # Builds unified JSONL corpus
-│   └── viz/
-│       └── publication.py         # Shared matplotlib style
-├── scripts/
-│   ├── build_task2_exploit_type.py     # Build Task 2 ETC splits
-│   ├── plot_baseline_radar.py          # Figure: baseline_results_summary.{pdf,png}
-│   ├── plot_temporal_heatmap.py        # Figure: temporal_heatmap.{pdf,png}
-│   ├── plot_domain_overlap.py          # Figure: domain_overlap.{pdf,png}
-│   └── plot_corpus_stats.py            # Figure: corpus_temporal_distribution.{pdf,png}
+│   ├── collectors/        # data collection scripts, one per source
+│   ├── data/              # corpus unification, preprocessing and statistics
+│   ├── benchmark/         # split construction and baseline runners
+│   ├── eval/              # retrieval metrics
+│   └── scraper/           # generic forum crawlers
+├── scripts/               # task builders and figure scripts
 ├── data/
-│   ├── benchmark_v2/               # Test splits + precomputed results (committed)
-│   │   ├── task1_cve_linkage/test.jsonl
-│   │   ├── task2_exploit_type/test.jsonl
-│   │   ├── task3_temporal_generalization/test.jsonl
-│   │   └── all_results.json        # Canonical reported metrics
-│   ├── stats/                      # Corpus statistics (committed)
-│   ├── audits/                     # LLM-judge and manual audit artifacts (committed)
-│   └── release/                    # Source release manifest + Croissant (committed)
-├── paper/
-│   ├── HackerSignal_neurips2026.tex    # Paper LaTeX source
-│   └── figures/                        # Pre-built figures (PDF/PNG)
+│   ├── benchmark_v2/      # committed test splits and task metadata
+│   ├── stats/             # corpus statistics
+│   ├── audits/            # manual-audit packets and LLM-judge artifacts
+│   └── release/           # source release manifest and validation
 └── docs/
     ├── datasheet.md
     └── release_governance.md
 ```
 
----
+## Collecting and rebuilding the data
 
-## 2. Prerequisites
-
-```bash
-# Python 3.10+ recommended
-cd exploit-text-graph
-pip install -e .
-
-# For dense retrieval baselines (Tasks 1 & 3):
-pip install -e ".[sentence-transformers]"
-
-# For SecBERT classification (Task 2):
-pip install -e ".[transformers]"
-
-# Verify installation
-python -c "import etg; print('etg OK')"
-```
-
-**Hardware**: All baselines run on CPU. Neural models (SecBERT, bi-encoder) run faster on GPU/MPS. The full 5-seed overnight suite requires ~8 hours on an M-series Mac or ~3 hours on an A100.
-
----
-
-## 3. Data download
-
-The benchmark test splits are already committed in `data/benchmark_v2/` and can be used immediately. Train/val splits and the full corpus are available on HuggingFace:
-
-```python
-from datasets import load_dataset
-
-# Full corpus
-ds = load_dataset("DatasetSubmission/HackerSignal", name="corpus")
-
-# Task splits (train + val + test)
-task1 = load_dataset("DatasetSubmission/HackerSignal", name="task1_cve_linkage")
-task2 = load_dataset("DatasetSubmission/HackerSignal", name="task2_exploit_type")
-task3 = load_dataset("DatasetSubmission/HackerSignal", name="task3_temporal_generalization")
-
-# Save to expected locations
-task1.save_to_disk("data/benchmark_v2/task1_cve_linkage")
-task2.save_to_disk("data/benchmark_v2/task2_exploit_type")
-task3.save_to_disk("data/benchmark_v2/task3_temporal_generalization")
-```
-
-Or with the CLI:
+Each collector in `src/etg/collectors/` writes a `{source}_posts.jsonl` and `{source}_cve_index.jsonl` pair to
+`data/`:
 
 ```bash
-# Download and place splits
-python -c "
-from datasets import load_dataset
-for name in ['task1_cve_linkage', 'task2_exploit_type', 'task3_temporal_generalization']:
-    ds = load_dataset('DatasetSubmission/HackerSignal', name=name)
-    for split, data in ds.items():
-        data.to_json(f'data/benchmark_v2/{name}/{split}.jsonl')
-print('Done')
-"
-```
-
----
-
-## 4. Replicating the baselines
-
-### Quick verification (test split only, ~10 minutes)
-
-Run all lexical and dense baselines on the test splits:
-
-```bash
-PYTHONPATH=src python3 -m etg.benchmark.run_baselines_v2 \
-    --tasks 1 2 3 \
-    --benchmark-dir data/benchmark_v2 \
-    --output data/results/quick_run.json
-```
-
-This reproduces the BM25, TF-IDF+LR, SVM, MiniLM, and MPNet rows in Tables 2–4.
-
-### Full multi-seed replication (~3–8 hours)
-
-The overnight suite adds SecBERT (Task 1 & 3) and bi-encoder/hybrid/reranker (Task 2), each over 5 random seeds:
-
-```bash
-PYTHONPATH=src python3 -m etg.benchmark.serious_baselines \
-    --benchmark-dir data/benchmark_v2 \
-    --results-dir data/results/overnight \
-    --mode full
-```
-
-Progress is written to `data/results/overnight/status/`. Results aggregate to `data/results/overnight/overnight_summary.json`.
-
-### Ablations (Table 5)
-
-```bash
-for kind in source-layer temporal-window short-row dedup multilingual; do
-    PYTHONPATH=src python3 -m etg.benchmark.serious_baselines \
-        --benchmark-dir data/benchmark_v2 \
-        --results-dir data/results/ablations \
-        --mode ablation --ablation-kind $kind
-done
-```
-
-### Reproducing precomputed results
-
-`data/benchmark_v2/all_results.json` contains the exact numbers reported in Tables 2–4 (mean ± std across 5 seeds). To verify these without re-training:
-
-```bash
-python3 -c "
-import json
-with open('data/benchmark_v2/all_results.json') as f:
-    r = json.load(f)
-import pprint; pprint.pprint(r)
-"
-```
-
----
-
-## 5. Regenerating figures
-
-All figure scripts write to `paper/figures/`.
-
-### Figure 2 — Temporal heatmap (requires full corpus JSONL or uses stats.json fallback)
-
-```bash
-# Fast path: uses precomputed stats (uniform distribution within source date range)
-PYTHONPATH=src python3 scripts/plot_temporal_heatmap.py
-
-# Accurate path: streams per-source JSONL files for exact year counts
-# (requires downloading corpus JSONL files from HuggingFace to data/)
-PYTHONPATH=src python3 scripts/plot_temporal_heatmap.py --data-dir data
-```
-
-### Figure 3 — Domain overlap heatmap (requires full corpus JSONL or cached matrix)
-
-```bash
-# If domain_overlap_cache.json exists (precomputed):
-PYTHONPATH=src python3 scripts/plot_domain_overlap.py
-
-# First run with full data builds and saves the cache:
-PYTHONPATH=src python3 scripts/plot_domain_overlap.py --data-dir data
-```
-
-### Figure 4 — Baseline radar chart
-
-```bash
-# Default legend font size (9pt)
-PYTHONPATH=src python3 scripts/plot_baseline_radar.py
-
-# Larger legend
-PYTHONPATH=src python3 scripts/plot_baseline_radar.py --legend-fontsize 11
-```
-
-This script reads Tasks 1 & 3 results from `data/benchmark_v2/all_results.json` and re-trains Task 2 classifiers from the committed test split. Allow ~10–15 minutes for the neural models.
-
-### Supplemental — Corpus composition figures
-
-```bash
-PYTHONPATH=src python3 scripts/plot_corpus_stats.py
-# Outputs: corpus_temporal_distribution.pdf/png, source_layer_composition.pdf/png
-```
-
----
-
-## 6. Regenerating the LaTeX paper
-
-The paper source is `paper/HackerSignal_neurips2026.tex`. Figures are pre-built in `paper/figures/`. To compile:
-
-```bash
-cd paper
-pdflatex HackerSignal_neurips2026.tex
-bibtex HackerSignal_neurips2026
-pdflatex HackerSignal_neurips2026.tex
-pdflatex HackerSignal_neurips2026.tex
-```
-
-Or with `latexmk`:
-
-```bash
-cd paper && latexmk -pdf HackerSignal_neurips2026.tex
-```
-
----
-
-## 7. Collecting new data
-
-All collection scripts are under `src/etg/collectors/`. Each collector is self-contained and writes a `{source}_posts.jsonl` + `{source}_cve_index.jsonl` pair to `data/`.
-
-```bash
-# Example: update NVD CVE records
 PYTHONPATH=src python3 -m etg.collectors.nvd --output-dir data
-
-# Example: scrape 0x00sec
-PYTHONPATH=src python3 -m etg.collectors.discourse_communities \
-    --community 0x00sec --output-dir data
-
-# After collecting, rebuild the unified corpus:
 PYTHONPATH=src python3 -m etg.data.unify_hacker_communities \
     --data-dir data --output data/unified_hacker_communities_neurips.jsonl
-
-# Rebuild benchmark splits:
 PYTHONPATH=src python3 -m etg.benchmark.build_benchmark_v2 \
-    --corpus data/unified_hacker_communities_neurips.jsonl \
-    --output-dir data/benchmark_v2
+    --corpus data/unified_hacker_communities_neurips.jsonl --output-dir data/benchmark_v2
 ```
 
----
+## Responsible use
 
-## 8. Expected runtimes
+HackerSignal is released for academic and defensive cybersecurity research. Author identifiers are pseudonymized
+with SHA-256, provenance is preserved for every record, and sources are released under one of four modes
+(redistributable, research-only, metadata/pointer, excluded). Do not use the data to fine-tune automated exploit
+generation, to de-anonymize forum users, or as an operational threat feed without human review. Takedown and
+correction requests are handled as described in [docs/release_governance.md](docs/release_governance.md).
 
-| Step | Hardware | Time |
-|------|----------|------|
-| Quick baseline run (lexical + dense, all tasks) | CPU (MacBook) | ~10 min |
-| Full 5-seed overnight suite | M2 Pro / A100 | 3–8 hours |
-| Radar chart (neural Task 2 models) | Apple MPS | ~15 min |
-| Temporal heatmap (stats.json fallback) | CPU | < 30 sec |
-| Domain overlap (from JSONL, 10 sources) | CPU | ~5 min |
-| Paper compilation | — | < 1 min |
+## FAQ
 
----
+**What is HackerSignal?** A 7.45M-document cyber threat intelligence corpus from 64 public sources, with a
+three-task benchmark for linking hacker, exploit and advisory text to CVE identifiers under temporal distribution
+shift.
+
+**Where do I download it?** From the Hugging Face Hub at
+[DatasetSubmission/HackerSignal](https://huggingface.co/datasets/DatasetSubmission/HackerSignal). The test splits
+are also in this repository.
+
+**How are the labels made?** From platform metadata, not manual annotation: source-provided CVE links for Tasks 1
+and 3, and ExploitDB, 0day.today and HackerOne type fields mapped to eight classes by deterministic rules for
+Task 2. A 240-row stratified audit packet is in `data/audits/`.
+
+**How is leakage prevented?** Every task uses a temporal split, and Task 3 gold CVE sets are disjoint across
+train, validation and test.
 
 ## Citation
 
+If you use HackerSignal, please cite:
+
 ```bibtex
-@article{hackersignal2026,
-  title   = {HackerSignal: A Temporally Structured, Multi-Source Benchmark
-             for Cybersecurity Threat Intelligence},
-  author  = {Anonymous},
-  year    = {2026},
-  note    = {NeurIPS 2026 Evaluations \& Datasets Track (under review)}
+@inproceedings{ampel2026hackersignal,
+  title     = {{HackerSignal}: A Large-Scale Multi-Source Dataset Linking Hacker Community Discourse
+               to the {CVE} Vulnerability Lifecycle},
+  author    = {Ampel, Benjamin M. and Samtani, Sagar},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS),
+               Evaluations and Datasets Track},
+  year      = {2026},
+  eprint    = {2605.03158},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CR},
+  url       = {https://arxiv.org/abs/2605.03158}
 }
 ```
 
----
+GitHub's **Cite this repository** button reads the same entry from [`CITATION.cff`](CITATION.cff).
 
-*Anonymous submission — author information redacted for double-blind review.*
+## License
+
+The benchmark data and documentation are released under
+[Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-DATA) for the sources whose terms allow
+redistribution; research-only and pointer-only sources follow the terms listed in
+[docs/release_governance.md](docs/release_governance.md). The code is released under the [MIT License](LICENSE).
+
+## Contact
+
+Benjamin M. Ampel (Georgia State University, bampel@gsu.edu) and Sagar Samtani (Indiana University,
+ssamtani@iu.edu). Please open an issue for bugs, data errors or takedown requests.
