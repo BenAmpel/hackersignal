@@ -653,7 +653,27 @@ All BoW classifiers use scikit-learn with \texttt{TfidfVectorizer}(max\_features
 RNN, GRU, LSTM, and BiLSTM use a lower-cased, whitespace-tokenized word-level vocabulary (minimum frequency $\geq$3, yielding 175,062 tokens) with 128-dim embeddings, 128-dim hidden states, max sequence length 300 (right-padded), batch size 128, and Adam optimizer (lr=$10^{-3}$). Class-weighted cross-entropy loss with gradient clipping at 1.0. Sequences are packed so that the final hidden state is taken at the last non-padding token. Trained for 8 epochs with the best epoch selected by validation macro-F1. SecBERT~\citep{secbert2022} (\texttt{jackaduma/SecBERT}), SecureBERT~\citep{aghaei2023securebert} (\texttt{ehsanaghaei/SecureBERT}), and CySecBERT~\citep{bayer2024cysecbert} (\texttt{markusbayer/CySecBERT}) are fine-tuned with max sequence length 256 on the first 1{,}000 characters of each text, batch size 16, AdamW (lr=$2{\times}10^{-5}$, weight decay 0.01), linear warmup over 10\% of steps, and unweighted cross-entropy, for 3 epochs on a 15K training subsample, with the best epoch selected by validation macro-F1. Every Task~2 model is trained with seeds 42, 43, and 44 (the 15K subsample is drawn per seed); we report the mean and SD. DarkBERT~\citep{jin2023darkbert} was not run: the model is gated, and our access request was not granted before the camera-ready deadline. All neural models use MPS (Apple Silicon) acceleration.
 
 \paragraph{Compute.}
-All baselines ran on one Apple M5 Pro workstation (48\,GB unified memory, macOS 27) with Python 3.12.15, PyTorch 2.14.1 (MPS backend), sentence-transformers 6.2.0, transformers 5.21.0, and scikit-learn 1.9.1; no CUDA GPUs were used. BM25 uses an exact sparse reimplementation of \texttt{rank\_bm25} (maximum score difference below $3{\times}10^{-12}$ on a 50-query check): 5--8\,s to index the 340K corpus and 15--25\,s to score each test set. Dense encoding of the 340K corpus took ${\sim}$4\,min (MiniLM) to ${\sim}$30\,min (base-sized models). Task~2 training per seed: BoW under 30\,s; RNN ${\sim}$30\,min, GRU ${\sim}$36\,min, LSTM ${\sim}$14\,min, BiLSTM ${\sim}$61\,min; SecBERT ${\sim}$17\,min, SecureBERT ${\sim}$40\,min, and CySecBERT ${\sim}$44\,min (15K subsample, 3 epochs). Per-run timings, seeds, model revisions, and data hashes are in \texttt{results/camera\_ready/provenance.json}. All baseline code is available at \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}}.
+All baselines ran on one Apple M5 Pro workstation (48\,GB unified memory, macOS 27) with Python 3.12.15, PyTorch 2.14.1 (MPS backend), sentence-transformers 6.2.0, transformers 5.21.0, and scikit-learn 1.9.1. The only exception is the full-training-set transformer runs (Table~\ref{tab:task2-full}), which used one NVIDIA L40S GPU on the Georgia State University ACIDS cluster (PyTorch 2.14.1, CUDA 12.6): about 12\,min (SecBERT) to 22\,min (SecureBERT, CySecBERT) per seed. BM25 uses an exact sparse reimplementation of \texttt{rank\_bm25} (maximum score difference below $3{\times}10^{-12}$ on a 50-query check): 5--8\,s to index the 340K corpus and 15--25\,s to score each test set. Dense encoding of the 340K corpus took ${\sim}$4\,min (MiniLM) to ${\sim}$30\,min (base-sized models). Task~2 training per seed: BoW under 30\,s; RNN ${\sim}$30\,min, GRU ${\sim}$36\,min, LSTM ${\sim}$14\,min, BiLSTM ${\sim}$61\,min; SecBERT ${\sim}$17\,min, SecureBERT ${\sim}$40\,min, and CySecBERT ${\sim}$44\,min (15K subsample, 3 epochs). Per-run timings, seeds, model revisions, and data hashes are in \texttt{results/camera\_ready/provenance.json}. All baseline code is available at \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}}.
+
+\paragraph{Full training set (Task 2 transformers).}
+Table~\ref{tab:task2-full} repeats the three transformers with all 64,413 training rows (same code, data, and protocol; best epoch by validation macro-F1; seeds 42--44). More training data lifts all three to 0.899--0.903 and removes SecBERT's gap on the 15K subsample; the seed SDs overlap, so no transformer leads on the full training set.
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Task 2 transformers fine-tuned on the 15K subsample (Apple M5 Pro, Table~\ref{tab:task2-results}) and on all 64,413 training rows (one NVIDIA L40S). Macro-F1 mean $\pm$ SD over three seeds; per-class F1 for the full training set.}
+\label{tab:task2-full}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Model} & \textbf{15K subsample} & \textbf{Full 64K} & \textbf{info\_disc.} & \textbf{mem\_corr.} & \textbf{auth.} \\
+\midrule
+SecBERT & 0.852{\scriptsize$\pm$0.007} & 0.899{\scriptsize$\pm$0.001} & 0.75 & 0.90 & 0.88 \\
+SecureBERT & 0.892{\scriptsize$\pm$0.008} & 0.903{\scriptsize$\pm$0.006} & 0.81 & 0.90 & 0.88 \\
+CySecBERT & 0.898{\scriptsize$\pm$0.003} & 0.901{\scriptsize$\pm$0.011} & 0.81 & 0.88 & 0.88 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Shortcut and Source Diagnostics}
 \label{app:shortcuts}
@@ -806,7 +826,7 @@ A complete datasheet is provided in the supplemental material and in the dataset
 \item {\bf Experiments compute resources}
     \item[] Question: Does the paper provide sufficient information on compute resources?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Baselines were run on one Apple M5 Pro workstation (48\,GB) with PyTorch 2.14.1 on the MPS backend. Appendix~\ref{app:hyperparams} reports wall-clock times per model and task.
+    \item[] Justification: Baselines were run on one Apple M5 Pro workstation (48\,GB) with PyTorch 2.14.1 on the MPS backend; the full-training-set transformer runs used one NVIDIA L40S GPU. Appendix~\ref{app:hyperparams} reports wall-clock times per model and task.
 
 \item {\bf Code of ethics}
     \item[] Question: Does the research conform with the NeurIPS Code of Ethics?
