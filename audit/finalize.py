@@ -206,6 +206,80 @@ def main():
              seeds=len(rs), n=rs[0]["n"], **agg, macro_f1_ci_lo=float(np.percentile(d, 2.5)),
              macro_f1_ci_hi=float(np.percentile(d, 97.5)),
              note="mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1")
+    # ---------- task 2, full 64K training set on the GSU cluster (NVIDIA L40S; appendix only) ----------
+    # Per-query predictions stay on the cluster, so these rows carry mean (SD) over seeds and no bootstrap CI.
+    # The two mini (MPS) SecBERT full_64413 runs are superseded by these and kept on record only.
+    for r in res:
+        if r.get("task") == "task2" and r.get("variant") == "full_64413" and r.get("result_type") == "classification":
+            r["note"] = "SUPERSEDED by full_64413_l40s (mini MPS run stopped after 2 seeds); not reported"
+    cl = defaultdict(list)
+    for r in rows("task2_cluster_tf_full"):
+        if r.get("variant") == "full_64413":
+            cl[r["model"]].append(r)
+    for m in ("SecBERT", "SecureBERT", "CySecBERT"):
+        rs = sorted(cl.get(m, []), key=lambda x: x["seed"])
+        if not rs:
+            continue
+        assert len({r["seed"] for r in rs}) == len(rs) and {r.get("gpu") for r in rs} == {"NVIDIA L40S"}
+        agg = {}
+        for k in ["macro_f1", "weighted_f1", "accuracy"] + [f"f1_{c}" for c in CLASSES]:
+            v = np.array([r[k] for r in rs])
+            agg[k] = float(v.mean()); agg[k + "_sd"] = float(v.std(ddof=1)) if len(v) > 1 else None
+        emit(prov_src={"seeds": [r["seed"] for r in rs], "seconds_per_seed": [r["seconds"] for r in rs],
+                       "git_sha": rs[0]["git_sha"], "device": "cuda", "gpu": rs[0]["gpu"], "torch": rs[0]["torch"],
+                       "hf_model": rs[0]["hf_model"], "hf_revision": rs[0]["hf_revision"],
+                       "best_epochs": [r["best_epoch"] for r in rs], "train_rows": rs[0]["train_rows"],
+                       "data_sha256": {k: rs[0][k] for k in rs[0] if k.startswith("data_sha256")},
+                       "source": "GSU ACIDS array 4777484 (raw/task2_cluster_tf_full.jsonl)"},
+             result_type="classification", task="task2", model=m, condition="temporal_ood",
+             variant="full_64413_l40s", seeds=len(rs), n=rs[0]["n"], **agg,
+             note="NVIDIA L40S; all 64,413 training rows; best epoch by validation; mean (SD) over seeds, no CI")
+
+    # ---------- B6: bi-encoder fine-tuned on Task 3 train (pre-2022 CVEs), evaluated on the CVE-disjoint test ----------
+    b6_dir = ROOT.parent / "b6-finetune" / "results" / "b6"
+    b6_rows = [json.loads(x) for x in open(b6_dir / "rows.jsonl")] if (b6_dir / "rows.jsonl").exists() else []
+    t3_bge = next((r for r in res if r["result_type"] == "retrieval" and r["task"] == "task3" and
+                   r["model"] == "BGE-base-en-v1.5" and r["condition"] == "as_released" and r["variant"] == "primary"), None)
+    for m in sorted({r["model"] for r in b6_rows}):
+        zs = [r for r in b6_rows if r["model"] == m and r["variant"] == "zero_shot"]
+        ft = sorted((r for r in b6_rows if r["model"] == m and r["variant"] == "finetuned"), key=lambda x: x["seed"])
+        tag = m.replace(" ", "")
+        if zs:
+            emit(prov_src={k: zs[-1].get(k) for k in ("hf_model", "seconds", "written_at")},
+                 result_type="retrieval", task="task3", model=m, condition="b6_zero_shot", variant="primary",
+                 seeds=1, n=zs[-1]["test_n"], r_at_1=zs[-1]["test_r_at_1"], r_at_5=zs[-1]["test_r_at_5"],
+                 r_at_10=zs[-1]["test_r_at_10"], mrr=zs[-1]["test_mrr"],
+                 note="B6 harness zero-shot (must reproduce the audit's as_released row)")
+            if m == "BGE-base-en-v1.5" and t3_bge is not None:
+                assert abs(zs[-1]["test_mrr"] - t3_bge["mrr"]) < 5e-4, (zs[-1]["test_mrr"], t3_bge["mrr"])
+        if len(ft) < 3:
+            continue  # fold a model in only when all three seeds are done
+        z0 = np.load(b6_dir / "per_query" / f"task3__{tag}__zero_shot.npz")
+        zr = [np.load(b6_dir / "per_query" / f"task3__{tag}__finetuned__seed{r['seed']}.npz") for r in ft]
+        assert all((z["qid"] == z0["qid"]).all() for z in zr)
+        per_q_ft = np.mean([mrr10(z["rank"]) for z in zr], axis=0)  # seed-mean MRR@10 per query
+        per_q_zs = mrr10(z0["rank"])
+        lo, hi = boot_mean(per_q_ft, N_BOOT_MRR, rng)
+        agg = {}
+        for k in ("r_at_1", "r_at_5", "r_at_10", "mrr"):
+            v = np.array([r[f"test_{k}"] for r in ft])
+            agg[k] = float(v.mean())
+        sd = float(np.std([r["test_mrr"] for r in ft], ddof=1))
+        emit(prov_src={"seeds": [r["seed"] for r in ft], "train_seconds": [r["train_seconds"] for r in ft],
+                       "hf_model": ft[0]["hf_model"], "saved_models": [r.get("saved_model") for r in ft],
+                       "loss": "CachedMultipleNegativesRankingLoss (scale 20, mini-batch 16; batch-64 objective)",
+                       "device": "mps", "worktree": "b6-finetune"},
+             result_type="retrieval", task="task3", model=m, condition="b6_finetuned", variant="primary",
+             seeds=len(ft), n=ft[0]["test_n"], **agg, mrr_ci_lo=lo, mrr_ci_hi=hi,
+             note=f"fine-tuned on Task 3 train; mean over seeds (MRR SD {sd:.4f}); CI = bootstrap of seed-mean MRR@10")
+        idx = rng.integers(0, len(per_q_ft), size=(N_BOOT_MRR, len(per_q_ft)))
+        dd = per_q_ft[idx].mean(1) - per_q_zs[idx].mean(1)
+        dlo, dhi = float(np.percentile(dd, 2.5)), float(np.percentile(dd, 97.5))
+        emit(prov_src={"n_boot": N_BOOT_MRR, "boot_seed": SEED}, result_type="paired_delta", task="task3",
+             model=f"{m} fine-tuned - zero-shot", condition="b6", variant="mrr", n=len(per_q_ft),
+             delta=float(per_q_ft.mean() - per_q_zs.mean()), delta_ci_lo=dlo, delta_ci_hi=dhi,
+             note="excludes zero" if dlo > 0 or dhi < 0 else "INCLUDES ZERO")
+
     prim = {m: (m, T2_PRIMARY[FAMILY[m]]) for m in T2_MODELS if (m, T2_PRIMARY[FAMILY[m]]) in preds}
     if len(prim) >= 2:
         f1m = {m: np.mean([f1_score(y, p, average="macro") for y, p in preds[k]]) for m, k in prim.items()}
