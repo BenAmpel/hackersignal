@@ -1,42 +1,50 @@
-"""Generate paper/figures/baseline_results_summary.{pdf,png}
+"""Generate the baseline radar figure (baseline_results_summary.{pdf,png}).
 
-Reproduces the three-panel radar chart from the HackerSignal NeurIPS paper.
-Tasks 1 and 3 results come from data/benchmark_v2/all_results.json.
-Task 2 (ETC) metrics are computed here by running the paper's model ladder
-on data/benchmark_v2/task2_exploit_type/{train,test}.jsonl.
+Every plotted value is read from results/camera_ready/results.csv, the single
+source of truth written by audit/finalize.py. Nothing is estimated, copied from
+the paper, or recomputed here: if a model or metric is missing from results.csv
+the script stops with an error instead of drawing a guess.
+
+Tasks 1 and 3: retrieval rows, condition as_released, variant primary.
+Task 2: classification rows (mean over seeds), one variant per model family
+(--t2-variants; defaults match audit/finalize.py T2_PRIMARY).
 
 Usage
 -----
-    python3 scripts/plot_baseline_radar.py [--legend-fontsize 9]
+    python3 scripts/plot_baseline_radar.py [--results results/camera_ready/results.csv]
+                                           [--out-dir results/camera_ready/figures]
 """
 
 from __future__ import annotations
 
 import argparse
-import json
+import csv
 import math
-import warnings
+import sys
 from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import matplotlib.patheffects as pe
 import numpy as np
 
-warnings.filterwarnings("ignore")
-
 # ---------------------------------------------------------------------------
-# Paths
+# Paths and plotted models
 # ---------------------------------------------------------------------------
 
-ROOT        = Path(__file__).resolve().parent.parent
-ALL_RESULTS = ROOT / "data/benchmark_v2/all_results.json"
-TASK2_TRAIN = ROOT / "data/benchmark_v2/task2_exploit_type/train.jsonl"
-TASK2_TEST  = ROOT / "data/benchmark_v2/task2_exploit_type/test.jsonl"
-OUT_PDF     = ROOT / "paper/figures/baseline_results_summary.pdf"
-OUT_PNG     = ROOT / "paper/figures/baseline_results_summary.png"
+ROOT    = Path(__file__).resolve().parent.parent
+RESULTS = ROOT / "results/camera_ready/results.csv"
+OUT_DIR = ROOT / "results/camera_ready/figures"
+
+RETRIEVAL_MODELS = ["BM25", "all-MiniLM-L6-v2", "all-mpnet-base-v2", "BGE-base-en-v1.5", "E5-base-v2",
+                    "Hybrid BM25+mpnet"]
+T2_MODELS = ["Decision Tree", "TF-IDF + LR", "SVM", "RNN", "GRU", "LSTM", "BiLSTM", "SecBERT", "SecureBERT", "CySecBERT"]
+T2_FAMILY = {"Decision Tree": "bow", "TF-IDF + LR": "bow", "SVM": "bow", "RNN": "rnn", "GRU": "rnn",
+             "LSTM": "rnn", "BiLSTM": "rnn", "SecBERT": "tf", "SecureBERT": "tf", "CySecBERT": "tf"}
+T2_VARIANTS = {"bow": "repo_trunc2000", "rnn": "packed_last_token", "tf": "subsample15000"}
+PAPER_NAME = {"all-MiniLM-L6-v2": "MiniLM-L6-v2", "all-mpnet-base-v2": "mpnet-base-v2",
+              "BGE-base-en-v1.5": "BGE-base-v1.5"}
 
 # ---------------------------------------------------------------------------
 # Visual design — colours, widths, fills, styles
@@ -49,16 +57,19 @@ MODEL_COLORS: dict[str, str] = {
     "MiniLM-L6-v2":      "#5ba4cf",   # sky blue       – small bi-encoder
     "mpnet-base-v2":     "#f28e2b",   # amber orange   – base bi-encoder
     "BGE-base-v1.5":     "#59a14f",   # leaf green     – base bi-encoder
-    "E5-base-v2":        "#1d479e",   # deep navy      – top retrieval model
+    "E5-base-v2":        "#1d479e",   # deep navy      – base bi-encoder
     "Hybrid BM25+mpnet": "#76b7b2",   # teal cyan      – hybrid system
     # ── Classification models (Task 2) ──────────────────────────────────────
     "Decision Tree":     "#c8a227",   # harvest gold   – BoW tier
     "TF-IDF + LR":       "#499894",   # sea teal       – BoW tier
     "SVM":               "#9477ab",   # muted violet   – BoW tier
+    "RNN":               "#b07aa1",   # mauve          – RNN family
     "GRU":               "#e05b5b",   # coral red      – RNN family
     "LSTM":              "#e8958e",   # salmon pink    – RNN family
-    "BiLSTM":            "#982b1c",   # deep crimson   – top classifier
+    "BiLSTM":            "#982b1c",   # deep crimson   – RNN family
     "SecBERT":           "#c0602b",   # burnt sienna   – transformer
+    "SecureBERT":        "#8c564b",   # umber          – transformer
+    "CySecBERT":         "#d4a373",   # tan            – transformer
 }
 
 # Line style: dashed for hybrid/combined, solid for all others
@@ -66,119 +77,59 @@ MODEL_LS: dict[str, str] = {
     "Hybrid BM25+mpnet": (0, (5, 3)),   # custom dash
 }
 
-# Line width: heavier for top performer in each task group
-MODEL_LW: dict[str, float] = {
-    "E5-base-v2": 2.4,
-    "BiLSTM":     2.4,
-}
-
-# Fill alpha: stronger for top performers
-MODEL_FA: dict[str, float] = {
-    "E5-base-v2": 0.16,
-    "BiLSTM":     0.16,
-}
+# Line width and fill: heavier for the top model of each panel (set in main from results.csv)
+MODEL_LW: dict[str, float] = {}
+MODEL_FA: dict[str, float] = {}
 
 _DEFAULT_LW = 1.5
+_TOP_LW     = 2.4
 _DEFAULT_FA = 0.07
+_TOP_FA     = 0.16
 _DEFAULT_LS = "-"
 
 # ---------------------------------------------------------------------------
-# Task 2: compute ETC metrics via BoW + neural models
+# Results loading (fails loudly; never estimates)
 # ---------------------------------------------------------------------------
 
-def _load_jsonl(path: Path) -> list[dict]:
+class MissingResult(RuntimeError):
+    pass
+
+
+def _load_rows(path: Path) -> list[dict]:
+    if not path.exists():
+        raise MissingResult(f"{path} not found; run audit/finalize.py first")
     with open(path) as f:
-        return [json.loads(line) for line in f]
+        return list(csv.DictReader(f))
 
 
-def _compute_task2_metrics() -> dict[str, dict[str, float]]:
-    """Train and evaluate the Task 2 model ladder; return per-model metrics."""
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.tree import DecisionTreeClassifier
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.svm import LinearSVC
-    from sklearn.metrics import f1_score, accuracy_score
-
-    print("  Loading Task 2 splits …")
-    train_rows = _load_jsonl(TASK2_TRAIN)
-    test_rows  = _load_jsonl(TASK2_TEST)
-
-    X_train = [r["text"] for r in train_rows]
-    y_train = [r["label"] for r in train_rows]
-    X_test  = [r["text"] for r in test_rows]
-    y_test  = [r["label"] for r in test_rows]
-
-    print(f"  Train: {len(X_train)}  Test: {len(X_test)}")
-
-    vec  = TfidfVectorizer(max_features=50_000, ngram_range=(1, 2))
-    X_tr = vec.fit_transform(X_train)
-    X_te = vec.transform(X_test)
-
-    results: dict[str, dict[str, float]] = {}
-
-    models_bow = [
-        ("Decision Tree", DecisionTreeClassifier(max_depth=30,
-                          class_weight="balanced", random_state=42)),
-        ("TF-IDF + LR",   LogisticRegression(C=1.0, max_iter=1000,
-                          class_weight="balanced", random_state=42)),
-        ("SVM",           LinearSVC(max_iter=2000,
-                          class_weight="balanced", random_state=42)),
-    ]
-    for name, clf in models_bow:
-        print(f"  Fitting {name} …")
-        clf.fit(X_tr, y_train)
-        preds = clf.predict(X_te)
-        results[name] = {
-            "Macro-F1":    round(f1_score(y_test, preds, average="macro"), 4),
-            "Weighted-F1": round(f1_score(y_test, preds, average="weighted"), 4),
-            "Accuracy":    round(accuracy_score(y_test, preds), 4),
-        }
-        print(f"    → Macro-F1={results[name]['Macro-F1']:.3f}  "
-              f"Weighted-F1={results[name]['Weighted-F1']:.3f}  "
-              f"Acc={results[name]['Accuracy']:.3f}")
-
-    # Neural models: use paper-published Macro-F1 (Table 3) and estimate
-    # Weighted-F1/Accuracy from the BoW-derived offset for this task.
-    bow_vals = list(results.values())
-    if bow_vals:
-        wf1_off = round(sum(v["Weighted-F1"] - v["Macro-F1"]
-                            for v in bow_vals) / len(bow_vals), 3)
-        acc_off  = round(sum(v["Accuracy"]    - v["Macro-F1"]
-                             for v in bow_vals) / len(bow_vals), 3)
-        print(f"  BoW-derived offsets: Weighted-F1 +{wf1_off:.3f}, "
-              f"Accuracy +{acc_off:.3f}")
-    else:
-        wf1_off, acc_off = 0.06, 0.05
-
-    results.update(_fallback_neural_metrics(wf1_off, acc_off))
-    return results
+def _value(row: dict, key: str, where: str) -> float:
+    v = row.get(key, "")
+    if v in ("", None):
+        raise MissingResult(f"{where}: metric {key!r} is empty in results.csv")
+    return float(v)
 
 
-def _fallback_neural_metrics(
-    bow_weighted_offset: float = 0.06,
-    bow_accuracy_offset: float = 0.05,
-) -> dict[str, dict[str, float]]:
-    """
-    Task 2 (ETC) neural baseline metrics from Table 3 of the paper.
+def _retrieval(rows: list[dict], task: str) -> dict[str, list[float]]:
+    out = {}
+    for m in RETRIEVAL_MODELS:
+        hit = [r for r in rows if r["result_type"] == "retrieval" and r["task"] == task and r["model"] == m
+               and r["condition"] == "as_released" and r["variant"] == "primary"]
+        if len(hit) != 1:
+            raise MissingResult(f"{task}/{m}: expected 1 as_released primary row, found {len(hit)}")
+        out[PAPER_NAME.get(m, m)] = [_value(hit[0], k, f"{task}/{m}") for k in ("r_at_1", "r_at_5", "r_at_10", "mrr")]
+    return out
 
-    Macro-F1 values are exactly as reported.  Weighted-F1 and Accuracy are
-    estimated as Macro-F1 + empirical offset derived from the BoW tier.
-    """
-    paper_macro = {
-        "RNN":     0.142,
-        "GRU":     0.826,
-        "LSTM":    0.826,
-        "BiLSTM":  0.871,
-        "SecBERT": 0.846,
-    }
-    return {
-        name: {
-            "Macro-F1":    f1,
-            "Weighted-F1": round(min(f1 + bow_weighted_offset, 0.99), 3),
-            "Accuracy":    round(min(f1 + bow_accuracy_offset, 0.99), 3),
-        }
-        for name, f1 in paper_macro.items()
-    }
+
+def _task2(rows: list[dict], models: list[str], variants: dict[str, str]) -> dict[str, list[float]]:
+    out = {}
+    for m in models:
+        var = variants[T2_FAMILY[m]]
+        hit = [r for r in rows if r["result_type"] == "classification" and r["task"] == "task2"
+               and r["model"] == m and r["variant"] == var]
+        if len(hit) != 1:
+            raise MissingResult(f"task2/{m}/{var}: expected 1 row, found {len(hit)}")
+        out[m] = [_value(hit[0], k, f"task2/{m}") for k in ("macro_f1", "weighted_f1", "accuracy")]
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -281,63 +232,25 @@ def _plot_radar(
 # Main
 # ---------------------------------------------------------------------------
 
-def main(legend_fontsize: int = 8) -> None:
-    # ── Load Tasks 1 & 3 results ────────────────────────────────────────────
-    with open(ALL_RESULTS) as f:
-        all_res = json.load(f)
-
-    t1 = all_res["task1_cve_linkage"]
-    t3 = all_res["task3_temporal_generalization"]
-
-    name_map = {
-        "all-MiniLM-L6-v2": "MiniLM-L6-v2",
-        "all-mpnet-base-v2": "mpnet-base-v2",
-        "BGE-base-en-v1.5":  "BGE-base-v1.5",
-    }
-
-    def _rename(d):
-        return {name_map.get(k, k): v for k, v in d.items()}
-
-    t1 = _rename(t1)
-    t3 = _rename(t3)
-
+def main(results: Path, out_dir: Path, t2_names: list[str], t2_variants: dict[str, str],
+         legend_fontsize: int = 8) -> None:
+    rows = _load_rows(results)
+    t1_models = _retrieval(rows, "task1")
+    t3_models = _retrieval(rows, "task3")
+    t2_models = _task2(rows, t2_names, t2_variants)
     metrics_t13 = ["R@1", "R@5", "R@10", "MRR"]
+    metrics_t2  = ["Macro-F1", "Weighted-F1", "Accuracy"]
 
-    def _extract(task_dict, metrics):
-        return {
-            model: [vals[m] for m in metrics]
-            for model, vals in task_dict.items()
-        }
+    # Heavier line for the top model of each panel by its headline metric (MRR / macro-F1)
+    for d, k in ((t1_models, 3), (t3_models, 3), (t2_models, 0)):
+        top = max(d, key=lambda m: d[m][k])
+        MODEL_LW[top] = _TOP_LW
+        MODEL_FA[top] = _TOP_FA
 
-    t1_models = _extract(t1, metrics_t13)
-    t3_models = _extract(t3, metrics_t13)
-
-    # ── Task 2 results ──────────────────────────────────────────────────────
-    metrics_t2 = ["Macro-F1", "Weighted-F1", "Accuracy"]
-    if "task2_exploit_type" in all_res:
-        print("Loading Task 2 (ETC) metrics from all_results.json …")
-        t2_metrics = {
-            k: {m: v[m] for m in metrics_t2}
-            for k, v in all_res["task2_exploit_type"].items()
-            if k != "meta" and isinstance(v, dict) and "Macro-F1" in v
-        }
-    else:
-        print("Computing Task 2 (ETC) metrics (no cached results found) …")
-        t2_metrics = _compute_task2_metrics()
-
-    # RNN (Macro-F1=0.142) is excluded — degenerate outlier, documented in
-    # paper Table 3.
-    T2_RADAR_EXCLUDE = {"RNN"}
-    t2_models = {
-        m: [vals[k] for k in metrics_t2]
-        for m, vals in t2_metrics.items()
-        if m not in T2_RADAR_EXCLUDE
-    }
-
-    print("\nTask 2 results (radar):")
-    for m, vals in t2_models.items():
-        print(f"  {m:20s}  Macro-F1={vals[0]:.3f}  "
-              f"Weighted-F1={vals[1]:.3f}  Acc={vals[2]:.3f}")
+    print(f"Read {results}")
+    for name, d in (("Task 1", t1_models), ("Task 2", t2_models), ("Task 3", t3_models)):
+        for m, vals in d.items():
+            print(f"  {name}  {m:20s} " + "  ".join(f"{v:.4f}" for v in vals))
 
     # ── Axis bounds ─────────────────────────────────────────────────────────
     def _nice_bounds(vals, margin=0.05):
@@ -382,7 +295,7 @@ def main(legend_fontsize: int = 8) -> None:
         "BGE-base-v1.5", "E5-base-v2", "Hybrid BM25+mpnet",
         # classification
         "Decision Tree", "TF-IDF + LR", "SVM",
-        "GRU", "LSTM", "BiLSTM", "SecBERT",
+        "RNN", "GRU", "LSTM", "BiLSTM", "SecBERT", "SecureBERT", "CySecBERT",
     ]
     all_present = list(dict.fromkeys(
         list(t1_models) + list(t2_models) + list(t3_models)
@@ -421,18 +334,28 @@ def main(legend_fontsize: int = 8) -> None:
         bottom=0.22, top=0.96,
         wspace=0.22,
     )
-    fig.savefig(OUT_PDF, dpi=300, bbox_inches="tight", facecolor="white")
-    fig.savefig(OUT_PNG, dpi=150, bbox_inches="tight", facecolor="white")
-    print(f"\nSaved → {OUT_PDF}")
-    print(f"Saved → {OUT_PNG}")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    pdf, png = out_dir / "baseline_results_summary.pdf", out_dir / "baseline_results_summary.png"
+    fig.savefig(pdf, dpi=300, bbox_inches="tight", facecolor="white")
+    fig.savefig(png, dpi=150, bbox_inches="tight", facecolor="white")
+    print(f"\nSaved → {pdf}")
+    print(f"Saved → {png}")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Regenerate baseline radar chart")
-    parser.add_argument(
-        "--legend-fontsize", type=int, default=8,
-        help="Font size for legend entries (default: 8).",
-    )
+    parser = argparse.ArgumentParser(description="Regenerate baseline radar chart from results.csv")
+    parser.add_argument("--results", type=Path, default=RESULTS)
+    parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
+    parser.add_argument("--t2-models", default=",".join(T2_MODELS),
+                        help="comma list of Task 2 models to plot (each must exist in results.csv)")
+    parser.add_argument("--t2-variants", default=",".join(f"{k}={v}" for k, v in T2_VARIANTS.items()),
+                        help="family=variant pairs, e.g. bow=repo_trunc2000,rnn=packed_last_token,tf=subsample15000")
+    parser.add_argument("--legend-fontsize", type=int, default=8,
+                        help="Font size for legend entries (default: 8).")
     args = parser.parse_args()
-    main(legend_fontsize=args.legend_fontsize)
+    variants = dict(kv.split("=", 1) for kv in args.t2_variants.split(","))
+    try:
+        main(args.results, args.out_dir, [m for m in args.t2_models.split(",") if m], variants,
+             legend_fontsize=args.legend_fontsize)
+    except MissingResult as e:
+        sys.exit(f"ERROR: {e}")

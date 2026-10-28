@@ -1,0 +1,541 @@
+{
+  "files": {
+    "task1_cve_linkage/corpus.jsonl": {
+      "rows": 340536,
+      "sha256": "95c2449b77c2ff019bcef044ab2c77ae42f35aadff5751a5e15ab4e7c174736a",
+      "bytes": 121832466,
+      "hf_sha256": "95c2449b77c2ff019bcef044ab2c77ae42f35aadff5751a5e15ab4e7c174736a",
+      "matches_hf": true,
+      "july_tarball_sha256": "95c2449b77c2ff019bcef044ab2c77ae42f35aadff5751a5e15ab4e7c174736a",
+      "matches_july_tarball": true,
+      "git_tracked_sha256": null,
+      "table3_rows": 340536,
+      "matches_table3": true
+    },
+    "task1_cve_linkage/test.jsonl": {
+      "rows": 1990,
+      "sha256": "ef71ca50257cb0cfd1cd5d7f228fd4ed2e5b9ecf7ecec2ec2b0ed91bae77d808",
+      "bytes": 4267782,
+      "hf_sha256": null,
+      "matches_hf": false,
+      "july_tarball_sha256": "ef71ca50257cb0cfd1cd5d7f228fd4ed2e5b9ecf7ecec2ec2b0ed91bae77d808",
+      "matches_july_tarball": true,
+      "git_tracked_sha256": "ef71ca50257cb0cfd1cd5d7f228fd4ed2e5b9ecf7ecec2ec2b0ed91bae77d808",
+      "table3_rows": 1990,
+      "matches_table3": true,
+      "meta_rows": 1990
+    },
+    "task1_cve_linkage/train.jsonl": {
+      "rows": 56692,
+      "sha256": "2b1b0e250929ff72cad98214d232a9bf266fbc90e981f01c1a6673ccc3b60db5",
+      "bytes": 68406593,
+      "hf_sha256": "2b1b0e250929ff72cad98214d232a9bf266fbc90e981f01c1a6673ccc3b60db5",
+      "matches_hf": true,
+      "july_tarball_sha256": null,
+      "matches_july_tarball": null,
+      "git_tracked_sha256": null,
+      "table3_rows": 56692,
+      "matches_table3": true,
+      "meta_rows": 56692
+    },
+    "task1_cve_linkage/val.jsonl": {
+      "rows": 2584,
+      "sha256": "6050e65415253b5ba10d4432a26785dd2bc1c8727fed682f3122108e7ccda197",
+      "bytes": 2589036,
+      "hf_sha256": null,
+      "matches_hf": false,
+      "july_tarball_sha256": null,
+      "matches_july_tarball": null,
+      "git_tracked_sha256": null,
+      "table3_rows": 2584,
+      "matches_table3": true,
+      "meta_rows": 2584
+    },
+    "task2_exploit_type/test.jsonl": {
+      "rows": 1735,
+      "sha256": "be0b4614a0ac25f03c5aa63bbb531bab2c844c99be576d434a21e48e130dab15",
+      "bytes": 5047951,
+      "hf_sha256": null,
+      "matches_hf": false,
+      "july_tarball_sha256": "be0b4614a0ac25f03c5aa63bbb531bab2c844c99be576d434a21e48e130dab15",
+      "matches_july_tarball": true,
+      "git_tracked_sha256": "be0b4614a0ac25f03c5aa63bbb531bab2c844c99be576d434a21e48e130dab15",
+      "table3_rows": 1735,
+      "matches_table3": true,
+      "meta_rows": 1735
+    },
+    "task2_exploit_type/train.jsonl": {
+      "rows": 64413,
+      "sha256": "ab090da5184d36a6f1684e483ee92139d9ac8092ecec1165a5b3bcebea7f1aed",
+      "bytes": 106925489,
+      "hf_sha256": "ab090da5184d36a6f1684e483ee92139d9ac8092ecec1165a5b3bcebea7f1aed",
+      "matches_hf": true,
+      "july_tarball_sha256": "ab090da5184d36a6f1684e483ee92139d9ac8092ecec1165a5b3bcebea7f1aed",
+      "matches_july_tarball": true,
+      "git_tracked_sha256": null,
+      "table3_rows": 64413,
+      "matches_table3": true,
+      "meta_rows": 64413
+    },
+    "task2_exploit_type/val.jsonl": {
+      "rows": 4735,
+      "sha256": "98b3d61ca6eaad20010b9dee2fa9a3922a73e5c5b5cc2ac89c3f53906fd12b34",
+      "bytes": 13053727,
+      "hf_sha256": "98b3d61ca6eaad20010b9dee2fa9a3922a73e5c5b5cc2ac89c3f53906fd12b34",
+      "matches_hf": true,
+      "july_tarball_sha256": "98b3d61ca6eaad20010b9dee2fa9a3922a73e5c5b5cc2ac89c3f53906fd12b34",
+      "matches_july_tarball": true,
+      "git_tracked_sha256": null,
+      "table3_rows": 4735,
+      "matches_table3": true,
+      "meta_rows": 4735
+    },
+    "task3_temporal_generalization/corpus.jsonl": {
+      "rows": 340536,
+      "sha256": "875266e9e23a9e7862fe31c0d96ef1ed27828390ab34fa31a4f679feca5d60f8",
+      "bytes": 123194610,
+      "hf_sha256": "875266e9e23a9e7862fe31c0d96ef1ed27828390ab34fa31a4f679feca5d60f8",
+      "matches_hf": true,
+      "july_tarball_sha256": null,
+      "matches_july_tarball": null,
+      "git_tracked_sha256": null,
+      "table3_rows": 340536,
+      "matches_table3": true
+    },
+    "task3_temporal_generalization/test.jsonl": {
+      "rows": 1898,
+      "sha256": "f99852a894259152e5d8e3050e2b302edc8f5c982f312db439eafd5da6f27754",
+      "bytes": 3990075,
+      "hf_sha256": null,
+      "matches_hf": false,
+      "july_tarball_sha256": "f99852a894259152e5d8e3050e2b302edc8f5c982f312db439eafd5da6f27754",
+      "matches_july_tarball": true,
+      "git_tracked_sha256": "f99852a894259152e5d8e3050e2b302edc8f5c982f312db439eafd5da6f27754",
+      "table3_rows": 1898,
+      "matches_table3": true,
+      "meta_rows": 1898
+    },
+    "task3_temporal_generalization/train.jsonl": {
+      "rows": 56833,
+      "sha256": "f74bfd6d478ae49a5c7ce03eed8c355157ad820fdc834a5f0d1e657a900387f9",
+      "bytes": 68780901,
+      "hf_sha256": "f74bfd6d478ae49a5c7ce03eed8c355157ad820fdc834a5f0d1e657a900387f9",
+      "matches_hf": true,
+      "july_tarball_sha256": null,
+      "matches_july_tarball": null,
+      "git_tracked_sha256": null,
+      "table3_rows": 56833,
+      "matches_table3": true,
+      "meta_rows": 56833
+    },
+    "task3_temporal_generalization/val.jsonl": {
+      "rows": 2535,
+      "sha256": "6864ff75beafa383b72e54fd39b82bd5bcd759c31e4c296d5738765d4a601786",
+      "bytes": 2492435,
+      "hf_sha256": null,
+      "matches_hf": false,
+      "july_tarball_sha256": null,
+      "matches_july_tarball": null,
+      "git_tracked_sha256": null,
+      "table3_rows": 2535,
+      "matches_table3": true,
+      "meta_rows": 2535
+    }
+  },
+  "checks": {
+    "corpus_rows": 340536,
+    "corpus_unique_ids": 340536,
+    "task1_task3_corpus_identical": false,
+    "corpus_diff": {
+      "ids_only_task1": 0,
+      "ids_only_task3": 0,
+      "same_id_text_differs": 0,
+      "order_differs": false,
+      "task3_keys": [
+        "cve_id",
+        "text"
+      ],
+      "examples": []
+    },
+    "task1_cve_linkage": {
+      "rows": {
+        "train": 56692,
+        "val": 2584,
+        "test": 1990
+      },
+      "unique_gold_cves": {
+        "train": 29148,
+        "val": 2422,
+        "test": 1876
+      },
+      "gold_not_in_corpus": {
+        "train": 0,
+        "val": 0,
+        "test": 0
+      },
+      "cve_overlap_train_test": 9,
+      "cve_overlap_train_val": 26,
+      "cve_overlap_val_test": 10,
+      "test_exact_dup_of_train_text": 0,
+      "test_exact_dup_of_train_text_same_gold": 0,
+      "test_query_identical_to_corpus_doc": 0,
+      "test_internal_exact_dups": 8,
+      "duplicate_ids_in_test": 8,
+      "gold_cve_year_range": {
+        "train": [
+          1999,
+          2023
+        ],
+        "val": [
+          2004,
+          2023
+        ],
+        "test": [
+          2015,
+          2026
+        ]
+      },
+      "gold_cve_year_hist": {
+        "train": {
+          "1999": 7,
+          "2000": 2,
+          "2001": 10,
+          "2002": 1404,
+          "2003": 1212,
+          "2004": 1949,
+          "2005": 2896,
+          "2006": 5062,
+          "2007": 4069,
+          "2008": 4622,
+          "2009": 3180,
+          "2010": 2733,
+          "2011": 1566,
+          "2012": 2190,
+          "2013": 2270,
+          "2014": 2808,
+          "2015": 2493,
+          "2016": 2561,
+          "2017": 4638,
+          "2018": 4320,
+          "2019": 2816,
+          "2020": 1818,
+          "2021": 2065,
+          "2023": 1
+        },
+        "val": {
+          "2004": 1,
+          "2009": 1,
+          "2015": 1,
+          "2017": 1,
+          "2018": 2,
+          "2019": 8,
+          "2020": 14,
+          "2021": 80,
+          "2022": 1863,
+          "2023": 613
+        },
+        "test": {
+          "2015": 2,
+          "2017": 4,
+          "2018": 5,
+          "2019": 9,
+          "2020": 8,
+          "2021": 6,
+          "2022": 16,
+          "2023": 42,
+          "2024": 618,
+          "2025": 692,
+          "2026": 588
+        }
+      },
+      "timestamp_year_hist": {
+        "train": {
+          "1998": 3,
+          "1999": 4,
+          "2000": 2,
+          "2001": 14,
+          "2002": 671,
+          "2003": 502,
+          "2004": 773,
+          "2005": 1248,
+          "2006": 1765,
+          "2007": 1324,
+          "2008": 1185,
+          "2009": 923,
+          "2010": 1483,
+          "2011": 671,
+          "2012": 787,
+          "2013": 693,
+          "2014": 826,
+          "2015": 769,
+          "2016": 650,
+          "2017": 1163,
+          "2018": 1166,
+          "2019": 772,
+          "2020": 394,
+          "2021": 324,
+          "EMPTY": 38580
+        },
+        "val": {
+          "2022": 183,
+          "2023": 308,
+          "EMPTY": 2093
+        },
+        "test": {
+          "2024": 59,
+          "2025": 332,
+          "2026": 38,
+          "EMPTY": 1561
+        }
+      },
+      "test_sources": {
+        "github_advisory": 1036,
+        "exploitdb": 429,
+        "cisa_kev": 363,
+        "zeroscience": 102,
+        "seebug": 38,
+        "hackerone": 17,
+        "0x00sec": 5
+      },
+      "train_ids_equal_gold_share": 0.015416637268044875,
+      "train_ids_equal_gold_rows": 874
+    },
+    "task3_temporal_generalization": {
+      "rows": {
+        "train": 56833,
+        "val": 2535,
+        "test": 1898
+      },
+      "unique_gold_cves": {
+        "train": 29254,
+        "val": 2361,
+        "test": 1786
+      },
+      "gold_not_in_corpus": {
+        "train": 0,
+        "val": 0,
+        "test": 0
+      },
+      "cve_overlap_train_test": 0,
+      "cve_overlap_train_val": 0,
+      "cve_overlap_val_test": 0,
+      "test_exact_dup_of_train_text": 0,
+      "test_exact_dup_of_train_text_same_gold": 0,
+      "test_query_identical_to_corpus_doc": 0,
+      "test_internal_exact_dups": 6,
+      "duplicate_ids_in_test": 6,
+      "gold_cve_year_range": {
+        "train": [
+          1999,
+          2021
+        ],
+        "val": [
+          2022,
+          2023
+        ],
+        "test": [
+          2024,
+          2026
+        ]
+      },
+      "gold_cve_year_hist": {
+        "train": {
+          "1999": 7,
+          "2000": 2,
+          "2001": 10,
+          "2002": 1404,
+          "2003": 1212,
+          "2004": 1950,
+          "2005": 2896,
+          "2006": 5062,
+          "2007": 4069,
+          "2008": 4622,
+          "2009": 3181,
+          "2010": 2733,
+          "2011": 1566,
+          "2012": 2190,
+          "2013": 2270,
+          "2014": 2808,
+          "2015": 2496,
+          "2016": 2561,
+          "2017": 4643,
+          "2018": 4327,
+          "2019": 2833,
+          "2020": 1840,
+          "2021": 2151
+        },
+        "val": {
+          "2022": 1879,
+          "2023": 656
+        },
+        "test": {
+          "2024": 618,
+          "2025": 692,
+          "2026": 588
+        }
+      },
+      "timestamp_year_hist": {
+        "train": {
+          "1998": 3,
+          "1999": 4,
+          "2000": 2,
+          "2001": 14,
+          "2002": 671,
+          "2003": 502,
+          "2004": 773,
+          "2005": 1248,
+          "2006": 1765,
+          "2007": 1324,
+          "2008": 1185,
+          "2009": 923,
+          "2010": 1483,
+          "2011": 671,
+          "2012": 787,
+          "2013": 693,
+          "2014": 826,
+          "2015": 769,
+          "2016": 650,
+          "2017": 1163,
+          "2018": 1166,
+          "2019": 772,
+          "2020": 394,
+          "2021": 323,
+          "2022": 86,
+          "2023": 22,
+          "2025": 34,
+          "EMPTY": 38580
+        },
+        "val": {
+          "2021": 1,
+          "2022": 97,
+          "2023": 286,
+          "2024": 20,
+          "2025": 34,
+          "2026": 4,
+          "EMPTY": 2093
+        },
+        "test": {
+          "2024": 39,
+          "2025": 264,
+          "2026": 34,
+          "EMPTY": 1561
+        }
+      },
+      "test_sources": {
+        "github_advisory": 1036,
+        "cisa_kev": 363,
+        "exploitdb": 337,
+        "zeroscience": 102,
+        "seebug": 38,
+        "hackerone": 17,
+        "0x00sec": 5
+      },
+      "train_ids_equal_gold_share": 0.01537838931606637,
+      "train_ids_equal_gold_rows": 874
+    },
+    "task3_test_subset_of_task1_test": {
+      "by_id_gold_text": 1898,
+      "by_id": 1898,
+      "task3_test_rows": 1898
+    },
+    "task3_test_gold_in_task1_train": 0,
+    "task2_exploit_type": {
+      "rows": {
+        "train": 64413,
+        "val": 4735,
+        "test": 1735
+      },
+      "total": 70883,
+      "labels_outside_8_classes": {
+        "train": [],
+        "val": [],
+        "test": []
+      },
+      "label_counts": {
+        "train": {
+          "memory_corruption": 9989,
+          "dos": 8814,
+          "file_inclusion": 8694,
+          "xss": 11161,
+          "auth_access": 6367,
+          "info_disclosure": 1933,
+          "rce": 3365,
+          "injection": 14090
+        },
+        "val": {
+          "memory_corruption": 220,
+          "auth_access": 1150,
+          "dos": 287,
+          "file_inclusion": 336,
+          "injection": 714,
+          "xss": 964,
+          "info_disclosure": 552,
+          "rce": 512
+        },
+        "test": {
+          "dos": 66,
+          "file_inclusion": 108,
+          "injection": 297,
+          "xss": 374,
+          "rce": 318,
+          "info_disclosure": 159,
+          "auth_access": 360,
+          "memory_corruption": 53
+        }
+      },
+      "label_counts_match_meta": true,
+      "timestamp_range": {
+        "train": [
+          "1988-10-01",
+          "2019-12-31"
+        ],
+        "val": [
+          "2020-01-01",
+          "2022-12-31"
+        ],
+        "test": [
+          "2023-01-04",
+          "2026-04-10"
+        ]
+      },
+      "missing_timestamp": {
+        "train": 0,
+        "val": 0,
+        "test": 0
+      },
+      "test_exact_dup_of_train_text": 0,
+      "test_exact_dup_of_val_text": 0,
+      "val_exact_dup_of_train_text": 0,
+      "duplicate_ids_across_splits": 0,
+      "sources": {
+        "train": {
+          "exploitdb_file": 32394,
+          "exploitdb": 1363,
+          "dtl_exploits": 25962,
+          "hackerone": 4694
+        },
+        "val": {
+          "exploitdb_file": 2407,
+          "exploitdb": 1,
+          "hackerone": 2327
+        },
+        "test": {
+          "exploitdb_file": 1156,
+          "hackerone": 579
+        }
+      },
+      "text_len_words_median": {
+        "train": 70,
+        "val": 199,
+        "test": 212
+      },
+      "share_over_300_words": {
+        "train": 0.13264403148432768,
+        "val": 0.29545934530095036,
+        "test": 0.31873198847262246
+      }
+    }
+  },
+  "hf_repo_sha": "fc56ae0fa6753b6a310ee7b31e6e5962c2e4664b",
+  "hf_files_not_local": []
+}
