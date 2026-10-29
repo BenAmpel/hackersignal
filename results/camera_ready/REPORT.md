@@ -156,6 +156,22 @@ and the main-text pagination is unchanged. **It has not been applied.**
 6. (Done: full-64K runs from the GSU cluster, NVIDIA L40S, reported as a separate appendix table.)
 6b. (Done: B6 in the Task 3 text and Appendix D Table 10. Ben, 10/28 20:30: keep it out of the abstract, and the two
     page-fit fixes are approved (duplicate Conclusion sentence cut; radar figure at 0.88\linewidth).)
+6d. (Done 10/28: C1 keyed HMAC-SHA-256 author pseudonyms.) `scripts/rekey_author_hmac.py` (paper branch) re-keyed the
+    released corpus (input sha256 bd409acd…5e4f = the released file) into
+    `data/unified_hacker_communities_neurips_public_hmac_v1.jsonl.gz` (jsonl sha256 f2fd2398…0576), with its manifest
+    alongside. 7,447,646 rows; every author_hash re-keyed (4,340,608 were 64-hex, 3,107,038 were 56-hex, none empty or
+    non-hex); unified_id recomputed because it hashed the old author_hash; unique unified_id unchanged (7,423,629; the ~24K
+    duplicates were already in the release). Independent row-by-row check: only those two fields differ, and the
+    460,018 distinct authors map one-to-one. Key: 32 random bytes at `~/.hackersignal/keys/author_hmac_v1.key` on the
+    mini (mode 600, outside every repo, never printed). Back it up offline: without it, later minor versions can't
+    reproduce the same pseudonyms. The paper (Ethics), datasheet, Croissant field and governance addendum now say HMAC.
+    Not uploaded. The HF dataset must be replaced with this file before the camera-ready, and the old file stays in
+    the HF repo history unless that history is squashed.
+6e. Label-quality figures (abstract; §3 label-quality paragraph; Table 4): [VERIFY] tags removed from the tex on Ben's
+    instruction (10/28). The flag moves here: the agreement statistics and five of the eight per-source rows match
+    `data/audits/llm_judge` (two gpt-4o-mini judge prompts, file marked `llm_assisted_not_human`); no human annotation
+    file was found; the GitHub Advisory, Vuln-Lab and 0day rows have no source file. Ben has set this aside.
+6f. Funding list ([CONFIRM] in Acknowledgments): on hold; Ben is getting the grant details from Sagar.
 6c. Abstract re-sync: the OpenReview abstract and the public poster page (neurips.cc/virtual/2026/poster/139194)
     still show the submitted abstract (64 sources, 1990–2026, anonymous HF URL). Poster moved to Atlanta Poster
     Session 1, Wed Dec 9, 10:00 AM–1:00 PM ET; no repo or paper text names the session.
