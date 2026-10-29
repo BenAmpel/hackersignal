@@ -44,8 +44,23 @@ committed or pushed). Every number below comes from a run on the released data r
   brief appear in no repo file.
 - Tables 1–2 (corpus statistics) and the "per-source audit risk scores" are not baseline runs (no code computes the
   scores), so they were not regenerated.
-- B6 (another session) crashed with an MPS out-of-memory error at 06:37 on 10/28. After its memory fix it started
-  alone on the GPU at about 11:00 on 10/28; its rows are not in `results.csv` yet.
+- **B6 (bi-encoder fine-tuned on the Task 3 training split): done, folded into `results.csv`.** Branch
+  `exp/b6-finetuned-biencoder` (171b7a6); 56,833 pre-2022 (query, gold description) pairs, one epoch, cached MNRL
+  (batch 64 in mini-batches of 16, scale 20, no duplicate CVEs per batch), lr 2e-5, 10% warmup, fp32, seeds 42–44,
+  Apple M5 Pro; no model selection on validation. The B6 harness reproduces the audit's zero-shot rows (BGE 0.725673,
+  MiniLM 0.722305). Fine-tuned rows use their own bootstrap stream, so no existing CI changed (diff: additions only).
+
+  | model | zero-shot MRR@10 | fine-tuned (mean ± SD, 3 seeds) | 95% CI | paired Δ [95% CI] | R@1 |
+  |---|---|---|---|---|---|
+  | BGE-base-v1.5 | 0.726 | 0.757 ± 0.005 | [0.740, 0.774] | 0.031 [0.019, 0.044] | 0.667 → 0.693 |
+  | MiniLM-L6-v2 | 0.722 | 0.750 ± 0.002 | [0.732, 0.767] | 0.028 [0.016, 0.039] | 0.670 → 0.688 |
+
+  Per seed (test MRR@10): BGE 0.7533 / 0.7556 / 0.7624; MiniLM 0.7493 / 0.7522 / 0.7479.
+  Run history: the first launch ran out of memory at step 637 (plain MNRL, batch 64), which led to the cached loss
+  and eager attention. BGE seed 43 had one MPS command-buffer error at step 103 and trained on to a normal loss
+  (0.1237). Its evaluation then ran out of GPU memory (two macOS VMs held about 20 GB) and the mini rebooted at 14:48.
+  171b7a6 evaluates from the saved weights with default attention; the rerun resumed at the final step, so that row
+  records loss 0. provenance.json carries the run3 loss and time.
 - **Full-64K transformer runs (appendix only): done on the GSU cluster, NVIDIA L40S.** Array 4777484, 9 tasks, all
   exit 0 (collected 2026-10-28 16:45 UTC; rows in `raw/task2_cluster_tf_full.jsonl`, sha256 275ade36…16d4, verified
   against the cluster output). Same code commit (6ee2e1f) and data hashes as the mini runs; best epoch by validation;
@@ -139,5 +154,7 @@ and the main-text pagination is unchanged. **It has not been applied.**
 5. Bib entries for SecureBERT (SecureComm 2022, published 2023) and CySecBERT (ACM TOPS 27(2), 2024) follow the
    planner session's Crossref check.
 6. (Done: full-64K runs from the GSU cluster, NVIDIA L40S, reported as a separate appendix table.)
+6b. (Done: B6 in the Task 3 text and Appendix D Table 10. Not in the abstract: one more sentence there pushed
+    the Limitations past p. 10. Ben may want it in the abstract instead of something else.)
 7. The planner's Table 5 draft has two rounding slips against results.csv: GRU SD is .001 (0.00149), not .002;
    SecBERT macro-F1 is .852 (0.85249), not .853. Every other value agrees.
