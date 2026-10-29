@@ -2377,29 +2377,59 @@
   },
   {
    "row": 89,
-   "result_type": "validation",
-   "task": "corpus",
-   "model": "E5-base-v2",
-   "condition": "minus_cve_ids",
-   "variant": "embedding_reuse",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted",
-   "seconds": null
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "BM25",
+   "condition": "strip_overlap30",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "seed": 20261027,
+   "seconds": 27.0,
+   "device": null,
+   "torch": null,
+   "hf_model": null,
+   "hf_revision": null,
+   "data_sha256_corpus": null,
+   "data_sha256_task1_test": null,
+   "data_sha256_task3_test": null,
+   "per_query_file": "per_query/task1__BM25__strip_overlap30__primary.npz",
+   "written_at": "2026-10-28T22:42:23-0400",
+   "machine": "Mac Apple M5 Pro 48 GB macOS 27.0.1",
+   "max_seq_length": null,
+   "char_trunc": null,
+   "query_prefix": null,
+   "passage_prefix": null
   },
   {
    "row": 90,
-   "result_type": "validation",
-   "task": "corpus",
-   "model": "BGE-base-en-v1.5",
-   "condition": "minus_cve_ids",
-   "variant": "embedding_reuse",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted",
-   "seconds": null
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "BM25",
+   "condition": "strip_overlap30",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "seed": 20261027,
+   "seconds": 17.5,
+   "device": null,
+   "torch": null,
+   "hf_model": null,
+   "hf_revision": null,
+   "data_sha256_corpus": null,
+   "data_sha256_task1_test": null,
+   "data_sha256_task3_test": null,
+   "per_query_file": "per_query/task3__BM25__strip_overlap30__primary.npz",
+   "written_at": "2026-10-28T22:42:41-0400",
+   "machine": "Mac Apple M5 Pro 48 GB macOS 27.0.1",
+   "max_seq_length": null,
+   "char_trunc": null,
+   "query_prefix": null,
+   "passage_prefix": null
   },
   {
    "row": 91,
    "result_type": "validation",
    "task": "corpus",
-   "model": "all-mpnet-base-v2",
+   "model": "E5-base-v2",
    "condition": "minus_cve_ids",
    "variant": "embedding_reuse",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted",
@@ -2409,6 +2439,26 @@
    "row": 92,
    "result_type": "validation",
    "task": "corpus",
+   "model": "BGE-base-en-v1.5",
+   "condition": "minus_cve_ids",
+   "variant": "embedding_reuse",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted",
+   "seconds": null
+  },
+  {
+   "row": 93,
+   "result_type": "validation",
+   "task": "corpus",
+   "model": "all-mpnet-base-v2",
+   "condition": "minus_cve_ids",
+   "variant": "embedding_reuse",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted",
+   "seconds": null
+  },
+  {
+   "row": 94,
+   "result_type": "validation",
+   "task": "corpus",
    "model": "all-MiniLM-L6-v2",
    "condition": "minus_urls",
    "variant": "embedding_reuse",
@@ -2416,7 +2466,7 @@
    "seconds": null
   },
   {
-   "row": 93,
+   "row": 95,
    "result_type": "validation",
    "task": "task1",
    "model": "BM25",
@@ -2426,7 +2476,7 @@
    "seconds": 460.5
   },
   {
-   "row": 94,
+   "row": 96,
    "result_type": "paired_delta",
    "task": "task1",
    "model": "BGE-base-en-v1.5 - Hybrid BM25+mpnet",
@@ -2436,7 +2486,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 95,
+   "row": 97,
    "result_type": "paired_delta",
    "task": "task1",
    "model": "Hybrid BM25+mpnet - all-MiniLM-L6-v2",
@@ -2446,7 +2496,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 96,
+   "row": 98,
    "result_type": "paired_delta",
    "task": "task1",
    "model": "E5-base-v2 - BGE-base-en-v1.5",
@@ -2456,7 +2506,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 97,
+   "row": 99,
    "result_type": "paired_delta",
    "task": "task1",
    "model": "E5-base-v2 - BGE-base-en-v1.5",
@@ -2466,7 +2516,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 98,
+   "row": 100,
    "result_type": "retrieval",
    "task": "task1",
    "model": "BM25",
@@ -2475,7 +2525,7 @@
    "derived_from": "per_query rows of BM25"
   },
   {
-   "row": 99,
+   "row": 101,
    "result_type": "retrieval",
    "task": "task1",
    "model": "all-MiniLM-L6-v2",
@@ -2484,7 +2534,7 @@
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
   {
-   "row": 100,
+   "row": 102,
    "result_type": "retrieval",
    "task": "task1",
    "model": "all-mpnet-base-v2",
@@ -2493,7 +2543,7 @@
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
   {
-   "row": 101,
+   "row": 103,
    "result_type": "retrieval",
    "task": "task1",
    "model": "Hybrid BM25+mpnet",
@@ -2502,7 +2552,7 @@
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
   {
-   "row": 102,
+   "row": 104,
    "result_type": "retrieval",
    "task": "task1",
    "model": "BGE-base-en-v1.5",
@@ -2511,7 +2561,7 @@
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
   {
-   "row": 103,
+   "row": 105,
    "result_type": "retrieval",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2520,29 +2570,11 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 104,
-   "result_type": "per_source",
-   "task": "task1",
-   "model": "BM25",
-   "condition": "source::0x00sec",
-   "variant": "primary",
-   "derived_from": "per_query rows of BM25"
-  },
-  {
-   "row": 105,
-   "result_type": "per_source",
-   "task": "task1",
-   "model": "BM25",
-   "condition": "source::cisa_kev",
-   "variant": "primary",
-   "derived_from": "per_query rows of BM25"
-  },
-  {
    "row": 106,
    "result_type": "per_source",
    "task": "task1",
    "model": "BM25",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -2551,7 +2583,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BM25",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -2560,7 +2592,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BM25",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -2569,7 +2601,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BM25",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -2578,7 +2610,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BM25",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -2586,26 +2618,26 @@
    "row": 111,
    "result_type": "per_source",
    "task": "task1",
-   "model": "all-MiniLM-L6-v2",
-   "condition": "source::0x00sec",
+   "model": "BM25",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of all-MiniLM-L6-v2"
+   "derived_from": "per_query rows of BM25"
   },
   {
    "row": 112,
    "result_type": "per_source",
    "task": "task1",
-   "model": "all-MiniLM-L6-v2",
-   "condition": "source::cisa_kev",
+   "model": "BM25",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of all-MiniLM-L6-v2"
+   "derived_from": "per_query rows of BM25"
   },
   {
    "row": 113,
    "result_type": "per_source",
    "task": "task1",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -2614,7 +2646,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -2623,7 +2655,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -2632,7 +2664,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -2641,7 +2673,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -2649,26 +2681,26 @@
    "row": 118,
    "result_type": "per_source",
    "task": "task1",
-   "model": "all-mpnet-base-v2",
-   "condition": "source::0x00sec",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of all-mpnet-base-v2"
+   "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
   {
    "row": 119,
    "result_type": "per_source",
    "task": "task1",
-   "model": "all-mpnet-base-v2",
-   "condition": "source::cisa_kev",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of all-mpnet-base-v2"
+   "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
   {
    "row": 120,
    "result_type": "per_source",
    "task": "task1",
    "model": "all-mpnet-base-v2",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -2677,7 +2709,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-mpnet-base-v2",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -2686,7 +2718,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-mpnet-base-v2",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -2695,7 +2727,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-mpnet-base-v2",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -2704,7 +2736,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "all-mpnet-base-v2",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -2712,26 +2744,26 @@
    "row": 125,
    "result_type": "per_source",
    "task": "task1",
-   "model": "Hybrid BM25+mpnet",
-   "condition": "source::0x00sec",
+   "model": "all-mpnet-base-v2",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of Hybrid BM25+mpnet"
+   "derived_from": "per_query rows of all-mpnet-base-v2"
   },
   {
    "row": 126,
    "result_type": "per_source",
    "task": "task1",
-   "model": "Hybrid BM25+mpnet",
-   "condition": "source::cisa_kev",
+   "model": "all-mpnet-base-v2",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of Hybrid BM25+mpnet"
+   "derived_from": "per_query rows of all-mpnet-base-v2"
   },
   {
    "row": 127,
    "result_type": "per_source",
    "task": "task1",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -2740,7 +2772,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -2749,7 +2781,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -2758,7 +2790,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -2767,7 +2799,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -2775,26 +2807,26 @@
    "row": 132,
    "result_type": "per_source",
    "task": "task1",
-   "model": "BGE-base-en-v1.5",
-   "condition": "source::0x00sec",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of BGE-base-en-v1.5"
+   "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
   {
    "row": 133,
    "result_type": "per_source",
    "task": "task1",
-   "model": "BGE-base-en-v1.5",
-   "condition": "source::cisa_kev",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of BGE-base-en-v1.5"
+   "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
   {
    "row": 134,
    "result_type": "per_source",
    "task": "task1",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -2803,7 +2835,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -2812,7 +2844,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -2821,7 +2853,7 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -2830,12 +2862,30 @@
    "result_type": "per_source",
    "task": "task1",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
   {
    "row": 139,
+   "result_type": "per_source",
+   "task": "task1",
+   "model": "BGE-base-en-v1.5",
+   "condition": "source::seebug",
+   "variant": "primary",
+   "derived_from": "per_query rows of BGE-base-en-v1.5"
+  },
+  {
+   "row": 140,
+   "result_type": "per_source",
+   "task": "task1",
+   "model": "BGE-base-en-v1.5",
+   "condition": "source::zeroscience",
+   "variant": "primary",
+   "derived_from": "per_query rows of BGE-base-en-v1.5"
+  },
+  {
+   "row": 141,
    "result_type": "per_source",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2844,7 +2894,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 140,
+   "row": 142,
    "result_type": "per_source",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2853,7 +2903,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 141,
+   "row": 143,
    "result_type": "per_source",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2862,7 +2912,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 142,
+   "row": 144,
    "result_type": "per_source",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2871,7 +2921,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 143,
+   "row": 145,
    "result_type": "per_source",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2880,7 +2930,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 144,
+   "row": 146,
    "result_type": "per_source",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2889,7 +2939,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 145,
+   "row": 147,
    "result_type": "per_source",
    "task": "task1",
    "model": "E5-base-v2",
@@ -2898,7 +2948,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 146,
+   "row": 148,
    "result_type": "paired_delta",
    "task": "task3",
    "model": "Hybrid BM25+mpnet - BGE-base-en-v1.5",
@@ -2908,7 +2958,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 147,
+   "row": 149,
    "result_type": "paired_delta",
    "task": "task3",
    "model": "Hybrid BM25+mpnet - all-MiniLM-L6-v2",
@@ -2918,7 +2968,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 148,
+   "row": 150,
    "result_type": "paired_delta",
    "task": "task3",
    "model": "E5-base-v2 - BGE-base-en-v1.5",
@@ -2928,7 +2978,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 149,
+   "row": 151,
    "result_type": "paired_delta",
    "task": "task3",
    "model": "E5-base-v2 - BGE-base-en-v1.5",
@@ -2938,7 +2988,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 150,
+   "row": 152,
    "result_type": "retrieval",
    "task": "task3",
    "model": "BM25",
@@ -2947,7 +2997,7 @@
    "derived_from": "per_query rows of BM25"
   },
   {
-   "row": 151,
+   "row": 153,
    "result_type": "retrieval",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
@@ -2956,7 +3006,7 @@
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
   {
-   "row": 152,
+   "row": 154,
    "result_type": "retrieval",
    "task": "task3",
    "model": "all-mpnet-base-v2",
@@ -2965,7 +3015,7 @@
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
   {
-   "row": 153,
+   "row": 155,
    "result_type": "retrieval",
    "task": "task3",
    "model": "Hybrid BM25+mpnet",
@@ -2974,7 +3024,7 @@
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
   {
-   "row": 154,
+   "row": 156,
    "result_type": "retrieval",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
@@ -2983,7 +3033,7 @@
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
   {
-   "row": 155,
+   "row": 157,
    "result_type": "retrieval",
    "task": "task3",
    "model": "E5-base-v2",
@@ -2992,29 +3042,11 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 156,
-   "result_type": "per_source",
-   "task": "task3",
-   "model": "BM25",
-   "condition": "source::0x00sec",
-   "variant": "primary",
-   "derived_from": "per_query rows of BM25"
-  },
-  {
-   "row": 157,
-   "result_type": "per_source",
-   "task": "task3",
-   "model": "BM25",
-   "condition": "source::cisa_kev",
-   "variant": "primary",
-   "derived_from": "per_query rows of BM25"
-  },
-  {
    "row": 158,
    "result_type": "per_source",
    "task": "task3",
    "model": "BM25",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -3023,7 +3055,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BM25",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -3032,7 +3064,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BM25",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -3041,7 +3073,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BM25",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -3050,7 +3082,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BM25",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of BM25"
   },
@@ -3058,26 +3090,26 @@
    "row": 163,
    "result_type": "per_source",
    "task": "task3",
-   "model": "all-MiniLM-L6-v2",
-   "condition": "source::0x00sec",
+   "model": "BM25",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of all-MiniLM-L6-v2"
+   "derived_from": "per_query rows of BM25"
   },
   {
    "row": 164,
    "result_type": "per_source",
    "task": "task3",
-   "model": "all-MiniLM-L6-v2",
-   "condition": "source::cisa_kev",
+   "model": "BM25",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of all-MiniLM-L6-v2"
+   "derived_from": "per_query rows of BM25"
   },
   {
    "row": 165,
    "result_type": "per_source",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -3086,7 +3118,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -3095,7 +3127,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -3104,7 +3136,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -3113,7 +3145,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
@@ -3121,26 +3153,26 @@
    "row": 170,
    "result_type": "per_source",
    "task": "task3",
-   "model": "all-mpnet-base-v2",
-   "condition": "source::0x00sec",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of all-mpnet-base-v2"
+   "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
   {
    "row": 171,
    "result_type": "per_source",
    "task": "task3",
-   "model": "all-mpnet-base-v2",
-   "condition": "source::cisa_kev",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of all-mpnet-base-v2"
+   "derived_from": "per_query rows of all-MiniLM-L6-v2"
   },
   {
    "row": 172,
    "result_type": "per_source",
    "task": "task3",
    "model": "all-mpnet-base-v2",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -3149,7 +3181,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-mpnet-base-v2",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -3158,7 +3190,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-mpnet-base-v2",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -3167,7 +3199,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-mpnet-base-v2",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -3176,7 +3208,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "all-mpnet-base-v2",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of all-mpnet-base-v2"
   },
@@ -3184,26 +3216,26 @@
    "row": 177,
    "result_type": "per_source",
    "task": "task3",
-   "model": "Hybrid BM25+mpnet",
-   "condition": "source::0x00sec",
+   "model": "all-mpnet-base-v2",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of Hybrid BM25+mpnet"
+   "derived_from": "per_query rows of all-mpnet-base-v2"
   },
   {
    "row": 178,
    "result_type": "per_source",
    "task": "task3",
-   "model": "Hybrid BM25+mpnet",
-   "condition": "source::cisa_kev",
+   "model": "all-mpnet-base-v2",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of Hybrid BM25+mpnet"
+   "derived_from": "per_query rows of all-mpnet-base-v2"
   },
   {
    "row": 179,
    "result_type": "per_source",
    "task": "task3",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -3212,7 +3244,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -3221,7 +3253,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -3230,7 +3262,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -3239,7 +3271,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "Hybrid BM25+mpnet",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
@@ -3247,26 +3279,26 @@
    "row": 184,
    "result_type": "per_source",
    "task": "task3",
-   "model": "BGE-base-en-v1.5",
-   "condition": "source::0x00sec",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "source::seebug",
    "variant": "primary",
-   "derived_from": "per_query rows of BGE-base-en-v1.5"
+   "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
   {
    "row": 185,
    "result_type": "per_source",
    "task": "task3",
-   "model": "BGE-base-en-v1.5",
-   "condition": "source::cisa_kev",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "source::zeroscience",
    "variant": "primary",
-   "derived_from": "per_query rows of BGE-base-en-v1.5"
+   "derived_from": "per_query rows of Hybrid BM25+mpnet"
   },
   {
    "row": 186,
    "result_type": "per_source",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::exploitdb",
+   "condition": "source::0x00sec",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -3275,7 +3307,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::github_advisory",
+   "condition": "source::cisa_kev",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -3284,7 +3316,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::hackerone",
+   "condition": "source::exploitdb",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -3293,7 +3325,7 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::seebug",
+   "condition": "source::github_advisory",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
@@ -3302,12 +3334,30 @@
    "result_type": "per_source",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
-   "condition": "source::zeroscience",
+   "condition": "source::hackerone",
    "variant": "primary",
    "derived_from": "per_query rows of BGE-base-en-v1.5"
   },
   {
    "row": 191,
+   "result_type": "per_source",
+   "task": "task3",
+   "model": "BGE-base-en-v1.5",
+   "condition": "source::seebug",
+   "variant": "primary",
+   "derived_from": "per_query rows of BGE-base-en-v1.5"
+  },
+  {
+   "row": 192,
+   "result_type": "per_source",
+   "task": "task3",
+   "model": "BGE-base-en-v1.5",
+   "condition": "source::zeroscience",
+   "variant": "primary",
+   "derived_from": "per_query rows of BGE-base-en-v1.5"
+  },
+  {
+   "row": 193,
    "result_type": "per_source",
    "task": "task3",
    "model": "E5-base-v2",
@@ -3316,7 +3366,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 192,
+   "row": 194,
    "result_type": "per_source",
    "task": "task3",
    "model": "E5-base-v2",
@@ -3325,7 +3375,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 193,
+   "row": 195,
    "result_type": "per_source",
    "task": "task3",
    "model": "E5-base-v2",
@@ -3334,7 +3384,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 194,
+   "row": 196,
    "result_type": "per_source",
    "task": "task3",
    "model": "E5-base-v2",
@@ -3343,7 +3393,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 195,
+   "row": 197,
    "result_type": "per_source",
    "task": "task3",
    "model": "E5-base-v2",
@@ -3352,7 +3402,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 196,
+   "row": 198,
    "result_type": "per_source",
    "task": "task3",
    "model": "E5-base-v2",
@@ -3361,7 +3411,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 197,
+   "row": 199,
    "result_type": "per_source",
    "task": "task3",
    "model": "E5-base-v2",
@@ -3370,7 +3420,7 @@
    "derived_from": "per_query rows of E5-base-v2"
   },
   {
-   "row": 198,
+   "row": 200,
    "result_type": "classification",
    "task": "task2",
    "model": "DarkBERT",
@@ -3379,7 +3429,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 199,
+   "row": 201,
    "result_type": "classification",
    "task": "task2",
    "model": "BiLSTM",
@@ -3413,7 +3463,7 @@
    "n_boot": 2000
   },
   {
-   "row": 200,
+   "row": 202,
    "result_type": "classification",
    "task": "task2",
    "model": "BiLSTM",
@@ -3457,7 +3507,7 @@
    "n_boot": 2000
   },
   {
-   "row": 201,
+   "row": 203,
    "result_type": "classification",
    "task": "task2",
    "model": "BiLSTM",
@@ -3501,7 +3551,7 @@
    "n_boot": 2000
   },
   {
-   "row": 202,
+   "row": 204,
    "result_type": "classification",
    "task": "task2",
    "model": "CySecBERT",
@@ -3535,7 +3585,7 @@
    "n_boot": 2000
   },
   {
-   "row": 203,
+   "row": 205,
    "result_type": "classification",
    "task": "task2",
    "model": "CySecBERT",
@@ -3569,7 +3619,7 @@
    "n_boot": 2000
   },
   {
-   "row": 204,
+   "row": 206,
    "result_type": "classification",
    "task": "task2",
    "model": "CySecBERT",
@@ -3613,7 +3663,7 @@
    "n_boot": 2000
   },
   {
-   "row": 205,
+   "row": 207,
    "result_type": "classification",
    "task": "task2",
    "model": "CySecBERT",
@@ -3657,7 +3707,7 @@
    "n_boot": 2000
   },
   {
-   "row": 206,
+   "row": 208,
    "result_type": "classification",
    "task": "task2",
    "model": "Decision Tree",
@@ -3701,7 +3751,7 @@
    "n_boot": 2000
   },
   {
-   "row": 207,
+   "row": 209,
    "result_type": "classification",
    "task": "task2",
    "model": "Decision Tree",
@@ -3745,7 +3795,7 @@
    "n_boot": 2000
   },
   {
-   "row": 208,
+   "row": 210,
    "result_type": "classification",
    "task": "task2",
    "model": "GRU",
@@ -3779,7 +3829,7 @@
    "n_boot": 2000
   },
   {
-   "row": 209,
+   "row": 211,
    "result_type": "classification",
    "task": "task2",
    "model": "GRU",
@@ -3823,7 +3873,7 @@
    "n_boot": 2000
   },
   {
-   "row": 210,
+   "row": 212,
    "result_type": "classification",
    "task": "task2",
    "model": "GRU",
@@ -3867,7 +3917,7 @@
    "n_boot": 2000
   },
   {
-   "row": 211,
+   "row": 213,
    "result_type": "classification",
    "task": "task2",
    "model": "LSTM",
@@ -3901,7 +3951,7 @@
    "n_boot": 2000
   },
   {
-   "row": 212,
+   "row": 214,
    "result_type": "classification",
    "task": "task2",
    "model": "LSTM",
@@ -3945,7 +3995,7 @@
    "n_boot": 2000
   },
   {
-   "row": 213,
+   "row": 215,
    "result_type": "classification",
    "task": "task2",
    "model": "LSTM",
@@ -3989,7 +4039,7 @@
    "n_boot": 2000
   },
   {
-   "row": 214,
+   "row": 216,
    "result_type": "classification",
    "task": "task2",
    "model": "RNN",
@@ -4023,7 +4073,7 @@
    "n_boot": 2000
   },
   {
-   "row": 215,
+   "row": 217,
    "result_type": "classification",
    "task": "task2",
    "model": "RNN",
@@ -4067,7 +4117,7 @@
    "n_boot": 2000
   },
   {
-   "row": 216,
+   "row": 218,
    "result_type": "classification",
    "task": "task2",
    "model": "RNN",
@@ -4111,7 +4161,7 @@
    "n_boot": 2000
   },
   {
-   "row": 217,
+   "row": 219,
    "result_type": "classification",
    "task": "task2",
    "model": "SVM",
@@ -4155,7 +4205,7 @@
    "n_boot": 2000
   },
   {
-   "row": 218,
+   "row": 220,
    "result_type": "classification",
    "task": "task2",
    "model": "SVM",
@@ -4199,7 +4249,7 @@
    "n_boot": 2000
   },
   {
-   "row": 219,
+   "row": 221,
    "result_type": "classification",
    "task": "task2",
    "model": "SecBERT",
@@ -4238,7 +4288,7 @@
    "n_boot": 2000
   },
   {
-   "row": 220,
+   "row": 222,
    "result_type": "classification",
    "task": "task2",
    "model": "SecBERT",
@@ -4277,7 +4327,7 @@
    "n_boot": 2000
   },
   {
-   "row": 221,
+   "row": 223,
    "result_type": "classification",
    "task": "task2",
    "model": "SecBERT",
@@ -4311,7 +4361,7 @@
    "n_boot": 2000
   },
   {
-   "row": 222,
+   "row": 224,
    "result_type": "classification",
    "task": "task2",
    "model": "SecBERT",
@@ -4345,7 +4395,7 @@
    "n_boot": 2000
   },
   {
-   "row": 223,
+   "row": 225,
    "result_type": "classification",
    "task": "task2",
    "model": "SecBERT",
@@ -4389,7 +4439,7 @@
    "n_boot": 2000
   },
   {
-   "row": 224,
+   "row": 226,
    "result_type": "classification",
    "task": "task2",
    "model": "SecBERT",
@@ -4433,7 +4483,7 @@
    "n_boot": 2000
   },
   {
-   "row": 225,
+   "row": 227,
    "result_type": "classification",
    "task": "task2",
    "model": "SecureBERT",
@@ -4467,7 +4517,7 @@
    "n_boot": 2000
   },
   {
-   "row": 226,
+   "row": 228,
    "result_type": "classification",
    "task": "task2",
    "model": "SecureBERT",
@@ -4501,7 +4551,7 @@
    "n_boot": 2000
   },
   {
-   "row": 227,
+   "row": 229,
    "result_type": "classification",
    "task": "task2",
    "model": "SecureBERT",
@@ -4545,7 +4595,7 @@
    "n_boot": 2000
   },
   {
-   "row": 228,
+   "row": 230,
    "result_type": "classification",
    "task": "task2",
    "model": "SecureBERT",
@@ -4589,7 +4639,7 @@
    "n_boot": 2000
   },
   {
-   "row": 229,
+   "row": 231,
    "result_type": "classification",
    "task": "task2",
    "model": "TF-IDF + LR",
@@ -4633,7 +4683,7 @@
    "n_boot": 2000
   },
   {
-   "row": 230,
+   "row": 232,
    "result_type": "classification",
    "task": "task2",
    "model": "TF-IDF + LR",
@@ -4677,7 +4727,7 @@
    "n_boot": 2000
   },
   {
-   "row": 231,
+   "row": 233,
    "result_type": "classification",
    "task": "task2",
    "model": "SecBERT",
@@ -4713,7 +4763,7 @@
    "source": "GSU ACIDS array 4777484 (raw/task2_cluster_tf_full.jsonl)"
   },
   {
-   "row": 232,
+   "row": 234,
    "result_type": "classification",
    "task": "task2",
    "model": "SecureBERT",
@@ -4749,7 +4799,7 @@
    "source": "GSU ACIDS array 4777484 (raw/task2_cluster_tf_full.jsonl)"
   },
   {
-   "row": 233,
+   "row": 235,
    "result_type": "classification",
    "task": "task2",
    "model": "CySecBERT",
@@ -4785,7 +4835,7 @@
    "source": "GSU ACIDS array 4777484 (raw/task2_cluster_tf_full.jsonl)"
   },
   {
-   "row": 234,
+   "row": 236,
    "result_type": "retrieval",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
@@ -4796,7 +4846,7 @@
    "written_at": "2026-10-27T23:25:18-0400"
   },
   {
-   "row": 235,
+   "row": 237,
    "result_type": "retrieval",
    "task": "task3",
    "model": "BGE-base-en-v1.5",
@@ -4829,7 +4879,7 @@
    "worktree": "b6-finetune"
   },
   {
-   "row": 236,
+   "row": 238,
    "result_type": "paired_delta",
    "task": "task3",
    "model": "BGE-base-en-v1.5 fine-tuned - zero-shot",
@@ -4839,7 +4889,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 237,
+   "row": 239,
    "result_type": "retrieval",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
@@ -4850,7 +4900,7 @@
    "written_at": "2026-10-28T19:12:27-0400"
   },
   {
-   "row": 238,
+   "row": 240,
    "result_type": "retrieval",
    "task": "task3",
    "model": "all-MiniLM-L6-v2",
@@ -4883,7 +4933,7 @@
    "worktree": "b6-finetune"
   },
   {
-   "row": 239,
+   "row": 241,
    "result_type": "paired_delta",
    "task": "task3",
    "model": "all-MiniLM-L6-v2 fine-tuned - zero-shot",
@@ -4893,7 +4943,319 @@
    "boot_seed": 20261027
   },
   {
-   "row": 240,
+   "row": 242,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "BM25",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__BM25__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:48-0400"
+  },
+  {
+   "row": 243,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "BM25",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__BM25__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:48-0400"
+  },
+  {
+   "row": 244,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__all-MiniLM-L6-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:48-0400"
+  },
+  {
+   "row": 245,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__all-MiniLM-L6-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:48-0400"
+  },
+  {
+   "row": 246,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "all-mpnet-base-v2",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__all-mpnet-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:48-0400"
+  },
+  {
+   "row": 247,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "all-mpnet-base-v2",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__all-mpnet-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:48-0400"
+  },
+  {
+   "row": 248,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "BGE-base-en-v1.5",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__BGE-base-en-v1.5__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:48-0400"
+  },
+  {
+   "row": 249,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "BGE-base-en-v1.5",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__BGE-base-en-v1.5__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 250,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "E5-base-v2",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__E5-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 251,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "E5-base-v2",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__E5-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 252,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__Hybrid_BM25plusmpnet__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 253,
+   "result_type": "retrieval",
+   "task": "task1",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task1__Hybrid_BM25plusmpnet__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task1.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 254,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "BM25",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__BM25__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 255,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "BM25",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__BM25__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 256,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__all-MiniLM-L6-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 257,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__all-MiniLM-L6-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 258,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "all-mpnet-base-v2",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__all-mpnet-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 259,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "all-mpnet-base-v2",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__all-mpnet-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 260,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "BGE-base-en-v1.5",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__BGE-base-en-v1.5__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 261,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "BGE-base-en-v1.5",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__BGE-base-en-v1.5__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:49-0400"
+  },
+  {
+   "row": 262,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "E5-base-v2",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__E5-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:50-0400"
+  },
+  {
+   "row": 263,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "E5-base-v2",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__E5-base-v2__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:50-0400"
+  },
+  {
+   "row": 264,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "stratum_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__Hybrid_BM25plusmpnet__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:50-0400"
+  },
+  {
+   "row": 265,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "Hybrid BM25+mpnet",
+   "condition": "stratum_no_overlap",
+   "variant": "primary",
+   "git_sha": "721acdd12980e1e3cbde96ffb0a58f239eaa44a7+audit-uncommitted",
+   "per_query_file": "per_query/task3__Hybrid_BM25plusmpnet__as_released__primary.npz",
+   "flag_file": "per_query/overlap__task3.npz",
+   "k_chars": 100,
+   "written_at": "2026-10-28T22:41:50-0400"
+  },
+  {
+   "row": 266,
    "result_type": "paired_delta",
    "task": "task2",
    "model": "CySecBERT - SecureBERT",
@@ -4903,7 +5265,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 241,
+   "row": 267,
    "result_type": "diagnostic",
    "task": "corpus",
    "model": "-",
@@ -4912,7 +5274,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 242,
+   "row": 268,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4921,7 +5283,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 243,
+   "row": 269,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4930,7 +5292,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 244,
+   "row": 270,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4939,7 +5301,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 245,
+   "row": 271,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4948,7 +5310,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 246,
+   "row": 272,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4957,7 +5319,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 247,
+   "row": 273,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4966,7 +5328,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 248,
+   "row": 274,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4975,7 +5337,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 249,
+   "row": 275,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4984,7 +5346,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 250,
+   "row": 276,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -4993,7 +5355,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 251,
+   "row": 277,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
@@ -5002,7 +5364,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 252,
+   "row": 278,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5011,7 +5373,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 253,
+   "row": 279,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5020,7 +5382,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 254,
+   "row": 280,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5029,7 +5391,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 255,
+   "row": 281,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5038,7 +5400,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 256,
+   "row": 282,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5047,7 +5409,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 257,
+   "row": 283,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5056,7 +5418,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 258,
+   "row": 284,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5065,7 +5427,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 259,
+   "row": 285,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5074,7 +5436,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 260,
+   "row": 286,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5083,7 +5445,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 261,
+   "row": 287,
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
@@ -5092,7 +5454,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 262,
+   "row": 288,
    "result_type": "diagnostic",
    "task": "fp_cve",
    "model": "-",
@@ -5101,7 +5463,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 263,
+   "row": 289,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5110,7 +5472,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 264,
+   "row": 290,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5119,7 +5481,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 265,
+   "row": 291,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5128,7 +5490,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 266,
+   "row": 292,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5137,7 +5499,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 267,
+   "row": 293,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5146,7 +5508,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 268,
+   "row": 294,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5155,7 +5517,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 269,
+   "row": 295,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5164,7 +5526,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 270,
+   "row": 296,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5173,7 +5535,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 271,
+   "row": 297,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5182,7 +5544,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 272,
+   "row": 298,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
@@ -5191,7 +5553,7 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 273,
+   "row": 299,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5200,7 +5562,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 274,
+   "row": 300,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5209,7 +5571,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 275,
+   "row": 301,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5218,7 +5580,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 276,
+   "row": 302,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5227,7 +5589,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 277,
+   "row": 303,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5236,7 +5598,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 278,
+   "row": 304,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5245,7 +5607,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 279,
+   "row": 305,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5254,7 +5616,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 280,
+   "row": 306,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5263,7 +5625,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 281,
+   "row": 307,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5272,7 +5634,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 282,
+   "row": 308,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5281,7 +5643,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 283,
+   "row": 309,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5290,7 +5652,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 284,
+   "row": 310,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
