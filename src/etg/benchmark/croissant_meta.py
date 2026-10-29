@@ -78,7 +78,7 @@ _RECORD_SETS = [
                 "@type": "cr:Field",
                 "@id": "posts/author_hash",
                 "name": "author_hash",
-                "description": "SHA-256 hash of the source-namespaced author string (pseudonymised).",
+                "description": "Keyed HMAC-SHA-256 pseudonym of the source-namespaced author string (unpublished key, rotated across major versions).",
                 "dataType": "sc:Text",
             },
             {
