@@ -259,20 +259,26 @@ def main():
         assert all((z["qid"] == z0["qid"]).all() for z in zr)
         per_q_ft = np.mean([mrr10(z["rank"]) for z in zr], axis=0)  # seed-mean MRR@10 per query
         per_q_zs = mrr10(z0["rank"])
-        lo, hi = boot_mean(per_q_ft, N_BOOT_MRR, rng)
+        b6_rng = np.random.default_rng([SEED, 6])  # own stream: leaves the shared rng (and every later CI) untouched
+        lo, hi = boot_mean(per_q_ft, N_BOOT_MRR, b6_rng)
         agg = {}
         for k in ("r_at_1", "r_at_5", "r_at_10", "mrr"):
             v = np.array([r[f"test_{k}"] for r in ft])
             agg[k] = float(v.mean())
         sd = float(np.std([r["test_mrr"] for r in ft], ddof=1))
-        emit(prov_src={"seeds": [r["seed"] for r in ft], "train_seconds": [r["train_seconds"] for r in ft],
+        # BGE seed 43 finished training in b6_run3 (loss 0.1237, 6305 s) but its eval ran out of GPU memory and the
+        # mini rebooted; b6_run4 resumed at the final step, so its row records loss 0 and the eval-only time.
+        fix = {("BGE-base-en-v1.5", 43): (0.1237, 6305)}
+        tl = [fix.get((m, r["seed"]), (r["train_loss"], r["train_seconds"])) for r in ft]
+        emit(prov_src={"seeds": [r["seed"] for r in ft], "train_losses": [x[0] for x in tl], "train_seconds": [x[1] for x in tl],
+                       "corrections": "BGE seed 43 loss/time from logs/b6_run3.log (resumed eval in b6_run4)" if (m, 43) in fix else None,
                        "hf_model": ft[0]["hf_model"], "saved_models": [r.get("saved_model") for r in ft],
                        "loss": "CachedMultipleNegativesRankingLoss (scale 20, mini-batch 16; batch-64 objective)",
                        "device": "mps", "worktree": "b6-finetune"},
              result_type="retrieval", task="task3", model=m, condition="b6_finetuned", variant="primary",
              seeds=len(ft), n=ft[0]["test_n"], **agg, mrr_ci_lo=lo, mrr_ci_hi=hi,
              note=f"fine-tuned on Task 3 train; mean over seeds (MRR SD {sd:.4f}); CI = bootstrap of seed-mean MRR@10")
-        idx = rng.integers(0, len(per_q_ft), size=(N_BOOT_MRR, len(per_q_ft)))
+        idx = b6_rng.integers(0, len(per_q_ft), size=(N_BOOT_MRR, len(per_q_ft)))
         dd = per_q_ft[idx].mean(1) - per_q_zs[idx].mean(1)
         dlo, dhi = float(np.percentile(dd, 2.5)), float(np.percentile(dd, 97.5))
         emit(prov_src={"n_boot": N_BOOT_MRR, "boot_seed": SEED}, result_type="paired_delta", task="task3",

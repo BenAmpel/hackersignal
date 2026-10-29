@@ -4797,6 +4797,103 @@
   },
   {
    "row": 235,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "BGE-base-en-v1.5",
+   "condition": "b6_finetuned",
+   "variant": "primary",
+   "seeds": [
+    42,
+    43,
+    44
+   ],
+   "train_losses": [
+    0.1229021053078204,
+    0.1237,
+    0.12417877913862299
+   ],
+   "train_seconds": [
+    3427,
+    6305,
+    3424
+   ],
+   "corrections": "BGE seed 43 loss/time from logs/b6_run3.log (resumed eval in b6_run4)",
+   "hf_model": "BAAI/bge-base-en-v1.5",
+   "saved_models": [
+    ".cache/b6_models/BGE-base-en-v1.5_seed42",
+    ".cache/b6_models/BGE-base-en-v1.5_seed43",
+    ".cache/b6_models/BGE-base-en-v1.5_seed44"
+   ],
+   "loss": "CachedMultipleNegativesRankingLoss (scale 20, mini-batch 16; batch-64 objective)",
+   "device": "mps",
+   "worktree": "b6-finetune"
+  },
+  {
+   "row": 236,
+   "result_type": "paired_delta",
+   "task": "task3",
+   "model": "BGE-base-en-v1.5 fine-tuned - zero-shot",
+   "condition": "b6",
+   "variant": "mrr",
+   "n_boot": 10000,
+   "boot_seed": 20261027
+  },
+  {
+   "row": 237,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "b6_zero_shot",
+   "variant": "primary",
+   "hf_model": "sentence-transformers/all-MiniLM-L6-v2",
+   "seconds": 226,
+   "written_at": "2026-10-28T19:12:27-0400"
+  },
+  {
+   "row": 238,
+   "result_type": "retrieval",
+   "task": "task3",
+   "model": "all-MiniLM-L6-v2",
+   "condition": "b6_finetuned",
+   "variant": "primary",
+   "seeds": [
+    42,
+    43,
+    44
+   ],
+   "train_losses": [
+    0.11100416376566592,
+    0.1099449786346058,
+    0.11181105215718427
+   ],
+   "train_seconds": [
+    717,
+    718,
+    788
+   ],
+   "corrections": null,
+   "hf_model": "sentence-transformers/all-MiniLM-L6-v2",
+   "saved_models": [
+    ".cache/b6_models/all-MiniLM-L6-v2_seed42",
+    ".cache/b6_models/all-MiniLM-L6-v2_seed43",
+    ".cache/b6_models/all-MiniLM-L6-v2_seed44"
+   ],
+   "loss": "CachedMultipleNegativesRankingLoss (scale 20, mini-batch 16; batch-64 objective)",
+   "device": "mps",
+   "worktree": "b6-finetune"
+  },
+  {
+   "row": 239,
+   "result_type": "paired_delta",
+   "task": "task3",
+   "model": "all-MiniLM-L6-v2 fine-tuned - zero-shot",
+   "condition": "b6",
+   "variant": "mrr",
+   "n_boot": 10000,
+   "boot_seed": 20261027
+  },
+  {
+   "row": 240,
    "result_type": "paired_delta",
    "task": "task2",
    "model": "CySecBERT - SecureBERT",
@@ -4806,7 +4903,7 @@
    "boot_seed": 20261027
   },
   {
-   "row": 236,
+   "row": 241,
    "result_type": "diagnostic",
    "task": "corpus",
    "model": "-",
@@ -4815,56 +4912,11 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 237,
-   "result_type": "diagnostic",
-   "task": "task1",
-   "model": "-",
-   "condition": "query_contains_gold_cve",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 238,
-   "result_type": "diagnostic",
-   "task": "task1",
-   "model": "-",
-   "condition": "query_contains_any_cve",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 239,
-   "result_type": "diagnostic",
-   "task": "task1",
-   "model": "-",
-   "condition": "query_contains_url",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 240,
-   "result_type": "diagnostic",
-   "task": "task1",
-   "model": "-",
-   "condition": "source::github_advisory",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 241,
-   "result_type": "diagnostic",
-   "task": "task1",
-   "model": "-",
-   "condition": "source::exploitdb",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
    "row": 242,
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
-   "condition": "source::cisa_kev",
+   "condition": "query_contains_gold_cve",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4873,7 +4925,7 @@
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
-   "condition": "source::zeroscience",
+   "condition": "query_contains_any_cve",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4882,7 +4934,7 @@
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
-   "condition": "source::seebug",
+   "condition": "query_contains_url",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4891,7 +4943,7 @@
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
-   "condition": "source::hackerone",
+   "condition": "source::github_advisory",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4900,52 +4952,52 @@
    "result_type": "diagnostic",
    "task": "task1",
    "model": "-",
-   "condition": "source::0x00sec",
+   "condition": "source::exploitdb",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
    "row": 247,
    "result_type": "diagnostic",
-   "task": "task3",
+   "task": "task1",
    "model": "-",
-   "condition": "query_contains_gold_cve",
+   "condition": "source::cisa_kev",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
    "row": 248,
    "result_type": "diagnostic",
-   "task": "task3",
+   "task": "task1",
    "model": "-",
-   "condition": "query_contains_any_cve",
+   "condition": "source::zeroscience",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
    "row": 249,
    "result_type": "diagnostic",
-   "task": "task3",
+   "task": "task1",
    "model": "-",
-   "condition": "query_contains_url",
+   "condition": "source::seebug",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
    "row": 250,
    "result_type": "diagnostic",
-   "task": "task3",
+   "task": "task1",
    "model": "-",
-   "condition": "source::github_advisory",
+   "condition": "source::hackerone",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
    "row": 251,
    "result_type": "diagnostic",
-   "task": "task3",
+   "task": "task1",
    "model": "-",
-   "condition": "source::cisa_kev",
+   "condition": "source::0x00sec",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4954,7 +5006,7 @@
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
-   "condition": "source::exploitdb",
+   "condition": "query_contains_gold_cve",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4963,7 +5015,7 @@
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
-   "condition": "source::zeroscience",
+   "condition": "query_contains_any_cve",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4972,7 +5024,7 @@
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
-   "condition": "source::seebug",
+   "condition": "query_contains_url",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4981,7 +5033,7 @@
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
-   "condition": "source::hackerone",
+   "condition": "source::github_advisory",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -4990,12 +5042,57 @@
    "result_type": "diagnostic",
    "task": "task3",
    "model": "-",
-   "condition": "source::0x00sec",
+   "condition": "source::cisa_kev",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
    "row": 257,
+   "result_type": "diagnostic",
+   "task": "task3",
+   "model": "-",
+   "condition": "source::exploitdb",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 258,
+   "result_type": "diagnostic",
+   "task": "task3",
+   "model": "-",
+   "condition": "source::zeroscience",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 259,
+   "result_type": "diagnostic",
+   "task": "task3",
+   "model": "-",
+   "condition": "source::seebug",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 260,
+   "result_type": "diagnostic",
+   "task": "task3",
+   "model": "-",
+   "condition": "source::hackerone",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 261,
+   "result_type": "diagnostic",
+   "task": "task3",
+   "model": "-",
+   "condition": "source::0x00sec",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 262,
    "result_type": "diagnostic",
    "task": "fp_cve",
    "model": "-",
@@ -5004,56 +5101,11 @@
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
-   "row": 258,
-   "result_type": "diagnostic",
-   "task": "task2",
-   "model": "-",
-   "condition": "rnn_vocab_size_minfreq3",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 259,
-   "result_type": "diagnostic",
-   "task": "task2",
-   "model": "-",
-   "condition": "share_truncated_at_300_tokens_test",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 260,
-   "result_type": "diagnostic",
-   "task": "task2",
-   "model": "-",
-   "condition": "rnn_vocab_size_minfreq3",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 261,
-   "result_type": "diagnostic",
-   "task": "task2",
-   "model": "-",
-   "condition": "share_truncated_at_300_tokens_test",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
-   "row": 262,
-   "result_type": "diagnostic",
-   "task": "task2",
-   "model": "-",
-   "condition": "rnn_vocab_size_minfreq3",
-   "variant": "-",
-   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
-  },
-  {
    "row": 263,
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
-   "condition": "share_truncated_at_300_tokens_test",
+   "condition": "rnn_vocab_size_minfreq3",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -5062,7 +5114,7 @@
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
-   "condition": "rnn_vocab_size_minfreq3",
+   "condition": "share_truncated_at_300_tokens_test",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -5071,7 +5123,7 @@
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
-   "condition": "share_truncated_at_300_tokens_test",
+   "condition": "rnn_vocab_size_minfreq3",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -5080,7 +5132,7 @@
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
-   "condition": "rnn_vocab_size_minfreq3",
+   "condition": "share_truncated_at_300_tokens_test",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
@@ -5089,12 +5141,57 @@
    "result_type": "diagnostic",
    "task": "task2",
    "model": "-",
-   "condition": "share_truncated_at_300_tokens_test",
+   "condition": "rnn_vocab_size_minfreq3",
    "variant": "-",
    "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
   },
   {
    "row": 268,
+   "result_type": "diagnostic",
+   "task": "task2",
+   "model": "-",
+   "condition": "share_truncated_at_300_tokens_test",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 269,
+   "result_type": "diagnostic",
+   "task": "task2",
+   "model": "-",
+   "condition": "rnn_vocab_size_minfreq3",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 270,
+   "result_type": "diagnostic",
+   "task": "task2",
+   "model": "-",
+   "condition": "share_truncated_at_300_tokens_test",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 271,
+   "result_type": "diagnostic",
+   "task": "task2",
+   "model": "-",
+   "condition": "rnn_vocab_size_minfreq3",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 272,
+   "result_type": "diagnostic",
+   "task": "task2",
+   "model": "-",
+   "condition": "share_truncated_at_300_tokens_test",
+   "variant": "-",
+   "git_sha": "e0c1153253e5c5e43df9b8ca2b00b0bfba8b8dcb+audit-uncommitted"
+  },
+  {
+   "row": 273,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5103,7 +5200,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 269,
+   "row": 274,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5112,7 +5209,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 270,
+   "row": 275,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5121,7 +5218,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 271,
+   "row": 276,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5130,7 +5227,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 272,
+   "row": 277,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5139,7 +5236,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 273,
+   "row": 278,
    "result_type": "data_check",
    "task": "task1_cve_linkage",
    "model": "-",
@@ -5148,7 +5245,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 274,
+   "row": 279,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5157,7 +5254,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 275,
+   "row": 280,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5166,7 +5263,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 276,
+   "row": 281,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5175,7 +5272,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 277,
+   "row": 282,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5184,7 +5281,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 278,
+   "row": 283,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
@@ -5193,7 +5290,7 @@
    "source": "data_integrity.json"
   },
   {
-   "row": 279,
+   "row": 284,
    "result_type": "data_check",
    "task": "task3_temporal_generalization",
    "model": "-",
