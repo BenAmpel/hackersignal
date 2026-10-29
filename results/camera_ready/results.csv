@@ -88,199 +88,225 @@ row_id,result_type,task,model,condition,variant,seeds,n,r_at_1,r_at_1_ci_lo,r_at
 86,retrieval,task3,E5-base-v2,as_released,no_prefixes,1,1898,0.666491,,,0.791886,0.826660,0.721416,,,0.724630,0.731851,0.716959,101,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"MRR = MRR@10; ranks over full 340,536 corpus"
 87,retrieval,task1,BGE-base-en-v1.5,as_released,query_instruction,1,1990,0.668342,,,0.797990,0.829648,0.725210,,,0.728435,0.731290,0.721927,104,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"MRR = MRR@10; ranks over full 340,536 corpus"
 88,retrieval,task3,BGE-base-en-v1.5,as_released,query_instruction,1,1898,0.682297,,,0.807165,0.837724,0.737397,,,0.740379,0.743771,0.733954,103,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"MRR = MRR@10; ranks over full 340,536 corpus"
-89,validation,corpus,E5-base-v2,minus_cve_ids,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=0.00e+00
-90,validation,corpus,BGE-base-en-v1.5,minus_cve_ids,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=0.00e+00
-91,validation,corpus,all-mpnet-base-v2,minus_cve_ids,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=1.79e-07
-92,validation,corpus,all-MiniLM-L6-v2,minus_urls,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=0.00e+00
-93,validation,task1,BM25,as_released,validated,,50,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"FastBM25 vs rank_bm25: max|score diff|=2.61e-12, top-10 mismatches=0"
-94,paired_delta,task1,BGE-base-en-v1.5 - Hybrid BM25+mpnet,as_released,mrr,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.003069,-0.012888,0.019035,,,INCLUDES ZERO
-95,paired_delta,task1,Hybrid BM25+mpnet - all-MiniLM-L6-v2,as_released,r_at_1,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.023618,0.006030,0.041206,,,excludes zero
-96,paired_delta,task1,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_5,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.000503,-0.012563,0.013568,,,INCLUDES ZERO
-97,paired_delta,task1,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_10,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.001005,-0.011558,0.013568,,,INCLUDES ZERO
-98,retrieval,task1,BM25,as_released,grouped_multi_gold,,1982,0.597376,,,0.691221,0.717962,0.638237,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-99,retrieval,task1,all-MiniLM-L6-v2,as_released,grouped_multi_gold,,1982,0.657921,,,0.778507,0.810797,0.711014,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-100,retrieval,task1,all-mpnet-base-v2,as_released,grouped_multi_gold,,1982,0.628153,,,0.759334,0.794652,0.684921,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-101,retrieval,task1,Hybrid BM25+mpnet,as_released,grouped_multi_gold,,1982,0.681635,,,0.756307,0.770938,0.713896,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-102,retrieval,task1,BGE-base-en-v1.5,as_released,grouped_multi_gold,,1982,0.655903,,,0.790616,0.823915,0.716347,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-103,retrieval,task1,E5-base-v2,as_released,grouped_multi_gold,,1982,0.651867,,,0.791120,0.824924,0.712100,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-104,per_source,task1,BM25,source::0x00sec,primary,,5,0.200000,,,,,0.300000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-105,per_source,task1,BM25,source::cisa_kev,primary,,363,0.473829,,,,,0.554631,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-106,per_source,task1,BM25,source::exploitdb,primary,,429,0.104895,,,,,0.134120,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-107,per_source,task1,BM25,source::github_advisory,primary,,1036,0.879344,,,,,0.900756,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-108,per_source,task1,BM25,source::hackerone,primary,,17,0.294118,,,,,0.382353,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-109,per_source,task1,BM25,source::seebug,primary,,38,0.052632,,,,,0.089286,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-110,per_source,task1,BM25,source::zeroscience,primary,,102,0.470588,,,,,0.603350,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-111,per_source,task1,all-MiniLM-L6-v2,source::0x00sec,primary,,5,0.000000,,,,,0.028571,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-112,per_source,task1,all-MiniLM-L6-v2,source::cisa_kev,primary,,363,0.462810,,,,,0.557525,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-113,per_source,task1,all-MiniLM-L6-v2,source::exploitdb,primary,,429,0.361305,,,,,0.434615,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-114,per_source,task1,all-MiniLM-L6-v2,source::github_advisory,primary,,1036,0.898649,,,,,0.925507,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-115,per_source,task1,all-MiniLM-L6-v2,source::hackerone,primary,,17,0.470588,,,,,0.542717,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-116,per_source,task1,all-MiniLM-L6-v2,source::seebug,primary,,38,0.026316,,,,,0.042763,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-117,per_source,task1,all-MiniLM-L6-v2,source::zeroscience,primary,,102,0.401961,,,,,0.502735,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-118,per_source,task1,all-mpnet-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-119,per_source,task1,all-mpnet-base-v2,source::cisa_kev,primary,,363,0.457300,,,,,0.547688,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-120,per_source,task1,all-mpnet-base-v2,source::exploitdb,primary,,429,0.296037,,,,,0.363023,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-121,per_source,task1,all-mpnet-base-v2,source::github_advisory,primary,,1036,0.868726,,,,,0.905439,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-122,per_source,task1,all-mpnet-base-v2,source::hackerone,primary,,17,0.352941,,,,,0.433007,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-123,per_source,task1,all-mpnet-base-v2,source::seebug,primary,,38,0.000000,,,,,0.052736,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-124,per_source,task1,all-mpnet-base-v2,source::zeroscience,primary,,102,0.450980,,,,,0.547386,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-125,per_source,task1,Hybrid BM25+mpnet,source::0x00sec,primary,,5,0.000000,,,,,0.166667,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-126,per_source,task1,Hybrid BM25+mpnet,source::cisa_kev,primary,,363,0.537190,,,,,0.614932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-127,per_source,task1,Hybrid BM25+mpnet,source::exploitdb,primary,,429,0.263403,,,,,0.289072,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-128,per_source,task1,Hybrid BM25+mpnet,source::github_advisory,primary,,1036,0.940154,,,,,0.950025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-129,per_source,task1,Hybrid BM25+mpnet,source::hackerone,primary,,17,0.529412,,,,,0.549020,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-130,per_source,task1,Hybrid BM25+mpnet,source::seebug,primary,,38,0.078947,,,,,0.097368,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-131,per_source,task1,Hybrid BM25+mpnet,source::zeroscience,primary,,102,0.558824,,,,,0.682528,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-132,per_source,task1,BGE-base-en-v1.5,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-133,per_source,task1,BGE-base-en-v1.5,source::cisa_kev,primary,,363,0.462810,,,,,0.563986,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-134,per_source,task1,BGE-base-en-v1.5,source::exploitdb,primary,,429,0.372960,,,,,0.462602,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-135,per_source,task1,BGE-base-en-v1.5,source::github_advisory,primary,,1036,0.885135,,,,,0.916904,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-136,per_source,task1,BGE-base-en-v1.5,source::hackerone,primary,,17,0.470588,,,,,0.521569,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-137,per_source,task1,BGE-base-en-v1.5,source::seebug,primary,,38,0.000000,,,,,0.021930,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-138,per_source,task1,BGE-base-en-v1.5,source::zeroscience,primary,,102,0.460784,,,,,0.571117,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-139,per_source,task1,E5-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.050000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-140,per_source,task1,E5-base-v2,source::cisa_kev,primary,,363,0.517906,,,,,0.610932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-141,per_source,task1,E5-base-v2,source::exploitdb,primary,,429,0.375291,,,,,0.463368,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-142,per_source,task1,E5-base-v2,source::github_advisory,primary,,1036,0.853282,,,,,0.888411,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-143,per_source,task1,E5-base-v2,source::hackerone,primary,,17,0.588235,,,,,0.637255,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-144,per_source,task1,E5-base-v2,source::seebug,primary,,38,0.026316,,,,,0.037281,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-145,per_source,task1,E5-base-v2,source::zeroscience,primary,,102,0.470588,,,,,0.576657,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-146,paired_delta,task3,Hybrid BM25+mpnet - BGE-base-en-v1.5,as_released,mrr,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.004082,-0.011541,0.019674,,,INCLUDES ZERO
-147,paired_delta,task3,Hybrid BM25+mpnet - all-MiniLM-L6-v2,as_released,r_at_1,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.027397,0.009484,0.045311,,,excludes zero
-148,paired_delta,task3,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_5,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.000527,-0.012645,0.013699,,,INCLUDES ZERO
-149,paired_delta,task3,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_10,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.001581,-0.011064,0.014752,,,INCLUDES ZERO
-150,retrieval,task3,BM25,as_released,grouped_multi_gold,,1892,0.621564,,,0.715116,0.742600,0.662303,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-151,retrieval,task3,all-MiniLM-L6-v2,as_released,grouped_multi_gold,,1892,0.672304,,,0.789112,0.820825,0.724225,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-152,retrieval,task3,all-mpnet-base-v2,as_released,grouped_multi_gold,,1892,0.649049,,,0.779070,0.810782,0.705291,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-153,retrieval,task3,Hybrid BM25+mpnet,as_released,grouped_multi_gold,,1892,0.699789,,,0.774841,0.788584,0.732069,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-154,retrieval,task3,BGE-base-en-v1.5,as_released,grouped_multi_gold,,1892,0.669133,,,0.799683,0.829281,0.727577,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-155,retrieval,task3,E5-base-v2,as_released,grouped_multi_gold,,1892,0.665433,,,0.799683,0.830338,0.723101,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
-156,per_source,task3,BM25,source::0x00sec,primary,,5,0.200000,,,,,0.300000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-157,per_source,task3,BM25,source::cisa_kev,primary,,363,0.473829,,,,,0.554631,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-158,per_source,task3,BM25,source::exploitdb,primary,,337,0.109792,,,,,0.135398,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-159,per_source,task3,BM25,source::github_advisory,primary,,1036,0.879344,,,,,0.900756,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-160,per_source,task3,BM25,source::hackerone,primary,,17,0.294118,,,,,0.382353,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-161,per_source,task3,BM25,source::seebug,primary,,38,0.052632,,,,,0.089286,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-162,per_source,task3,BM25,source::zeroscience,primary,,102,0.470588,,,,,0.603350,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-163,per_source,task3,all-MiniLM-L6-v2,source::0x00sec,primary,,5,0.000000,,,,,0.028571,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-164,per_source,task3,all-MiniLM-L6-v2,source::cisa_kev,primary,,363,0.462810,,,,,0.557525,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-165,per_source,task3,all-MiniLM-L6-v2,source::exploitdb,primary,,337,0.364985,,,,,0.437550,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-166,per_source,task3,all-MiniLM-L6-v2,source::github_advisory,primary,,1036,0.898649,,,,,0.925507,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-167,per_source,task3,all-MiniLM-L6-v2,source::hackerone,primary,,17,0.470588,,,,,0.542717,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-168,per_source,task3,all-MiniLM-L6-v2,source::seebug,primary,,38,0.026316,,,,,0.042763,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-169,per_source,task3,all-MiniLM-L6-v2,source::zeroscience,primary,,102,0.401961,,,,,0.502735,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-170,per_source,task3,all-mpnet-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-171,per_source,task3,all-mpnet-base-v2,source::cisa_kev,primary,,363,0.457300,,,,,0.547688,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-172,per_source,task3,all-mpnet-base-v2,source::exploitdb,primary,,337,0.326409,,,,,0.393574,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-173,per_source,task3,all-mpnet-base-v2,source::github_advisory,primary,,1036,0.868726,,,,,0.905439,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-174,per_source,task3,all-mpnet-base-v2,source::hackerone,primary,,17,0.352941,,,,,0.433007,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-175,per_source,task3,all-mpnet-base-v2,source::seebug,primary,,38,0.000000,,,,,0.052736,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-176,per_source,task3,all-mpnet-base-v2,source::zeroscience,primary,,102,0.450980,,,,,0.547386,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-177,per_source,task3,Hybrid BM25+mpnet,source::0x00sec,primary,,5,0.000000,,,,,0.166667,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-178,per_source,task3,Hybrid BM25+mpnet,source::cisa_kev,primary,,363,0.537190,,,,,0.614932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-179,per_source,task3,Hybrid BM25+mpnet,source::exploitdb,primary,,337,0.255193,,,,,0.279356,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-180,per_source,task3,Hybrid BM25+mpnet,source::github_advisory,primary,,1036,0.940154,,,,,0.950025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-181,per_source,task3,Hybrid BM25+mpnet,source::hackerone,primary,,17,0.529412,,,,,0.549020,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-182,per_source,task3,Hybrid BM25+mpnet,source::seebug,primary,,38,0.078947,,,,,0.097368,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-183,per_source,task3,Hybrid BM25+mpnet,source::zeroscience,primary,,102,0.558824,,,,,0.682528,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-184,per_source,task3,BGE-base-en-v1.5,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-185,per_source,task3,BGE-base-en-v1.5,source::cisa_kev,primary,,363,0.462810,,,,,0.563986,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-186,per_source,task3,BGE-base-en-v1.5,source::exploitdb,primary,,337,0.373887,,,,,0.459149,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-187,per_source,task3,BGE-base-en-v1.5,source::github_advisory,primary,,1036,0.885135,,,,,0.916904,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-188,per_source,task3,BGE-base-en-v1.5,source::hackerone,primary,,17,0.470588,,,,,0.521569,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-189,per_source,task3,BGE-base-en-v1.5,source::seebug,primary,,38,0.000000,,,,,0.021930,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-190,per_source,task3,BGE-base-en-v1.5,source::zeroscience,primary,,102,0.460784,,,,,0.571117,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-191,per_source,task3,E5-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.050000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-192,per_source,task3,E5-base-v2,source::cisa_kev,primary,,363,0.517906,,,,,0.610932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-193,per_source,task3,E5-base-v2,source::exploitdb,primary,,337,0.379822,,,,,0.461450,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-194,per_source,task3,E5-base-v2,source::github_advisory,primary,,1036,0.853282,,,,,0.888411,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-195,per_source,task3,E5-base-v2,source::hackerone,primary,,17,0.588235,,,,,0.637255,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-196,per_source,task3,E5-base-v2,source::seebug,primary,,38,0.026316,,,,,0.037281,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-197,per_source,task3,E5-base-v2,source::zeroscience,primary,,102,0.470588,,,,,0.576657,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-198,classification,task2,DarkBERT,temporal_ood,not_run,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"not run: gated repo, licence not accepted (14c8e0e9fb067e5598038b16b50f2deb2ae07958)"
-199,classification,task2,BiLSTM,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.793923,,0.770320,0.815375,0.819256,,0.814986,,0.858156,,0.944818,,0.803922,,0.766917,,0.801843,,0.769679,,0.834621,,0.571429,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-200,classification,task2,BiLSTM,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.855583,0.002901,0.837232,0.872444,0.874598,0.005000,0.871278,0.005478,0.907266,0.009976,0.966586,0.006172,0.840294,0.025215,0.835167,0.025236,0.886460,0.013061,0.813281,0.019604,0.909359,0.004733,0.686253,0.024813,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-201,classification,task2,BiLSTM,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.857095,0.001835,0.838962,0.872868,0.873382,0.003132,0.870125,0.003522,0.909818,0.007875,0.965472,0.007793,0.861640,0.011283,0.832859,0.021126,0.890347,0.029604,0.808758,0.011938,0.903129,0.010537,0.684741,0.003372,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-202,classification,task2,CySecBERT,temporal_ood,july_protocol,1,1735,,,,,,,,,,,,,0.899039,,0.881571,0.915518,0.913635,,0.912392,,0.934974,,0.986667,,0.900901,,0.877698,,0.904110,,0.861314,,0.946708,,0.779944,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-203,classification,task2,CySecBERT,temporal_ood,july_protocol_final_epoch,1,1735,,,,,,,,,,,,,0.899039,,0.881624,0.915174,0.913635,,0.912392,,0.934974,,0.986667,,0.900901,,0.877698,,0.904110,,0.861314,,0.946708,,0.779944,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-204,classification,task2,CySecBERT,temporal_ood,subsample15000,3,1735,,,,,,,,,,,,,0.898125,0.002898,0.881527,0.912510,0.912339,0.002674,0.911623,0.002329,0.938071,0.005097,0.984890,0.002022,0.903170,0.023378,0.876671,0.010696,0.896926,0.014391,0.863908,0.004159,0.934921,0.003995,0.786442,0.009185,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-205,classification,task2,CySecBERT,temporal_ood,subsample15000_final_epoch,3,1735,,,,,,,,,,,,,0.898125,0.002898,0.882086,0.913269,0.912339,0.002674,0.911623,0.002329,0.938071,0.005097,0.984890,0.002022,0.903170,0.023378,0.876671,0.010696,0.896926,0.014391,0.863908,0.004159,0.934921,0.003995,0.786442,0.009185,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-206,classification,task2,Decision Tree,temporal_ood,full_text,3,1735,,,,,,,,,,,,,0.735021,0.006777,0.711247,0.758118,0.763899,0.003936,0.759654,0.003780,0.829392,0.007851,0.926719,0.000540,0.688927,0.033891,0.765265,0.011565,0.697800,0.008923,0.641755,0.008321,0.801939,0.004517,0.528368,0.005091,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-207,classification,task2,Decision Tree,temporal_ood,repo_trunc2000,3,1735,,,,,,,,,,,,,0.701997,0.006738,0.677107,0.727070,0.740004,0.005082,0.727570,0.006427,0.839422,0.005373,0.912162,0.011925,0.643612,0.022989,0.702222,0.020367,0.675223,0.002739,0.601845,0.007391,0.792504,0.006502,0.448984,0.015500,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-208,classification,task2,GRU,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.862058,,0.840218,0.880686,0.876196,,0.873199,,0.896679,,0.965986,,0.865385,,0.888889,,0.840183,,0.819892,,0.909953,,0.709497,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-209,classification,task2,GRU,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.857946,0.001486,0.840297,0.873702,0.873594,0.001741,0.871470,0.002512,0.896352,0.003515,0.962516,0.004490,0.841591,0.006067,0.861545,0.009438,0.881260,0.024953,0.811532,0.011445,0.911313,0.004373,0.697460,0.022774,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-210,classification,task2,GRU,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.857762,0.008894,0.839119,0.874037,0.875042,0.005150,0.873391,0.004170,0.914546,0.004198,0.963686,0.002835,0.854129,0.034047,0.855570,0.017340,0.880006,0.028668,0.812327,0.006581,0.914667,0.004967,0.667168,0.020757,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-211,classification,task2,LSTM,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.837182,,0.814392,0.858635,0.861727,,0.858213,,0.900000,,0.959569,,0.785047,,0.840580,,0.855856,,0.804631,,0.899371,,0.652406,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-212,classification,task2,LSTM,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.823990,0.013317,0.804430,0.841007,0.848810,0.007157,0.845917,0.005887,0.884622,0.010212,0.962520,0.007794,0.770674,0.084392,0.827286,0.044821,0.850886,0.003169,0.780503,0.017433,0.884867,0.013105,0.630564,0.033344,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-213,classification,task2,LSTM,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.819423,0.010958,0.801174,0.836542,0.844149,0.011227,0.841499,0.011993,0.889254,0.007759,0.950312,0.013969,0.790067,0.023480,0.800745,0.010093,0.840213,0.025154,0.776746,0.012398,0.881762,0.017789,0.626284,0.017587,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-214,classification,task2,RNN,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.705950,,0.676987,0.732765,0.743642,,0.735447,,0.822857,,0.884393,,0.712644,,0.644628,,0.696035,,0.686981,,0.763889,,0.436170,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-215,classification,task2,RNN,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.436079,0.031194,0.414710,0.455461,0.491592,0.032592,0.479923,0.039364,0.644029,0.049668,0.760377,0.018281,0.417081,0.059491,0.315115,0.046400,0.317737,0.045987,0.440265,0.053833,0.296158,0.105385,0.297873,0.033398,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-216,classification,task2,RNN,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.140515,0.003453,0.127754,0.153671,0.176606,0.001502,0.208838,0.008972,0.044725,0.014603,0.405002,0.031441,0.152113,0.005345,0.082756,0.017631,0.025132,0.024080,0.118238,0.010651,0.224933,0.022286,0.071221,0.030068,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-217,classification,task2,SVM,temporal_ood,full_text,3,1735,,,,,,,,,,,,,0.782637,0.000000,0.757663,0.805714,0.823368,0.000000,0.820173,0.000000,0.845588,0.000000,0.955345,0.000000,0.672414,0.000000,0.782609,0.000000,0.725664,0.000000,0.818436,0.000000,0.801887,0.000000,0.659155,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-218,classification,task2,SVM,temporal_ood,repo_trunc2000,3,1735,,,,,,,,,,,,,0.799019,0.000000,0.773378,0.822190,0.838410,0.000000,0.836311,0.000000,0.857671,0.000000,0.958501,0.000000,0.683761,0.000000,0.805755,0.000000,0.730594,0.000000,0.822715,0.000000,0.837500,0.000000,0.695652,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-219,classification,task2,SecBERT,temporal_ood,full_64413,2,1735,,,,,,,,,,,,,0.889807,0.004443,0.871872,0.906089,0.910289,0.001463,0.908934,0.001630,0.948641,0.004594,0.981965,0.000894,0.894912,0.020051,0.837356,0.005689,0.891802,0.014119,0.867003,0.005863,0.939820,0.002991,0.756956,0.003486,,,,,,SUPERSEDED by full_64413_l40s (mini MPS run stopped after 2 seeds); not reported
-220,classification,task2,SecBERT,temporal_ood,full_64413_final_epoch,2,1735,,,,,,,,,,,,,0.889807,0.004443,0.871423,0.906251,0.910289,0.001463,0.908934,0.001630,0.948641,0.004594,0.981965,0.000894,0.894912,0.020051,0.837356,0.005689,0.891802,0.014119,0.867003,0.005863,0.939820,0.002991,0.756956,0.003486,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-221,classification,task2,SecBERT,temporal_ood,july_protocol,1,1735,,,,,,,,,,,,,0.861746,,0.841157,0.881863,0.888286,,0.886455,,0.916221,,0.981333,,0.811881,,0.827586,,0.887892,,0.832117,,0.934985,,0.701950,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-222,classification,task2,SecBERT,temporal_ood,july_protocol_final_epoch,1,1735,,,,,,,,,,,,,0.861746,,0.840911,0.881784,0.888286,,0.886455,,0.916221,,0.981333,,0.811881,,0.827586,,0.887892,,0.832117,,0.934985,,0.701950,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-223,classification,task2,SecBERT,temporal_ood,subsample15000,3,1735,,,,,,,,,,,,,0.852493,0.006532,0.832531,0.870131,0.881591,0.001693,0.880500,0.001450,0.923258,0.001718,0.979920,0.001341,0.815004,0.035949,0.812301,0.019546,0.870186,0.001405,0.825948,0.004848,0.927020,0.005439,0.666306,0.014230,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-224,classification,task2,SecBERT,temporal_ood,subsample15000_final_epoch,3,1735,,,,,,,,,,,,,0.852493,0.006532,0.832847,0.871765,0.881591,0.001693,0.880500,0.001450,0.923258,0.001718,0.979920,0.001341,0.815004,0.035949,0.812301,0.019546,0.870186,0.001405,0.825948,0.004848,0.927020,0.005439,0.666306,0.014230,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-225,classification,task2,SecureBERT,temporal_ood,july_protocol,1,1735,,,,,,,,,,,,,0.906458,,0.889957,0.922120,0.915324,,0.914697,,0.933333,,0.982690,,0.927273,,0.890511,,0.907407,,0.855895,,0.945568,,0.808989,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-226,classification,task2,SecureBERT,temporal_ood,july_protocol_final_epoch,1,1735,,,,,,,,,,,,,0.906458,,0.888995,0.921348,0.915324,,0.914697,,0.933333,,0.982690,,0.927273,,0.890511,,0.907407,,0.855895,,0.945568,,0.808989,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-227,classification,task2,SecureBERT,temporal_ood,subsample15000,3,1735,,,,,,,,,,,,,0.892003,0.008202,0.874834,0.906882,0.906882,0.005123,0.906052,0.005498,0.929031,0.002558,0.982720,0.000027,0.895685,0.005885,0.852007,0.042710,0.895019,0.011207,0.854661,0.000675,0.926794,0.010331,0.800105,0.019933,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-228,classification,task2,SecureBERT,temporal_ood,subsample15000_final_epoch,3,1735,,,,,,,,,,,,,0.896737,0.006145,0.880416,0.911365,0.910081,0.003190,0.909510,0.003506,0.929765,0.001422,0.981009,0.002951,0.899021,0.010101,0.868934,0.031081,0.898035,0.015589,0.859897,0.009744,0.931980,0.002653,0.805254,0.012691,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-229,classification,task2,TF-IDF + LR,temporal_ood,full_text,3,1735,,,,,,,,,,,,,0.769607,0.000000,0.744982,0.794748,0.805615,0.000000,0.801153,0.000000,0.812500,0.000000,0.935351,0.000000,0.735849,0.000000,0.735294,0.000000,0.686567,0.000000,0.790569,0.000000,0.805471,0.000000,0.655257,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-230,classification,task2,TF-IDF + LR,temporal_ood,repo_trunc2000,3,1735,,,,,,,,,,,,,0.771722,0.000000,0.744216,0.795243,0.812188,0.000000,0.807493,0.000000,0.823529,0.000000,0.934813,0.000000,0.685185,0.000000,0.759124,0.000000,0.690355,0.000000,0.788540,0.000000,0.835366,0.000000,0.656863,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
-231,classification,task2,SecBERT,temporal_ood,full_64413_l40s,3,1735,,,,,,,,,,,,,0.898588,0.000662,,,0.915883,0.002037,0.914697,0.001997,0.952171,0.003266,0.983037,0.003082,0.904004,0.005895,0.870553,0.013331,0.905553,0.004207,0.877821,0.003546,0.942305,0.003894,0.753261,0.013452,,,,,,"NVIDIA L40S; all 64,413 training rows; best epoch by validation; mean (SD) over seeds, no CI"
-232,classification,task2,SecureBERT,temporal_ood,full_64413_l40s,3,1735,,,,,,,,,,,,,0.903025,0.006429,,,0.919465,0.001365,0.918348,0.001450,0.944029,0.008460,0.986194,0.002012,0.899418,0.026812,0.873625,0.032431,0.893997,0.011008,0.877662,0.005076,0.943934,0.001888,0.805338,0.007375,,,,,,"NVIDIA L40S; all 64,413 training rows; best epoch by validation; mean (SD) over seeds, no CI"
-233,classification,task2,CySecBERT,temporal_ood,full_64413_l40s,3,1735,,,,,,,,,,,,,0.901197,0.010751,,,0.919476,0.005665,0.918732,0.005677,0.949770,0.003967,0.982673,0.002321,0.877216,0.027643,0.869849,0.015134,0.900587,0.026681,0.879497,0.003673,0.941241,0.002367,0.808740,0.009585,,,,,,"NVIDIA L40S; all 64,413 training rows; best epoch by validation; mean (SD) over seeds, no CI"
-234,retrieval,task3,BGE-base-en-v1.5,b6_zero_shot,primary,1,1898,0.667018,,,0.798209,0.828240,0.725673,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,B6 harness zero-shot (must reproduce the audit's as_released row)
-235,retrieval,task3,BGE-base-en-v1.5,b6_finetuned,primary,3,1898,0.692835,,,0.841588,0.886898,0.757124,0.740217,0.774132,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,fine-tuned on Task 3 train; mean over seeds (MRR SD 0.0047); CI = bootstrap of seed-mean MRR@10
-236,paired_delta,task3,BGE-base-en-v1.5 fine-tuned - zero-shot,b6,mrr,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.031452,0.019103,0.043828,,,excludes zero
-237,retrieval,task3,all-MiniLM-L6-v2,b6_zero_shot,primary,1,1898,0.670179,,,0.787671,0.819810,0.722305,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,B6 harness zero-shot (must reproduce the audit's as_released row)
-238,retrieval,task3,all-MiniLM-L6-v2,b6_finetuned,primary,3,1898,0.688093,,,0.836670,0.871970,0.749806,0.732431,0.766941,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,fine-tuned on Task 3 train; mean over seeds (MRR SD 0.0022); CI = bootstrap of seed-mean MRR@10
-239,paired_delta,task3,all-MiniLM-L6-v2 fine-tuned - zero-shot,b6,mrr,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.027501,0.016313,0.039052,,,excludes zero
-240,paired_delta,task2,CySecBERT - SecureBERT,temporal_ood,macro_f1,,1735,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.006122,-0.003473,0.016039,,,INCLUDES ZERO
-241,diagnostic,corpus,-,target_contains_own_cve,-,,340536,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.001248,425,
-242,diagnostic,task1,-,query_contains_gold_cve,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.247739,493,
-243,diagnostic,task1,-,query_contains_any_cve,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.279899,557,
-244,diagnostic,task1,-,query_contains_url,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.490955,977,
-245,diagnostic,task1,-,source::github_advisory,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.520603,1036,
-246,diagnostic,task1,-,source::exploitdb,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.215578,429,
-247,diagnostic,task1,-,source::cisa_kev,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.182412,363,
-248,diagnostic,task1,-,source::zeroscience,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.051256,102,
-249,diagnostic,task1,-,source::seebug,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.019095,38,
-250,diagnostic,task1,-,source::hackerone,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.008543,17,
-251,diagnostic,task1,-,source::0x00sec,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.002513,5,
-252,diagnostic,task3,-,query_contains_gold_cve,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.212856,404,
-253,diagnostic,task3,-,query_contains_any_cve,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.246575,468,
-254,diagnostic,task3,-,query_contains_url,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.467334,887,
-255,diagnostic,task3,-,source::github_advisory,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.545838,1036,
-256,diagnostic,task3,-,source::cisa_kev,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.191254,363,
-257,diagnostic,task3,-,source::exploitdb,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.177555,337,
-258,diagnostic,task3,-,source::zeroscience,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.053741,102,
-259,diagnostic,task3,-,source::seebug,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.020021,38,
-260,diagnostic,task3,-,source::hackerone,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.008957,17,
-261,diagnostic,task3,-,source::0x00sec,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.002634,5,
-262,diagnostic,fp_cve,-,cyrillic_heavy_share,-,,1964,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.302444,594,
-263,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
-264,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
-265,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
-266,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
-267,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
-268,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
-269,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
-270,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
-271,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
-272,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
-273,data_check,task1_cve_linkage,-,cve_overlap_train_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,9,,
-274,data_check,task1_cve_linkage,-,cve_overlap_train_val,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,26,,
-275,data_check,task1_cve_linkage,-,cve_overlap_val_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,10,,
-276,data_check,task1_cve_linkage,-,test_exact_dup_of_train_text,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
-277,data_check,task1_cve_linkage,-,test_internal_exact_dups,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,8,,
-278,data_check,task1_cve_linkage,-,duplicate_ids_in_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,8,,
-279,data_check,task3_temporal_generalization,-,cve_overlap_train_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
-280,data_check,task3_temporal_generalization,-,cve_overlap_train_val,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
-281,data_check,task3_temporal_generalization,-,cve_overlap_val_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
-282,data_check,task3_temporal_generalization,-,test_exact_dup_of_train_text,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
-283,data_check,task3_temporal_generalization,-,test_internal_exact_dups,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6,,
-284,data_check,task3_temporal_generalization,-,duplicate_ids_in_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6,,
+89,retrieval,task1,BM25,strip_overlap30,primary,1,1990,0.255779,,,0.408040,0.468844,0.321452,,,0.329337,0.328845,0.319938,251,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"MRR = MRR@10; ranks over full 340,536 corpus"
+90,retrieval,task3,BM25,strip_overlap30,primary,1,1898,0.268177,,,0.424131,0.487355,0.335475,,,0.343361,0.343182,0.333887,238,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"MRR = MRR@10; ranks over full 340,536 corpus"
+91,validation,corpus,E5-base-v2,minus_cve_ids,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=0.00e+00
+92,validation,corpus,BGE-base-en-v1.5,minus_cve_ids,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=0.00e+00
+93,validation,corpus,all-mpnet-base-v2,minus_cve_ids,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=1.79e-07
+94,validation,corpus,all-MiniLM-L6-v2,minus_urls,embedding_reuse,,256,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,embedding reuse: max|emb diff| over 256 unchanged docs=0.00e+00
+95,validation,task1,BM25,as_released,validated,,50,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"FastBM25 vs rank_bm25: max|score diff|=2.61e-12, top-10 mismatches=0"
+96,paired_delta,task1,BGE-base-en-v1.5 - Hybrid BM25+mpnet,as_released,mrr,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.003069,-0.012888,0.019035,,,INCLUDES ZERO
+97,paired_delta,task1,Hybrid BM25+mpnet - all-MiniLM-L6-v2,as_released,r_at_1,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.023618,0.006030,0.041206,,,excludes zero
+98,paired_delta,task1,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_5,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.000503,-0.012563,0.013568,,,INCLUDES ZERO
+99,paired_delta,task1,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_10,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.001005,-0.011558,0.013568,,,INCLUDES ZERO
+100,retrieval,task1,BM25,as_released,grouped_multi_gold,,1982,0.597376,,,0.691221,0.717962,0.638237,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+101,retrieval,task1,all-MiniLM-L6-v2,as_released,grouped_multi_gold,,1982,0.657921,,,0.778507,0.810797,0.711014,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+102,retrieval,task1,all-mpnet-base-v2,as_released,grouped_multi_gold,,1982,0.628153,,,0.759334,0.794652,0.684921,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+103,retrieval,task1,Hybrid BM25+mpnet,as_released,grouped_multi_gold,,1982,0.681635,,,0.756307,0.770938,0.713896,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+104,retrieval,task1,BGE-base-en-v1.5,as_released,grouped_multi_gold,,1982,0.655903,,,0.790616,0.823915,0.716347,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+105,retrieval,task1,E5-base-v2,as_released,grouped_multi_gold,,1982,0.651867,,,0.791120,0.824924,0.712100,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+106,per_source,task1,BM25,source::0x00sec,primary,,5,0.200000,,,,,0.300000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+107,per_source,task1,BM25,source::cisa_kev,primary,,363,0.473829,,,,,0.554631,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+108,per_source,task1,BM25,source::exploitdb,primary,,429,0.104895,,,,,0.134120,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+109,per_source,task1,BM25,source::github_advisory,primary,,1036,0.879344,,,,,0.900756,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+110,per_source,task1,BM25,source::hackerone,primary,,17,0.294118,,,,,0.382353,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+111,per_source,task1,BM25,source::seebug,primary,,38,0.052632,,,,,0.089286,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+112,per_source,task1,BM25,source::zeroscience,primary,,102,0.470588,,,,,0.603350,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+113,per_source,task1,all-MiniLM-L6-v2,source::0x00sec,primary,,5,0.000000,,,,,0.028571,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+114,per_source,task1,all-MiniLM-L6-v2,source::cisa_kev,primary,,363,0.462810,,,,,0.557525,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+115,per_source,task1,all-MiniLM-L6-v2,source::exploitdb,primary,,429,0.361305,,,,,0.434615,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+116,per_source,task1,all-MiniLM-L6-v2,source::github_advisory,primary,,1036,0.898649,,,,,0.925507,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+117,per_source,task1,all-MiniLM-L6-v2,source::hackerone,primary,,17,0.470588,,,,,0.542717,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+118,per_source,task1,all-MiniLM-L6-v2,source::seebug,primary,,38,0.026316,,,,,0.042763,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+119,per_source,task1,all-MiniLM-L6-v2,source::zeroscience,primary,,102,0.401961,,,,,0.502735,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+120,per_source,task1,all-mpnet-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+121,per_source,task1,all-mpnet-base-v2,source::cisa_kev,primary,,363,0.457300,,,,,0.547688,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+122,per_source,task1,all-mpnet-base-v2,source::exploitdb,primary,,429,0.296037,,,,,0.363023,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+123,per_source,task1,all-mpnet-base-v2,source::github_advisory,primary,,1036,0.868726,,,,,0.905439,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+124,per_source,task1,all-mpnet-base-v2,source::hackerone,primary,,17,0.352941,,,,,0.433007,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+125,per_source,task1,all-mpnet-base-v2,source::seebug,primary,,38,0.000000,,,,,0.052736,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+126,per_source,task1,all-mpnet-base-v2,source::zeroscience,primary,,102,0.450980,,,,,0.547386,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+127,per_source,task1,Hybrid BM25+mpnet,source::0x00sec,primary,,5,0.000000,,,,,0.166667,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+128,per_source,task1,Hybrid BM25+mpnet,source::cisa_kev,primary,,363,0.537190,,,,,0.614932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+129,per_source,task1,Hybrid BM25+mpnet,source::exploitdb,primary,,429,0.263403,,,,,0.289072,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+130,per_source,task1,Hybrid BM25+mpnet,source::github_advisory,primary,,1036,0.940154,,,,,0.950025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+131,per_source,task1,Hybrid BM25+mpnet,source::hackerone,primary,,17,0.529412,,,,,0.549020,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+132,per_source,task1,Hybrid BM25+mpnet,source::seebug,primary,,38,0.078947,,,,,0.097368,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+133,per_source,task1,Hybrid BM25+mpnet,source::zeroscience,primary,,102,0.558824,,,,,0.682528,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+134,per_source,task1,BGE-base-en-v1.5,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+135,per_source,task1,BGE-base-en-v1.5,source::cisa_kev,primary,,363,0.462810,,,,,0.563986,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+136,per_source,task1,BGE-base-en-v1.5,source::exploitdb,primary,,429,0.372960,,,,,0.462602,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+137,per_source,task1,BGE-base-en-v1.5,source::github_advisory,primary,,1036,0.885135,,,,,0.916904,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+138,per_source,task1,BGE-base-en-v1.5,source::hackerone,primary,,17,0.470588,,,,,0.521569,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+139,per_source,task1,BGE-base-en-v1.5,source::seebug,primary,,38,0.000000,,,,,0.021930,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+140,per_source,task1,BGE-base-en-v1.5,source::zeroscience,primary,,102,0.460784,,,,,0.571117,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+141,per_source,task1,E5-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.050000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+142,per_source,task1,E5-base-v2,source::cisa_kev,primary,,363,0.517906,,,,,0.610932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+143,per_source,task1,E5-base-v2,source::exploitdb,primary,,429,0.375291,,,,,0.463368,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+144,per_source,task1,E5-base-v2,source::github_advisory,primary,,1036,0.853282,,,,,0.888411,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+145,per_source,task1,E5-base-v2,source::hackerone,primary,,17,0.588235,,,,,0.637255,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+146,per_source,task1,E5-base-v2,source::seebug,primary,,38,0.026316,,,,,0.037281,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+147,per_source,task1,E5-base-v2,source::zeroscience,primary,,102,0.470588,,,,,0.576657,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+148,paired_delta,task3,Hybrid BM25+mpnet - BGE-base-en-v1.5,as_released,mrr,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.004082,-0.011541,0.019674,,,INCLUDES ZERO
+149,paired_delta,task3,Hybrid BM25+mpnet - all-MiniLM-L6-v2,as_released,r_at_1,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.027397,0.009484,0.045311,,,excludes zero
+150,paired_delta,task3,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_5,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.000527,-0.012645,0.013699,,,INCLUDES ZERO
+151,paired_delta,task3,E5-base-v2 - BGE-base-en-v1.5,as_released,r_at_10,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.001581,-0.011064,0.014752,,,INCLUDES ZERO
+152,retrieval,task3,BM25,as_released,grouped_multi_gold,,1892,0.621564,,,0.715116,0.742600,0.662303,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+153,retrieval,task3,all-MiniLM-L6-v2,as_released,grouped_multi_gold,,1892,0.672304,,,0.789112,0.820825,0.724225,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+154,retrieval,task3,all-mpnet-base-v2,as_released,grouped_multi_gold,,1892,0.649049,,,0.779070,0.810782,0.705291,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+155,retrieval,task3,Hybrid BM25+mpnet,as_released,grouped_multi_gold,,1892,0.699789,,,0.774841,0.788584,0.732069,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+156,retrieval,task3,BGE-base-en-v1.5,as_released,grouped_multi_gold,,1892,0.669133,,,0.799683,0.829281,0.727577,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+157,retrieval,task3,E5-base-v2,as_released,grouped_multi_gold,,1892,0.665433,,,0.799683,0.830338,0.723101,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,duplicate query ids merged; any gold counts
+158,per_source,task3,BM25,source::0x00sec,primary,,5,0.200000,,,,,0.300000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+159,per_source,task3,BM25,source::cisa_kev,primary,,363,0.473829,,,,,0.554631,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+160,per_source,task3,BM25,source::exploitdb,primary,,337,0.109792,,,,,0.135398,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+161,per_source,task3,BM25,source::github_advisory,primary,,1036,0.879344,,,,,0.900756,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+162,per_source,task3,BM25,source::hackerone,primary,,17,0.294118,,,,,0.382353,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+163,per_source,task3,BM25,source::seebug,primary,,38,0.052632,,,,,0.089286,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+164,per_source,task3,BM25,source::zeroscience,primary,,102,0.470588,,,,,0.603350,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+165,per_source,task3,all-MiniLM-L6-v2,source::0x00sec,primary,,5,0.000000,,,,,0.028571,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+166,per_source,task3,all-MiniLM-L6-v2,source::cisa_kev,primary,,363,0.462810,,,,,0.557525,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+167,per_source,task3,all-MiniLM-L6-v2,source::exploitdb,primary,,337,0.364985,,,,,0.437550,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+168,per_source,task3,all-MiniLM-L6-v2,source::github_advisory,primary,,1036,0.898649,,,,,0.925507,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+169,per_source,task3,all-MiniLM-L6-v2,source::hackerone,primary,,17,0.470588,,,,,0.542717,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+170,per_source,task3,all-MiniLM-L6-v2,source::seebug,primary,,38,0.026316,,,,,0.042763,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+171,per_source,task3,all-MiniLM-L6-v2,source::zeroscience,primary,,102,0.401961,,,,,0.502735,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+172,per_source,task3,all-mpnet-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+173,per_source,task3,all-mpnet-base-v2,source::cisa_kev,primary,,363,0.457300,,,,,0.547688,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+174,per_source,task3,all-mpnet-base-v2,source::exploitdb,primary,,337,0.326409,,,,,0.393574,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+175,per_source,task3,all-mpnet-base-v2,source::github_advisory,primary,,1036,0.868726,,,,,0.905439,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+176,per_source,task3,all-mpnet-base-v2,source::hackerone,primary,,17,0.352941,,,,,0.433007,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+177,per_source,task3,all-mpnet-base-v2,source::seebug,primary,,38,0.000000,,,,,0.052736,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+178,per_source,task3,all-mpnet-base-v2,source::zeroscience,primary,,102,0.450980,,,,,0.547386,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+179,per_source,task3,Hybrid BM25+mpnet,source::0x00sec,primary,,5,0.000000,,,,,0.166667,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+180,per_source,task3,Hybrid BM25+mpnet,source::cisa_kev,primary,,363,0.537190,,,,,0.614932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+181,per_source,task3,Hybrid BM25+mpnet,source::exploitdb,primary,,337,0.255193,,,,,0.279356,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+182,per_source,task3,Hybrid BM25+mpnet,source::github_advisory,primary,,1036,0.940154,,,,,0.950025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+183,per_source,task3,Hybrid BM25+mpnet,source::hackerone,primary,,17,0.529412,,,,,0.549020,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+184,per_source,task3,Hybrid BM25+mpnet,source::seebug,primary,,38,0.078947,,,,,0.097368,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+185,per_source,task3,Hybrid BM25+mpnet,source::zeroscience,primary,,102,0.558824,,,,,0.682528,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+186,per_source,task3,BGE-base-en-v1.5,source::0x00sec,primary,,5,0.000000,,,,,0.000000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+187,per_source,task3,BGE-base-en-v1.5,source::cisa_kev,primary,,363,0.462810,,,,,0.563986,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+188,per_source,task3,BGE-base-en-v1.5,source::exploitdb,primary,,337,0.373887,,,,,0.459149,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+189,per_source,task3,BGE-base-en-v1.5,source::github_advisory,primary,,1036,0.885135,,,,,0.916904,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+190,per_source,task3,BGE-base-en-v1.5,source::hackerone,primary,,17,0.470588,,,,,0.521569,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+191,per_source,task3,BGE-base-en-v1.5,source::seebug,primary,,38,0.000000,,,,,0.021930,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+192,per_source,task3,BGE-base-en-v1.5,source::zeroscience,primary,,102,0.460784,,,,,0.571117,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+193,per_source,task3,E5-base-v2,source::0x00sec,primary,,5,0.000000,,,,,0.050000,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+194,per_source,task3,E5-base-v2,source::cisa_kev,primary,,363,0.517906,,,,,0.610932,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+195,per_source,task3,E5-base-v2,source::exploitdb,primary,,337,0.379822,,,,,0.461450,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+196,per_source,task3,E5-base-v2,source::github_advisory,primary,,1036,0.853282,,,,,0.888411,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+197,per_source,task3,E5-base-v2,source::hackerone,primary,,17,0.588235,,,,,0.637255,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+198,per_source,task3,E5-base-v2,source::seebug,primary,,38,0.026316,,,,,0.037281,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+199,per_source,task3,E5-base-v2,source::zeroscience,primary,,102,0.470588,,,,,0.576657,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+200,classification,task2,DarkBERT,temporal_ood,not_run,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"not run: gated repo, licence not accepted (14c8e0e9fb067e5598038b16b50f2deb2ae07958)"
+201,classification,task2,BiLSTM,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.793923,,0.770320,0.815375,0.819256,,0.814986,,0.858156,,0.944818,,0.803922,,0.766917,,0.801843,,0.769679,,0.834621,,0.571429,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+202,classification,task2,BiLSTM,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.855583,0.002901,0.837232,0.872444,0.874598,0.005000,0.871278,0.005478,0.907266,0.009976,0.966586,0.006172,0.840294,0.025215,0.835167,0.025236,0.886460,0.013061,0.813281,0.019604,0.909359,0.004733,0.686253,0.024813,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+203,classification,task2,BiLSTM,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.857095,0.001835,0.838962,0.872868,0.873382,0.003132,0.870125,0.003522,0.909818,0.007875,0.965472,0.007793,0.861640,0.011283,0.832859,0.021126,0.890347,0.029604,0.808758,0.011938,0.903129,0.010537,0.684741,0.003372,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+204,classification,task2,CySecBERT,temporal_ood,july_protocol,1,1735,,,,,,,,,,,,,0.899039,,0.881571,0.915518,0.913635,,0.912392,,0.934974,,0.986667,,0.900901,,0.877698,,0.904110,,0.861314,,0.946708,,0.779944,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+205,classification,task2,CySecBERT,temporal_ood,july_protocol_final_epoch,1,1735,,,,,,,,,,,,,0.899039,,0.881624,0.915174,0.913635,,0.912392,,0.934974,,0.986667,,0.900901,,0.877698,,0.904110,,0.861314,,0.946708,,0.779944,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+206,classification,task2,CySecBERT,temporal_ood,subsample15000,3,1735,,,,,,,,,,,,,0.898125,0.002898,0.881527,0.912510,0.912339,0.002674,0.911623,0.002329,0.938071,0.005097,0.984890,0.002022,0.903170,0.023378,0.876671,0.010696,0.896926,0.014391,0.863908,0.004159,0.934921,0.003995,0.786442,0.009185,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+207,classification,task2,CySecBERT,temporal_ood,subsample15000_final_epoch,3,1735,,,,,,,,,,,,,0.898125,0.002898,0.882086,0.913269,0.912339,0.002674,0.911623,0.002329,0.938071,0.005097,0.984890,0.002022,0.903170,0.023378,0.876671,0.010696,0.896926,0.014391,0.863908,0.004159,0.934921,0.003995,0.786442,0.009185,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+208,classification,task2,Decision Tree,temporal_ood,full_text,3,1735,,,,,,,,,,,,,0.735021,0.006777,0.711247,0.758118,0.763899,0.003936,0.759654,0.003780,0.829392,0.007851,0.926719,0.000540,0.688927,0.033891,0.765265,0.011565,0.697800,0.008923,0.641755,0.008321,0.801939,0.004517,0.528368,0.005091,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+209,classification,task2,Decision Tree,temporal_ood,repo_trunc2000,3,1735,,,,,,,,,,,,,0.701997,0.006738,0.677107,0.727070,0.740004,0.005082,0.727570,0.006427,0.839422,0.005373,0.912162,0.011925,0.643612,0.022989,0.702222,0.020367,0.675223,0.002739,0.601845,0.007391,0.792504,0.006502,0.448984,0.015500,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+210,classification,task2,GRU,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.862058,,0.840218,0.880686,0.876196,,0.873199,,0.896679,,0.965986,,0.865385,,0.888889,,0.840183,,0.819892,,0.909953,,0.709497,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+211,classification,task2,GRU,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.857946,0.001486,0.840297,0.873702,0.873594,0.001741,0.871470,0.002512,0.896352,0.003515,0.962516,0.004490,0.841591,0.006067,0.861545,0.009438,0.881260,0.024953,0.811532,0.011445,0.911313,0.004373,0.697460,0.022774,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+212,classification,task2,GRU,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.857762,0.008894,0.839119,0.874037,0.875042,0.005150,0.873391,0.004170,0.914546,0.004198,0.963686,0.002835,0.854129,0.034047,0.855570,0.017340,0.880006,0.028668,0.812327,0.006581,0.914667,0.004967,0.667168,0.020757,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+213,classification,task2,LSTM,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.837182,,0.814392,0.858635,0.861727,,0.858213,,0.900000,,0.959569,,0.785047,,0.840580,,0.855856,,0.804631,,0.899371,,0.652406,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+214,classification,task2,LSTM,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.823990,0.013317,0.804430,0.841007,0.848810,0.007157,0.845917,0.005887,0.884622,0.010212,0.962520,0.007794,0.770674,0.084392,0.827286,0.044821,0.850886,0.003169,0.780503,0.017433,0.884867,0.013105,0.630564,0.033344,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+215,classification,task2,LSTM,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.819423,0.010958,0.801174,0.836542,0.844149,0.011227,0.841499,0.011993,0.889254,0.007759,0.950312,0.013969,0.790067,0.023480,0.800745,0.010093,0.840213,0.025154,0.776746,0.012398,0.881762,0.017789,0.626284,0.017587,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+216,classification,task2,RNN,temporal_ood,mean_pool_july,1,1735,,,,,,,,,,,,,0.705950,,0.676987,0.732765,0.743642,,0.735447,,0.822857,,0.884393,,0.712644,,0.644628,,0.696035,,0.686981,,0.763889,,0.436170,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+217,classification,task2,RNN,temporal_ood,packed_last_token,3,1735,,,,,,,,,,,,,0.436079,0.031194,0.414710,0.455461,0.491592,0.032592,0.479923,0.039364,0.644029,0.049668,0.760377,0.018281,0.417081,0.059491,0.315115,0.046400,0.317737,0.045987,0.440265,0.053833,0.296158,0.105385,0.297873,0.033398,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+218,classification,task2,RNN,temporal_ood,repo_last_hidden,3,1735,,,,,,,,,,,,,0.140515,0.003453,0.127754,0.153671,0.176606,0.001502,0.208838,0.008972,0.044725,0.014603,0.405002,0.031441,0.152113,0.005345,0.082756,0.017631,0.025132,0.024080,0.118238,0.010651,0.224933,0.022286,0.071221,0.030068,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+219,classification,task2,SVM,temporal_ood,full_text,3,1735,,,,,,,,,,,,,0.782637,0.000000,0.757663,0.805714,0.823368,0.000000,0.820173,0.000000,0.845588,0.000000,0.955345,0.000000,0.672414,0.000000,0.782609,0.000000,0.725664,0.000000,0.818436,0.000000,0.801887,0.000000,0.659155,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+220,classification,task2,SVM,temporal_ood,repo_trunc2000,3,1735,,,,,,,,,,,,,0.799019,0.000000,0.773378,0.822190,0.838410,0.000000,0.836311,0.000000,0.857671,0.000000,0.958501,0.000000,0.683761,0.000000,0.805755,0.000000,0.730594,0.000000,0.822715,0.000000,0.837500,0.000000,0.695652,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+221,classification,task2,SecBERT,temporal_ood,full_64413,2,1735,,,,,,,,,,,,,0.889807,0.004443,0.871872,0.906089,0.910289,0.001463,0.908934,0.001630,0.948641,0.004594,0.981965,0.000894,0.894912,0.020051,0.837356,0.005689,0.891802,0.014119,0.867003,0.005863,0.939820,0.002991,0.756956,0.003486,,,,,,SUPERSEDED by full_64413_l40s (mini MPS run stopped after 2 seeds); not reported
+222,classification,task2,SecBERT,temporal_ood,full_64413_final_epoch,2,1735,,,,,,,,,,,,,0.889807,0.004443,0.871423,0.906251,0.910289,0.001463,0.908934,0.001630,0.948641,0.004594,0.981965,0.000894,0.894912,0.020051,0.837356,0.005689,0.891802,0.014119,0.867003,0.005863,0.939820,0.002991,0.756956,0.003486,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+223,classification,task2,SecBERT,temporal_ood,july_protocol,1,1735,,,,,,,,,,,,,0.861746,,0.841157,0.881863,0.888286,,0.886455,,0.916221,,0.981333,,0.811881,,0.827586,,0.887892,,0.832117,,0.934985,,0.701950,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+224,classification,task2,SecBERT,temporal_ood,july_protocol_final_epoch,1,1735,,,,,,,,,,,,,0.861746,,0.840911,0.881784,0.888286,,0.886455,,0.916221,,0.981333,,0.811881,,0.827586,,0.887892,,0.832117,,0.934985,,0.701950,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+225,classification,task2,SecBERT,temporal_ood,subsample15000,3,1735,,,,,,,,,,,,,0.852493,0.006532,0.832531,0.870131,0.881591,0.001693,0.880500,0.001450,0.923258,0.001718,0.979920,0.001341,0.815004,0.035949,0.812301,0.019546,0.870186,0.001405,0.825948,0.004848,0.927020,0.005439,0.666306,0.014230,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+226,classification,task2,SecBERT,temporal_ood,subsample15000_final_epoch,3,1735,,,,,,,,,,,,,0.852493,0.006532,0.832847,0.871765,0.881591,0.001693,0.880500,0.001450,0.923258,0.001718,0.979920,0.001341,0.815004,0.035949,0.812301,0.019546,0.870186,0.001405,0.825948,0.004848,0.927020,0.005439,0.666306,0.014230,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+227,classification,task2,SecureBERT,temporal_ood,july_protocol,1,1735,,,,,,,,,,,,,0.906458,,0.889957,0.922120,0.915324,,0.914697,,0.933333,,0.982690,,0.927273,,0.890511,,0.907407,,0.855895,,0.945568,,0.808989,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+228,classification,task2,SecureBERT,temporal_ood,july_protocol_final_epoch,1,1735,,,,,,,,,,,,,0.906458,,0.888995,0.921348,0.915324,,0.914697,,0.933333,,0.982690,,0.927273,,0.890511,,0.907407,,0.855895,,0.945568,,0.808989,,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+229,classification,task2,SecureBERT,temporal_ood,subsample15000,3,1735,,,,,,,,,,,,,0.892003,0.008202,0.874834,0.906882,0.906882,0.005123,0.906052,0.005498,0.929031,0.002558,0.982720,0.000027,0.895685,0.005885,0.852007,0.042710,0.895019,0.011207,0.854661,0.000675,0.926794,0.010331,0.800105,0.019933,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+230,classification,task2,SecureBERT,temporal_ood,subsample15000_final_epoch,3,1735,,,,,,,,,,,,,0.896737,0.006145,0.880416,0.911365,0.910081,0.003190,0.909510,0.003506,0.929765,0.001422,0.981009,0.002951,0.899021,0.010101,0.868934,0.031081,0.898035,0.015589,0.859897,0.009744,0.931980,0.002653,0.805254,0.012691,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+231,classification,task2,TF-IDF + LR,temporal_ood,full_text,3,1735,,,,,,,,,,,,,0.769607,0.000000,0.744982,0.794748,0.805615,0.000000,0.801153,0.000000,0.812500,0.000000,0.935351,0.000000,0.735849,0.000000,0.735294,0.000000,0.686567,0.000000,0.790569,0.000000,0.805471,0.000000,0.655257,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+232,classification,task2,TF-IDF + LR,temporal_ood,repo_trunc2000,3,1735,,,,,,,,,,,,,0.771722,0.000000,0.744216,0.795243,0.812188,0.000000,0.807493,0.000000,0.823529,0.000000,0.934813,0.000000,0.685185,0.000000,0.759124,0.000000,0.690355,0.000000,0.788540,0.000000,0.835366,0.000000,0.656863,0.000000,,,,,,mean (SD) over seeds; CI = test bootstrap of the seed-mean macro-F1
+233,classification,task2,SecBERT,temporal_ood,full_64413_l40s,3,1735,,,,,,,,,,,,,0.898588,0.000662,,,0.915883,0.002037,0.914697,0.001997,0.952171,0.003266,0.983037,0.003082,0.904004,0.005895,0.870553,0.013331,0.905553,0.004207,0.877821,0.003546,0.942305,0.003894,0.753261,0.013452,,,,,,"NVIDIA L40S; all 64,413 training rows; best epoch by validation; mean (SD) over seeds, no CI"
+234,classification,task2,SecureBERT,temporal_ood,full_64413_l40s,3,1735,,,,,,,,,,,,,0.903025,0.006429,,,0.919465,0.001365,0.918348,0.001450,0.944029,0.008460,0.986194,0.002012,0.899418,0.026812,0.873625,0.032431,0.893997,0.011008,0.877662,0.005076,0.943934,0.001888,0.805338,0.007375,,,,,,"NVIDIA L40S; all 64,413 training rows; best epoch by validation; mean (SD) over seeds, no CI"
+235,classification,task2,CySecBERT,temporal_ood,full_64413_l40s,3,1735,,,,,,,,,,,,,0.901197,0.010751,,,0.919476,0.005665,0.918732,0.005677,0.949770,0.003967,0.982673,0.002321,0.877216,0.027643,0.869849,0.015134,0.900587,0.026681,0.879497,0.003673,0.941241,0.002367,0.808740,0.009585,,,,,,"NVIDIA L40S; all 64,413 training rows; best epoch by validation; mean (SD) over seeds, no CI"
+236,retrieval,task3,BGE-base-en-v1.5,b6_zero_shot,primary,1,1898,0.667018,,,0.798209,0.828240,0.725673,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,B6 harness zero-shot (must reproduce the audit's as_released row)
+237,retrieval,task3,BGE-base-en-v1.5,b6_finetuned,primary,3,1898,0.692835,,,0.841588,0.886898,0.757124,0.740217,0.774132,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,fine-tuned on Task 3 train; mean over seeds (MRR SD 0.0047); CI = bootstrap of seed-mean MRR@10
+238,paired_delta,task3,BGE-base-en-v1.5 fine-tuned - zero-shot,b6,mrr,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.031452,0.019103,0.043828,,,excludes zero
+239,retrieval,task3,all-MiniLM-L6-v2,b6_zero_shot,primary,1,1898,0.670179,,,0.787671,0.819810,0.722305,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,B6 harness zero-shot (must reproduce the audit's as_released row)
+240,retrieval,task3,all-MiniLM-L6-v2,b6_finetuned,primary,3,1898,0.688093,,,0.836670,0.871970,0.749806,0.732431,0.766941,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,fine-tuned on Task 3 train; mean over seeds (MRR SD 0.0022); CI = bootstrap of seed-mean MRR@10
+241,paired_delta,task3,all-MiniLM-L6-v2 fine-tuned - zero-shot,b6,mrr,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.027501,0.016313,0.039052,,,excludes zero
+242,retrieval,task1,BM25,stratum_overlap,primary,1,918,0.921569,,,,0.978214,0.942023,0.928257,0.955123,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+243,retrieval,task1,BM25,stratum_no_overlap,primary,1,1072,0.315299,,,,0.489739,0.373329,0.346549,0.400287,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+244,retrieval,task1,all-MiniLM-L6-v2,stratum_overlap,primary,1,918,0.897603,,,,0.966231,0.924939,0.909495,0.939222,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+245,retrieval,task1,all-MiniLM-L6-v2,stratum_no_overlap,primary,1,1072,0.447761,,,,0.674440,0.523167,0.496381,0.549883,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+246,retrieval,task1,all-mpnet-base-v2,stratum_overlap,primary,1,918,0.861656,,,,0.952070,0.898594,0.880891,0.915406,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+247,retrieval,task1,all-mpnet-base-v2,stratum_no_overlap,primary,1,1072,0.423507,,,,0.655784,0.497081,0.469388,0.524488,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+248,retrieval,task1,BGE-base-en-v1.5,stratum_overlap,primary,1,918,0.881264,,,,0.969499,0.915851,0.900255,0.930992,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+249,retrieval,task1,BGE-base-en-v1.5,stratum_no_overlap,primary,1,1072,0.458022,,,,0.696828,0.541323,0.514842,0.567935,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+250,retrieval,task1,E5-base-v2,stratum_overlap,primary,1,918,0.862745,,,,0.952070,0.898723,0.880989,0.915269,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+251,retrieval,task1,E5-base-v2,stratum_no_overlap,primary,1,1072,0.466418,,,,0.713619,0.547797,0.521501,0.574435,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+252,retrieval,task1,Hybrid BM25+mpnet,stratum_overlap,primary,1,918,0.970588,,,,0.992375,0.980610,0.972622,0.987654,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+253,retrieval,task1,Hybrid BM25+mpnet,stratum_no_overlap,primary,1,1072,0.429104,,,,0.575560,0.480171,0.451718,0.507377,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+254,retrieval,task3,BM25,stratum_overlap,primary,1,911,0.923161,,,,0.979144,0.943224,0.929767,0.956249,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+255,retrieval,task3,BM25,stratum_no_overlap,primary,1,987,0.339412,,,,0.519757,0.398987,0.369988,0.427081,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+256,retrieval,task3,all-MiniLM-L6-v2,stratum_overlap,primary,1,911,0.899012,,,,0.967069,0.926375,0.910898,0.940945,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+257,retrieval,task3,all-MiniLM-L6-v2,stratum_no_overlap,primary,1,987,0.458967,,,,0.683891,0.533948,0.505540,0.562565,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+258,retrieval,task3,all-mpnet-base-v2,stratum_overlap,primary,1,911,0.866081,,,,0.954995,0.902892,0.885867,0.919404,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+259,retrieval,task3,all-mpnet-base-v2,stratum_no_overlap,primary,1,987,0.444782,,,,0.674772,0.518889,0.490654,0.546764,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+260,retrieval,task3,BGE-base-en-v1.5,stratum_overlap,primary,1,911,0.883644,,,,0.970362,0.917583,0.901811,0.932917,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+261,retrieval,task3,BGE-base-en-v1.5,stratum_no_overlap,primary,1,987,0.467072,,,,0.697062,0.548540,0.520772,0.576750,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+262,retrieval,task3,E5-base-v2,stratum_overlap,primary,1,911,0.863886,,,,0.953897,0.900140,0.882247,0.917179,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+263,retrieval,task3,E5-base-v2,stratum_no_overlap,primary,1,987,0.478217,,,,0.715299,0.556193,0.528431,0.584201,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+264,retrieval,task3,Hybrid BM25+mpnet,stratum_overlap,primary,1,911,0.971460,,,,0.993414,0.981559,0.973801,0.988511,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries with a >= 100-char verbatim span shared with the gold description
+265,retrieval,task3,Hybrid BM25+mpnet,stratum_no_overlap,primary,1,987,0.444782,,,,0.594732,0.497339,0.468609,0.526924,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,as_released ranks restricted to queries without a >= 100-char verbatim span shared with the gold description
+266,paired_delta,task2,CySecBERT - SecureBERT,temporal_ood,macro_f1,,1735,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.006122,-0.003473,0.016039,,,INCLUDES ZERO
+267,diagnostic,corpus,-,target_contains_own_cve,-,,340536,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.001248,425,
+268,diagnostic,task1,-,query_contains_gold_cve,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.247739,493,
+269,diagnostic,task1,-,query_contains_any_cve,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.279899,557,
+270,diagnostic,task1,-,query_contains_url,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.490955,977,
+271,diagnostic,task1,-,source::github_advisory,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.520603,1036,
+272,diagnostic,task1,-,source::exploitdb,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.215578,429,
+273,diagnostic,task1,-,source::cisa_kev,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.182412,363,
+274,diagnostic,task1,-,source::zeroscience,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.051256,102,
+275,diagnostic,task1,-,source::seebug,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.019095,38,
+276,diagnostic,task1,-,source::hackerone,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.008543,17,
+277,diagnostic,task1,-,source::0x00sec,-,,1990,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.002513,5,
+278,diagnostic,task3,-,query_contains_gold_cve,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.212856,404,
+279,diagnostic,task3,-,query_contains_any_cve,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.246575,468,
+280,diagnostic,task3,-,query_contains_url,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.467334,887,
+281,diagnostic,task3,-,source::github_advisory,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.545838,1036,
+282,diagnostic,task3,-,source::cisa_kev,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.191254,363,
+283,diagnostic,task3,-,source::exploitdb,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.177555,337,
+284,diagnostic,task3,-,source::zeroscience,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.053741,102,
+285,diagnostic,task3,-,source::seebug,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.020021,38,
+286,diagnostic,task3,-,source::hackerone,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.008957,17,
+287,diagnostic,task3,-,source::0x00sec,-,,1898,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.002634,5,
+288,diagnostic,fp_cve,-,cyrillic_heavy_share,-,,1964,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.302444,594,
+289,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
+290,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
+291,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
+292,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
+293,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
+294,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
+295,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
+296,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
+297,diagnostic,task2,-,rnn_vocab_size_minfreq3,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,175062,,
+298,diagnostic,task2,-,share_truncated_at_300_tokens_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0.318732,,
+299,data_check,task1_cve_linkage,-,cve_overlap_train_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,9,,
+300,data_check,task1_cve_linkage,-,cve_overlap_train_val,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,26,,
+301,data_check,task1_cve_linkage,-,cve_overlap_val_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,10,,
+302,data_check,task1_cve_linkage,-,test_exact_dup_of_train_text,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
+303,data_check,task1_cve_linkage,-,test_internal_exact_dups,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,8,,
+304,data_check,task1_cve_linkage,-,duplicate_ids_in_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,8,,
+305,data_check,task3_temporal_generalization,-,cve_overlap_train_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
+306,data_check,task3_temporal_generalization,-,cve_overlap_train_val,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
+307,data_check,task3_temporal_generalization,-,cve_overlap_val_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
+308,data_check,task3_temporal_generalization,-,test_exact_dup_of_train_text,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0,,
+309,data_check,task3_temporal_generalization,-,test_internal_exact_dups,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6,,
+310,data_check,task3_temporal_generalization,-,duplicate_ids_in_test,-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,6,,

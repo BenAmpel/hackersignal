@@ -286,6 +286,21 @@ def main():
              delta=float(per_q_ft.mean() - per_q_zs.mean()), delta_ci_lo=dlo, delta_ci_hi=dhi,
              note="excludes zero" if dlo > 0 or dhi < 0 else "INCLUDES ZERO")
 
+    # ---------- B5: verbatim-overlap strata (query shares a >= 100-char span with its gold description) ----------
+    b5_rng = np.random.default_rng([SEED, 5])  # own stream: leaves the shared rng (and every other CI) untouched
+    for r in rows("overlap_strata"):
+        z = np.load(OUT / r["per_query_file"]); fl = np.load(OUT / r["flag_file"])
+        assert (z["qid"] == fl["qid"]).all()
+        sel = fl["overlap"] if r["stratum"] == "overlap" else ~fl["overlap"]
+        rk = z["rank"][sel]
+        assert len(rk) == r["n"] and abs(float(mrr10(rk).mean()) - r["mrr"]) < 1e-12
+        lo, hi = boot_mean(mrr10(rk), N_BOOT_MRR, b5_rng)
+        emit(prov_src={k: r.get(k) for k in ("git_sha", "per_query_file", "flag_file", "k_chars", "written_at")},
+             result_type="retrieval", task=r["task"], model=r["model"], condition=f"stratum_{r['stratum']}",
+             variant="primary", seeds=1, n=r["n"], r_at_1=r["r_at_1"], r_at_10=r["r_at_10"], mrr=r["mrr"],
+             mrr_ci_lo=lo, mrr_ci_hi=hi,
+             note=f"as_released ranks restricted to queries {'with' if r['stratum'] == 'overlap' else 'without'} a >= {r['k_chars']}-char verbatim span shared with the gold description")
+
     prim = {m: (m, T2_PRIMARY[FAMILY[m]]) for m in T2_MODELS if (m, T2_PRIMARY[FAMILY[m]]) in preds}
     if len(prim) >= 2:
         f1m = {m: np.mean([f1_score(y, p, average="macro") for y, p in preds[k]]) for m, k in prim.items()}
