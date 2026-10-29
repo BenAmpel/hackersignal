@@ -154,7 +154,10 @@ and the main-text pagination is unchanged. **It has not been applied.**
 5. Bib entries for SecureBERT (SecureComm 2022, published 2023) and CySecBERT (ACM TOPS 27(2), 2024) follow the
    planner session's Crossref check.
 6. (Done: full-64K runs from the GSU cluster, NVIDIA L40S, reported as a separate appendix table.)
-6b. (Done: B6 in the Task 3 text and Appendix D Table 10. Not in the abstract: one more sentence there pushed
-    the Limitations past p. 10. Ben may want it in the abstract instead of something else.)
+6b. (Done: B6 in the Task 3 text and Appendix D Table 10. Ben, 10/28 20:30: keep it out of the abstract, and the two
+    page-fit fixes are approved (duplicate Conclusion sentence cut; radar figure at 0.88\linewidth).)
+6c. Abstract re-sync: the OpenReview abstract and the public poster page (neurips.cc/virtual/2026/poster/139194)
+    still show the submitted abstract (64 sources, 1990–2026, anonymous HF URL). Poster moved to Atlanta Poster
+    Session 1, Wed Dec 9, 10:00 AM–1:00 PM ET; no repo or paper text names the session.
 7. The planner's Table 5 draft has two rounding slips against results.csv: GRU SD is .001 (0.00149), not .002;
    SecBERT macro-F1 is .852 (0.85249), not .853. Every other value agrees.
