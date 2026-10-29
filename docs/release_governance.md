@@ -88,6 +88,11 @@ release disallows:
   on HackerSignal-trained model outputs.
 - Republishing source text from `metadata_or_pointer_only` sources.
 
+Author pseudonyms are keyed HMAC-SHA-256 digests under an unpublished build-time key that is rotated across major
+versions (`scripts/rekey_author_hmac.py`). Without the key, hashing candidate usernames does not reproduce a released
+pseudonym. The key holder can still test candidate names, pseudonyms remain linkable within a source, and post text
+may carry self-identifying content, so the prohibition on de-anonymization above still applies.
+
 ## Governed Public Export
 
 The command below enforces the source manifest before public upload:

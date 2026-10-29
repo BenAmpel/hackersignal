@@ -36,7 +36,7 @@ It is a near-complete collection for sources with public APIs or structured feed
 - `text_raw`: source text before release cleaning, where available
 - `timestamp`: ISO 8601 publication datetime (UTC)
 - `forum_id`: source identifier string
-- `author_hash`: SHA-256 hash of source + author identifier (pseudonymised)
+- `author_hash`: keyed HMAC-SHA-256 pseudonym of the source-namespaced author identifier (unpublished key; consistent within a release version)
 - `thread_url`, `thread_title`, `section`: preserved when exposed by the source
 
 **Is there a label or target associated with each instance?**
@@ -85,7 +85,7 @@ Scripts were written and executed by the dataset authors. Collection occurred be
 Collection scripts ran between January 2026 and April 2026. The audited release contains timestamped records spanning 1988 to April 2026, with the bulk of structured NVD records beginning in 2002.
 
 **Were any ethical review processes conducted?**
-The dataset consists of publicly accessible OSINT data, but the release treats public accessibility as insufficient by itself. No personally identifiable information was deliberately collected. Author strings are pseudonymised via SHA-256 hashing. No IRB review was required for collection of public OSINT data under the authors' institution's guidelines; however, researchers who build on HackerSignal for studies involving inferences about individuals should consult their own IRB.
+The dataset consists of publicly accessible OSINT data, but the release treats public accessibility as insufficient by itself. No personally identifiable information was deliberately collected. Author strings are pseudonymised with keyed HMAC-SHA-256 under an unpublished build-time key, rotated across major versions, so hashing candidate usernames does not reproduce a released pseudonym. Residual risk: pseudonyms stay consistent within a source, so one author's posts remain linkable to each other, and post text can still contain self-identifying content (signatures, handles, contact details). No IRB review was required for collection of public OSINT data under the authors' institution's guidelines; however, researchers who build on HackerSignal for studies involving inferences about individuals should consult their own IRB.
 
 **Did the individuals whose data is collected consent to collection?**
 Individuals did not provide study-specific consent. Participants posted to public internet forums or public reporting/advisory channels, and all sources were publicly indexed or exposed through public APIs. The release therefore minimizes identity signals, preserves provenance, and applies source-specific release modes rather than assuming that public visibility alone justifies unrestricted redistribution.
@@ -101,7 +101,7 @@ Individuals did not provide study-specific consent. Participants posted to publi
 - Encoding errors replaced with the Unicode replacement character (U+FFFD)
 - Source provenance normalized into `source_dataset`, `source_layer`, `forum_id`, optional thread/category fields, and release-mode manifests
 - Exact duplicates removed across sources by normalized-text SHA-256 fingerprint
-- Near-duplicates removed via MinHash-LSH (128 permutations, 3-char k-shingles, Jaccard > 0.7)
+- Near-duplicates estimated, not removed: 64-bit SimHash over 5-token shingles on a deterministic 3% sample (Hamming distance <= 3) puts about 8.2% of retained rows (~609K) in near-duplicate clusters; users can apply their own threshold
 - Reviewer-facing audit packets and leakage/overlap/quality reports are generated under `data/audits/`
 
 **Was the raw data saved?**
