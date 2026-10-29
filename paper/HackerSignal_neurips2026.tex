@@ -348,11 +348,11 @@ Hybrid BM25+mpnet & \textbf{0.698} & 0.772 & 0.786 & \textbf{0.730} \\
 
 Identical retrieval formulation to Task~1, but with a strict CVE-disjointness constraint: $C_{\text{train}} \cap C_{\text{test}} = \emptyset$, where $C_s = \{c^*_i : q_i \in \text{split}~s\}$ is the set of gold CVE targets in split $s$. Splits are defined by CVE publication year rather than query timestamp: train uses CVEs published before 2022, validation uses CVEs published in 2022--2023, and test uses CVEs published in 2024+. This ensures that models cannot memorize vulnerability descriptions seen during training and must generalize to wholly unseen vulnerabilities. We use the same metrics and models as Task~1 and show the results of Task~3 in Table~\ref{tab:task3-results}.
 
-Under the CVE-disjoint evaluation, the hybrid has the highest MRR (0.730), but its difference from BGE-base-v1.5 (0.726) is not significant (paired $\Delta$MRR 0.004, 95\% CI [$-$0.012, 0.020]). Every model scores slightly higher than on Task~1 (e.g., BM25 MRR 0.660 vs.\ 0.636). The Task~3 test queries are a subset of the Task~1 test queries, so the two tasks differ in the constraint they place on training rather than in the difficulty of the evaluation.
+Under the CVE-disjoint evaluation, the hybrid has the highest MRR (0.730), but its difference from BGE-base-v1.5 (0.726) is not significant (paired $\Delta$MRR 0.004, 95\% CI [$-$0.012, 0.020]). Every model scores slightly higher than on Task~1 (e.g., BM25 MRR 0.660 vs.\ 0.636). The Task~3 test queries are a subset of the Task~1 test queries, so the two tasks differ in the constraint they place on training rather than in the difficulty of the evaluation. Fine-tuning BGE-base-v1.5 on the Task~3 training pairs raises test MRR to 0.757 ($\Delta$ 0.031, 95\% CI [0.019, 0.044]; Table~\ref{tab:b6}).
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/baseline_results_summary.pdf}
+\includegraphics[width=0.88\linewidth]{figures/baseline_results_summary.pdf}
 \caption{Radar chart summary of baseline performance across all three tasks.}
 \label{fig:baselines-summary}
 \end{figure}
@@ -375,7 +375,7 @@ Where a source's terms in Table~\ref{tab:collection-details} conflict with the r
 \section{Conclusion}
 \label{sec:discussion}
 
-HackerSignal links 7.45M documents from 64 sources across the CVE lifecycle with temporal splits, CVE-disjoint evaluation, and provenance-aware governance. Our three-task benchmark and model ladder (BM25 through dense and hybrid retrieval at MRR~0.71, security-domain transformers at macro-F1~0.90 for 8-class exploit type classification) establishes baselines for cross-source CVE grounding, exploit type classification, and prospective generalization to unseen vulnerabilities. The hacker-community subcorpus also supports exploit code summarization, topic modeling, community network analysis, and trend detection.
+HackerSignal links 7.45M documents from 64 sources across the CVE lifecycle with temporal splits, CVE-disjoint evaluation, and provenance-aware governance. Our three-task benchmark and model ladder (BM25 through dense and hybrid retrieval at MRR~0.71, security-domain transformers at macro-F1~0.90 for 8-class exploit type classification) establishes baselines for cross-source CVE grounding, exploit type classification, and prospective generalization to unseen vulnerabilities.
 
 We note three limitations. First, CVE linkages are metadata-derived (source URLs, CVE regex extraction) rather than expert-adjudicated. The two-annotator audit finds 79.5\% linkage precision overall, ranging from 100\% (CVEfixes, GitHub Advisory) to 20.0\% (ZeroScience), so we report per-source reliability (Table~\ref{tab:source-reliability}). Second, the 6.97M-row hacker-community layer yields only about 2,000 CVE-linked records (0.03\% of the layer). Pre-disclosure discussion that never names a CVE cannot be evaluated without ground truth linking a post to a later disclosure. Implicit discourse-to-CVE grounding is therefore the main research direction the release enables, and the masked forum-post pilot (Section~\ref{sec:pilot}) gives it a first baseline. Third, 30.2\% of CVE-linked community records are Cyrillic-heavy, so discourse grounding in this corpus is partly a cross-lingual problem, and we report no cross-lingual baselines~\citep{ebrahimi2020crosslingual}. We also leave large language model rerankers and retrieval-augmented generation, which may score higher at far greater cost, to future work.
 
@@ -671,6 +671,25 @@ Table~\ref{tab:task2-full} repeats the three transformers with all 64,413 traini
 SecBERT & 0.852{\scriptsize$\pm$0.007} & 0.899{\scriptsize$\pm$0.001} & 0.75 & 0.90 & 0.88 \\
 SecureBERT & 0.892{\scriptsize$\pm$0.008} & 0.903{\scriptsize$\pm$0.006} & 0.81 & 0.90 & 0.88 \\
 CySecBERT & 0.898{\scriptsize$\pm$0.003} & 0.901{\scriptsize$\pm$0.011} & 0.81 & 0.88 & 0.88 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Fine-tuned bi-encoders (Task 3).}
+We fine-tune BGE-base-v1.5 and MiniLM-L6-v2 on the Task~3 training split: 56,833 (query, gold NVD description) pairs whose CVEs were published before 2022, both sides truncated to 384 characters, dropping pairs whose two texts are identical. Training runs one epoch of multiple-negatives ranking loss with in-batch negatives (batch 64 computed in mini-batches of 16, scale 20, no repeated CVE within a batch), learning rate $2\times10^{-5}$, 10\% warmup, fp32, seeds 42--44, on the Apple M5 Pro. No model selection is done: the validation split (2022--2023 CVEs) is reported in the released results but not used. Evaluation follows the zero-shot protocol above over all 340,536 descriptions (Table~\ref{tab:b6}).
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Task 3 test MRR@10 for bi-encoders zero-shot and fine-tuned on the Task~3 training split. Fine-tuned: mean $\pm$ SD over three seeds, with a bootstrap 95\% CI of the seed-mean MRR; $\Delta$ is the paired bootstrap difference from zero-shot (10,000 resamples).}
+\label{tab:b6}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Model} & \textbf{Zero-shot} & \textbf{Fine-tuned} & \textbf{95\% CI} & \textbf{$\Delta$MRR [95\% CI]} & \textbf{R@1} \\
+\midrule
+BGE-base-v1.5 & 0.726 & 0.757{\scriptsize$\pm$0.005} & [0.740, 0.774] & 0.031 [0.019, 0.044] & 0.667 $\to$ 0.693 \\
+MiniLM-L6-v2 & 0.722 & 0.750{\scriptsize$\pm$0.002} & [0.732, 0.767] & 0.028 [0.016, 0.039] & 0.670 $\to$ 0.688 \\
 \bottomrule
 \end{tabular}
 \end{table}
