@@ -2,7 +2,7 @@
 
 # HackerSignal
 
-**A Large-Scale Multi-Source Dataset Linking Hacker Community Discourse to the CVE Vulnerability Lifecycle**
+**A Multi-Source, CVE-Linked Corpus and Prospective Benchmark for Cyber Threat Intelligence**
 
 [![NeurIPS 2026](https://img.shields.io/badge/NeurIPS%202026-Evaluations%20%26%20Datasets%20Track-8A2BE2)](https://neurips.cc/Conferences/2026)
 [![arXiv](https://img.shields.io/badge/arXiv-2605.03158-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2605.03158)
@@ -225,8 +225,8 @@ If you use HackerSignal, please cite:
 
 ```bibtex
 @inproceedings{ampel2026hackersignal,
-  title     = {{HackerSignal}: A Large-Scale Multi-Source Dataset Linking Hacker Community Discourse
-               to the {CVE} Vulnerability Lifecycle},
+  title     = {{HackerSignal}: A Multi-Source, {CVE}-Linked Corpus and Prospective Benchmark
+               for Cyber Threat Intelligence},
   author    = {Ampel, Benjamin M. and Samtani, Sagar},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS),
                Evaluations and Datasets Track},
