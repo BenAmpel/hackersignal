@@ -52,7 +52,8 @@ HackerSignal is published in the **NeurIPS 2026 Evaluations & Datasets Track**. 
 | Hacker-community layer | 6,966,014 posts (largest forums: Gayanku, Antichat, Evolution, AntiOnline, HackForums) |
 | Vulnerability reference | 340,536 NVD CVE descriptions (the retrieval corpus for Tasks 1 and 3) |
 | Other layers | Exploit archives, exploit Q&A, advisories, bug-bounty disclosures, fix commits, CISA KEV |
-| Languages | Mostly English, with Russian and Chinese forum content |
+| Languages | English plus substantial non-English content: Russian (antichat, 1.82M posts), Persian (persiantools, 280K), and others; 30.2% of CVE-linked forum posts are Cyrillic-heavy |
+| Time span | 1988–2026 |
 | Splits | Temporal: test data postdate training data in every task |
 | Metadata | Croissant JSON-LD, Datasheet for Datasets, source release manifest |
 | License | Data CC BY 4.0 ([LICENSE-DATA](LICENSE-DATA)), code MIT ([LICENSE](LICENSE)); per-source terms in [release governance](docs/release_governance.md) |
@@ -76,7 +77,45 @@ HackerSignal is published in the **NeurIPS 2026 Evaluations & Datasets Track**. 
 
 The baseline ladder covers BM25, four dense bi-encoders (all-MiniLM-L6-v2, all-mpnet-base-v2, BGE-base-en-v1.5,
 E5-base-v2) and a BM25 + dense hybrid for retrieval, and Decision Tree, TF-IDF + logistic regression, linear SVM,
-RNN, GRU, LSTM, BiLSTM and SecBERT for classification. Baseline scores are reported in the paper (Tables 4–6).
+RNN, GRU, LSTM, BiLSTM, SecBERT, SecureBERT and CySecBERT for classification. Scores are in
+[Baseline results](#baseline-results) below and in the paper (Tables 5–7).
+
+## Baseline results
+
+Camera-ready numbers, rebuilt end to end from the released data on one Apple M5 Pro (PyTorch 2.14.1, MPS).
+Every value below is generated from `results/camera_ready/results.csv`; per-run seeds, model revisions and data
+hashes are in `results/camera_ready/provenance.json`. Retrieval uses zero-shot encoders over all 340,536 NVD
+descriptions, and MRR is MRR@10. The forum-post pilot masks every CVE string in the 1,964 CVE-linked
+hacker-community posts and retrieves the cited CVE from the same corpus.
+
+| Model | Task 1 R@1 | Task 1 MRR | Task 3 R@1 | Task 3 MRR | Forum-post pilot MRR |
+|---|---:|---:|---:|---:|---:|
+| BM25 | 0.595 | 0.636 | 0.620 | 0.660 | 0.064 |
+| all-MiniLM-L6-v2 | 0.655 | 0.709 | 0.670 | 0.722 | 0.073 |
+| all-mpnet-base-v2 | 0.626 | 0.682 | 0.647 | 0.703 | 0.065 |
+| BGE-base-en-v1.5 | 0.653 | **0.714** | 0.667 | 0.726 | 0.078 |
+| E5-base-v2 | 0.649 | 0.710 | 0.663 | 0.721 | 0.072 |
+| Hybrid BM25 + mpnet | 0.679 | 0.711 | 0.698 | **0.730** | – |
+
+The top two models are statistically tied on both tasks (paired bootstrap, Task 1 ΔMRR 0.003, 95% CI [-0.013, 0.019];
+Task 3 ΔMRR 0.004, 95% CI [-0.012, 0.020]).
+
+Task 2 (exploit type classification, 1,735 test exploits). Transformers are fine-tuned on a 15K training subsample.
+
+| Model | Macro-F1 (mean ± SD, 3 seeds) | 95% CI |
+|---|---:|---:|
+| Decision Tree | 0.702 ± 0.007 | [0.677, 0.727] |
+| TF-IDF + LR | 0.772 ± 0.000 | [0.744, 0.795] |
+| SVM | 0.799 ± 0.000 | [0.773, 0.822] |
+| RNN | 0.436 ± 0.031 | [0.415, 0.455] |
+| GRU | 0.858 ± 0.001 | [0.840, 0.874] |
+| LSTM | 0.824 ± 0.013 | [0.804, 0.841] |
+| BiLSTM | 0.856 ± 0.003 | [0.837, 0.872] |
+| SecBERT | 0.852 ± 0.007 | [0.833, 0.870] |
+| SecureBERT | 0.892 ± 0.008 | [0.875, 0.907] |
+| CySecBERT | **0.898 ± 0.003** | [0.882, 0.913] |
+
+CySecBERT and SecureBERT do not differ significantly (paired Δ 0.006, 95% CI [-0.003, 0.016]).
 
 ## Quick start
 
