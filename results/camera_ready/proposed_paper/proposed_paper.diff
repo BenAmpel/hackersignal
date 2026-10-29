@@ -1,0 +1,258 @@
+--- current.tex	2026-10-28 09:01:27
++++ proposed.tex	2026-10-28 09:06:49
+@@ -53,7 +53,7 @@
+ 
+ \begin{abstract}
+ 
+-We introduce HackerSignal, a benchmark for temporal out-of-distribution cyber threat intelligence (CTI) and cross-source CVE linkage. HackerSignal aggregates \textbf{7.45 million exact-deduplicated documents} from \textbf{64 public forum/source identifiers} spanning eight source layers and a 36-year window (1990--2026). In contrast to other publicly accessible cybersecurity datasets, HackerSignal is among the first public benchmark datasets that maps the full potential exploit to vulnerability trajectory from hacker community discourse, exploit databases with working and proof of concept exploits, vulnerability advisories, and software fix commits. HackerSignal creates these linkages through a shared CVE identifier space while preserving source-specific release modes to support a range of unique Artificial Intelligence (AI)-enabled cybersecurity analytics tasks. In this paper, we summarize HackerSignal and illustrate three selected benchmark tasks it uniquely supports: (1)~\emph{CVE linkage retrieval} (cross-source temporal out-of-distribution entity grounding); (2)~\emph{exploit type classification} (8-class vulnerability type prediction with temporal OOD evaluation); and (3)~\emph{temporal generalization} (prospective CVE-disjoint evaluation where $C_{\text{train}} \cap C_{\text{test}} = \emptyset$). All tasks use temporal splits to evaluate prospective generalization. We release source-shortcut and leakage diagnostics, manual-audit packets, a datasheet, and a release-governance addendum to support the dissemination of the dataset. HackerSignal's code, data, and Croissant metadata are available at \href{https://huggingface.co/datasets/DatasetSubmission/HackerSignal}{\texttt{hf.co/datasets/DatasetSubmission/HackerSignal}} (data) and \href{https://anonymous.4open.science/r/hackersignal-580F/}{\texttt{anonymous.4open.science/r/hackersignal-580F}} (code).
++We introduce HackerSignal, a benchmark for temporal out-of-distribution cyber threat intelligence (CTI) and cross-source CVE linkage. HackerSignal aggregates \textbf{7.45 million exact-deduplicated documents} from \textbf{64 public forum/source identifiers} spanning eight source layers and a 36-year window (1990--2026). In contrast to other publicly accessible cybersecurity datasets, HackerSignal is among the first public benchmark datasets that maps the full potential exploit to vulnerability trajectory from hacker community discourse, exploit databases with working and proof of concept exploits, vulnerability advisories, and software fix commits. HackerSignal creates these linkages through a shared CVE identifier space while preserving source-specific release modes to support a range of unique Artificial Intelligence (AI)-enabled cybersecurity analytics tasks. In this paper, we summarize HackerSignal and illustrate three selected benchmark tasks it uniquely supports: (1)~\emph{CVE linkage retrieval} (cross-source temporal out-of-distribution entity grounding); (2)~\emph{exploit type classification} (8-class vulnerability type prediction with temporal OOD evaluation); and (3)~\emph{temporal generalization} (prospective CVE-disjoint evaluation where $C_{\text{train}} \cap C_{\text{test}} = \emptyset$). All tasks use temporal splits to evaluate prospective generalization. We release source-shortcut and leakage diagnostics, manual-audit packets, a datasheet, and a release-governance addendum to support the dissemination of the dataset. HackerSignal's code, data, and Croissant metadata are available at \href{https://huggingface.co/datasets/BenAmpel/HackerSignal}{\texttt{hf.co/datasets/BenAmpel/HackerSignal}} (data) and \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}} (code).
+ \end{abstract}
+ 
+ \section{Introduction}
+@@ -65,7 +65,7 @@
+ 
+   \item \textbf{Three benchmark tasks} with temporal train/val/test splits that test progressively harder generalization in (1) cross-source CVE linkage retrieval, (2) 8-class exploit type classification, and (3) CVE-disjoint temporal generalization ($C_{\text{train}} \cap C_{\text{test}} = \emptyset$), accompanied by shortcut/leakage diagnostics.
+ 
+-  \item \textbf{A full model ladder and governance artifacts} from BM25 through four dense bi-encoders (MiniLM, mpnet, BGE, E5), bag-of-words classifiers (Decision Tree, TF-IDF+LR, SVM), recurrent neural networks (RNN, GRU, LSTM, BiLSTM), a domain-specific transformer (SecBERT), and hybrid sparse+dense retrieval, alongside source-shortcut diagnostics, manual-audit packets, and a release-governance addendum.
++  \item \textbf{A full model ladder and governance artifacts} from BM25 through four dense bi-encoders (MiniLM, mpnet, BGE, E5), bag-of-words classifiers (Decision Tree, TF-IDF+LR, SVM), recurrent neural networks (RNN, GRU, LSTM, BiLSTM), three cybersecurity-domain transformers (SecBERT, SecureBERT, CySecBERT), and hybrid sparse+dense retrieval, alongside source-shortcut diagnostics, manual-audit packets, and a release-governance addendum.
+ \end{enumerate}
+ 
+ \noindent Figure~\ref{fig:pipeline} provides an overview of the complete pipeline of the proposed dataset, including eight source layers unified through a shared CVE identifier space, then channeled into three benchmark tasks with temporal controls. Temporal splits are necessary in our context as real CTI systems must generalize to threats that did not exist at training time~\citep{koh2021wilds}. We explicitly audit the dataset for temporal and source leakage~\citep{kapoor2023leakage} because benchmark claims are otherwise easy to inflate (discussed in Section 3).
+@@ -198,7 +198,7 @@
+ \begin{table}[t]
+ \centering
+ \small
+-\caption{Benchmark task summary. Tasks~1 and~3 use temporal splits (train $<$2022, test 2024+) over the full 340K NVD corpus; Task~2 uses an earlier split (train $<$2020, test $\geq$2023).}
++\caption{Benchmark task summary. Task~3 splits by CVE publication year (train $<$2022, val 2022--2023, test 2024+) and Task~1 uses the same test queries by source date (92 of its 1,990 test queries link to CVEs published before 2024), both over the full 340K NVD corpus; Task~2 uses an earlier split (train $<$2020, test $\geq$2023).}
+ \label{tab:task-summary}
+ \begin{tabular}{llrrrr}
+ \toprule
+@@ -208,7 +208,7 @@
+ 2. ETC & 8-class classif. & 64,413 & 4,735 & 1,735 & 70,883 \\
+ 3. TG & CVE-disjoint Retr. & 56,833 & 2,535 & 1,898 & 340,536$^\dagger$ \\
+ \bottomrule
+-\multicolumn{6}{l}{\footnotesize $^\dagger$Same corpus; zero CVE overlap between train/val/test gold sets.}
++\multicolumn{6}{l}{\footnotesize $^\dagger$Same corpus; zero CVE overlap between Task~3 train/val/test gold sets.}
+ \end{tabular}
+ \end{table}
+ 
+@@ -224,19 +224,19 @@
+ \centering
+ \small
+ \setlength{\tabcolsep}{3pt}
+-\caption{Task 1 (CVE-R) test results (1,990 queries, 340K corpus). Bootstrap 95\% intervals on MRR (10,000 resamples) have a half-width of about 0.02; the top two MRR values do not differ significantly.}
++\caption{Task 1 (CVE-R) test results (1,990 queries, 340K corpus). Bootstrap 95\% intervals on MRR@10 (10,000 resamples) have a half-width of about 0.02; the top two MRR values do not differ significantly.}
+ \label{tab:task1-results}
+ \begin{tabular}{lcccc}
+ \toprule
+ \textbf{Model} & \textbf{R@1} & \textbf{R@5} & \textbf{R@10} & \textbf{MRR} \\
+ \midrule
+-BM25 & 0.594 & 0.690 & 0.716 & 0.636 \\
+-MiniLM-L6-v2 & 0.656 & 0.776 & 0.809 & 0.709 \\
+-mpnet-base-v2 & 0.626 & 0.756 & 0.792 & 0.683 \\
+-BGE-base-v1.5 & 0.654 & \textbf{0.789} & 0.822 & \textbf{0.714} \\
+-E5-base-v2 & 0.649 & \textbf{0.789} & \textbf{0.825} & 0.710 \\
++BM25 & 0.595 & 0.688 & 0.715 & 0.636 \\
++MiniLM-L6-v2 & 0.655 & 0.776 & 0.809 & 0.709 \\
++mpnet-base-v2 & 0.626 & 0.756 & 0.792 & 0.682 \\
++BGE-base-v1.5 & 0.653 & \textbf{0.789} & 0.823 & \textbf{0.714} \\
++E5-base-v2 & 0.649 & \textbf{0.789} & \textbf{0.824} & 0.710 \\
+ \midrule
+-Hybrid BM25+mpnet & \textbf{0.678} & 0.755 & 0.770 & 0.712 \\
++Hybrid BM25+mpnet & \textbf{0.679} & 0.753 & 0.768 & 0.711 \\
+ \bottomrule
+ \end{tabular}
+ \vspace{-4pt}
+@@ -244,41 +244,45 @@
+ 
+ We choose baselines across three dense retrieval paradigms. BM25 is an unsupervised lexical baseline that serves as an exact-match ceiling. For dense bi-encoders, we selected four models differing in pre-training and architecture: (1) MiniLM-L6-v2 (speed-optimized, distilled 6-layer), (2) all-mpnet-base-v2 (mean-pooled MPNet with contrastive training on 1B+ pairs), (3) BGE-base-v1.5 (instruction-tuned bi-encoder from BAAI for zero-shot transfer), and (4) E5-base-v2 (weakly-supervised contrastive model with task-specific prompts). These span distilled vs. full-size and supervised vs. weakly supervised training, helping assess the impact of pre-training on CVE retrieval. Hybrid BM25+mpnet reranks the BM25 top-100 candidates with a weighted sum of normalized BM25 and dense cosine scores ($\alpha{=}0.7$ on the dense score), testing their complementarity. We measure Recall@$k$ ($ k= {10}$) and MRR, with results in Table~\ref{tab:task1-results}.
+ 
+-All dense models and the hybrid exceed BM25 (MRR 0.636) and cluster tightly (MRR 0.683--0.714). BGE-base-v1.5 has the highest MRR (0.714), but its difference from the hybrid (0.712) is not significant (paired $\Delta$MRR 0.003, 95\% CI [$-$0.013, 0.019]). No single model dominates: the hybrid leads at R@1 (0.678), and BGE and E5 lead at R@5 and R@10.
++All dense models and the hybrid exceed BM25 (MRR 0.636) and cluster tightly (MRR 0.682--0.714). BGE-base-v1.5 has the highest MRR (0.714), but its difference from the hybrid (0.711) is not significant (paired $\Delta$MRR 0.003, 95\% CI [$-$0.013, 0.019]). No single model dominates: the hybrid leads at R@1 (0.679), and BGE and E5 lead at R@5 and R@10.
+ 
+ \subsection{Task 2: Exploit Type Classification (ETC)}
+ \label{sec:task2}
+ 
+ Given an exploit text $x$, predict its vulnerability type $y \in \mathcal{Y}$ where $|\mathcal{Y}| = 8$ classes: \emph{injection} (SQLi, command/code injection, XXE), \emph{XSS} (reflected, stored, DOM), \emph{memory corruption} (buffer/heap overflow, use-after-free, format string), \emph{denial of service}, \emph{file inclusion} (LFI/RFI, path traversal, arbitrary file operations), \emph{authentication \& access control} (privilege escalation, auth bypass, CSRF, IDOR), \emph{remote code execution} (RCE, deserialization), and \emph{information disclosure} (SSRF, open redirect, data exposure). This taxonomy aligns with CWE top-level categories and prior exploit classification work~\citep{ampel2020dtl,ampel2024misq}. Labels are derived from structured metadata: ExploitDB exploit descriptions and tags, 0day.today exploit type fields, and HackerOne vulnerability type prefixes. The dataset comprises 70,883 labeled exploit texts from these three source families.
+ 
+-We use a temporal out-of-distribution split (train $<$2020, val 2020-2022, test $\geq$2023) so that models must generalize to vulnerabilities and exploits that postdate training. We evaluate a model ladder spanning bag-of-words classifiers (Decision Tree, TF-IDF+LR, linear SVM), recurrent neural networks (RNN, GRU, LSTM, BiLSTM), and a domain-specific transformer (SecBERT~\citep{secbert2022}). We report macro-F1 and per-class F1 for the three hardest classes in Table~\ref{tab:task2-results}.
++We use a temporal out-of-distribution split (train $<$2020, val 2020-2022, test $\geq$2023) so that models must generalize to vulnerabilities and exploits that postdate training. We evaluate a model ladder spanning bag-of-words classifiers (Decision Tree, TF-IDF+LR, linear SVM), recurrent neural networks (RNN, GRU, LSTM, BiLSTM), and three cybersecurity-domain transformers (SecBERT~\citep{secbert2022}, SecureBERT~\citep{aghaei2023securebert}, and CySecBERT~\citep{bayer2024cysecbert}). We report macro-F1 (mean $\pm$ SD over three seeds) and per-class F1 for the three hardest classes in Table~\ref{tab:task2-results}.
+ 
+ \begin{table}[t]
+ \centering
+ \small
+ \setlength{\tabcolsep}{4pt}
+-\caption{Task 2 (ETC) test results on 1,735 temporally held-out samples. Macro-F1 and per-class F1 for the three hardest classes. BoW = bag-of-words features; Neural = learned representations.}
++\caption{Task 2 (ETC) test results on 1,735 temporally held-out samples. Macro-F1 is the mean $\pm$ SD over three seeds; per-class F1 for the three hardest classes is the seed mean. Bootstrap 95\% intervals on macro-F1 (2,000 resamples) have a half-width of about 0.02; the top two models do not differ significantly. BoW = bag-of-words features.}
+ \label{tab:task2-results}
+ \begin{tabular}{llcccc}
+ \toprule
+ & \textbf{Model} & \textbf{Macro-F1} & \textbf{info\_disc.} & \textbf{mem\_corr.} & \textbf{auth.} \\
+ \midrule
+ \multirow{3}{*}{\rotatebox[origin=c]{90}{\footnotesize BoW}}
+-& Decision Tree     & .708 & .46 & .65 & .60 \\
+-& TF-IDF + LR       & .772 & .66 & .69 & .79 \\
+-& SVM (Linear)      & .799 & .70 & .68 & .82 \\
++& Decision Tree     & .702 $\pm$ .007 & .45 & .64 & .60 \\
++& TF-IDF + LR       & .772 $\pm$ .000 & .66 & .69 & .79 \\
++& SVM (Linear)      & .799 $\pm$ .000 & .70 & .68 & .82 \\
+ \midrule
+-\multirow{5}{*}{\rotatebox[origin=c]{90}{\footnotesize Neural}}
+-& RNN               & .142 & .12 & .10 & .20 \\
+-& GRU               & .826 & .69 & .78 & .80 \\
+-& LSTM              & .826 & .68 & .82 & .80 \\
+-& BiLSTM            & \textbf{.871} & \textbf{.73} & \textbf{.86} & \textbf{.82} \\
+-& SecBERT           & .846 & .69 & .79 & .82 \\
++\multirow{4}{*}{\rotatebox[origin=c]{90}{\footnotesize Recurrent}}
++& RNN               & .436 $\pm$ .031 & .30 & .42 & .44 \\
++& GRU               & .858 $\pm$ .001 & .70 & .84 & .81 \\
++& LSTM              & .824 $\pm$ .013 & .63 & .77 & .78 \\
++& BiLSTM            & .856 $\pm$ .003 & .69 & .84 & .81 \\
++\midrule
++\multirow{3}{*}{\rotatebox[origin=c]{90}{\footnotesize Transf.}}
++& SecBERT           & .852 $\pm$ .007 & .67 & .82 & .83 \\
++& SecureBERT        & .892 $\pm$ .008 & \textbf{.80} & .90 & .85 \\
++& CySecBERT         & \textbf{.898 $\pm$ .003} & .79 & \textbf{.90} & \textbf{.86} \\
+ \bottomrule
+ \end{tabular}
+ \end{table}
+ 
+-The best bag-of-words baseline (SVM) attains macro-F1 of 0.799, while BiLSTM reaches 0.871, a 9\% increase over sequential representations. The vanilla RNN performs poorly (macro-F1=0.142), indicating that long exploit texts require more advanced architectures. GRU and LSTM are similar (0.826), with bidirectional models improving results. SecBERT (0.846) surpasses GRU/LSTM but underperforms BiLSTM, suggesting that domain-specific pre-training offers modest benefits, and that bidirectionality is key. The hard classes (information disclosure, memory corruption, authentication/access) have substantial overlap. For example, disclosure exploits often involve injection (SSRF, XXE), while privilege escalation and authentication share patterns with RCE. Decision Tree drops to macro-F1=0.708, with disclosure at 0.46. Lexical classes such as XSS and injection are easier (F1 > 0.82), indicating that exploit signals are partly lexical. Temporal splits make it harder as exploit names and vulnerability patterns evolve, preventing models from memorizing era-specific features.
++The best bag-of-words baseline (SVM) attains macro-F1 of 0.799. Gated recurrent models improve on it: GRU (0.858) and BiLSTM (0.856) are level, and both exceed LSTM (0.824; GRU$-$LSTM paired $\Delta$ 0.029, 95\% CI [0.016, 0.043]). The vanilla RNN is far weaker (0.436): 32\% of test exploits exceed the 300-token window, and without gating the signal from early tokens fades over long sequences. Domain pre-training helps most. CySecBERT (0.898) and SecureBERT (0.892) are the strongest models, and their difference is not significant (paired $\Delta$ 0.006, 95\% CI [$-$0.004, 0.016]), while SecBERT (0.852) is level with the best recurrent models. The hard classes (information disclosure, memory corruption, authentication/access) have substantial overlap. For example, disclosure exploits often involve injection (SSRF, XXE), while privilege escalation and authentication share patterns with RCE. Decision Tree drops to macro-F1=0.702, with disclosure at 0.45. Lexical classes such as XSS and injection are easier (mean F1 0.94 and 0.86 across models), indicating that exploit signals are partly lexical. Temporal splits make it harder as exploit names and vulnerability patterns evolve, preventing models from memorizing era-specific features.
+ 
+ \subsection{Task 3: Temporal Generalization (TG)}
+ \label{sec:task3}
+@@ -297,19 +301,19 @@
+ \toprule
+ \textbf{Model} & \textbf{R@1} & \textbf{R@5} & \textbf{R@10} & \textbf{MRR} \\
+ \midrule
+-BM25 & 0.619 & 0.714 & 0.741 & 0.660 \\
+-MiniLM-L6-v2 & 0.671 & 0.788 & 0.820 & 0.723 \\
+-mpnet-base-v2 & 0.647 & 0.777 & 0.810 & 0.704 \\
+-BGE-base-v1.5 & 0.668 & \textbf{0.799} & 0.828 & 0.726 \\
+-E5-base-v2 & 0.663 & 0.798 & \textbf{0.831} & 0.721 \\
++BM25 & 0.620 & 0.713 & 0.740 & 0.660 \\
++MiniLM-L6-v2 & 0.670 & 0.788 & 0.820 & 0.722 \\
++mpnet-base-v2 & 0.647 & 0.777 & 0.809 & 0.703 \\
++BGE-base-v1.5 & 0.667 & 0.798 & 0.828 & 0.726 \\
++E5-base-v2 & 0.663 & \textbf{0.799} & \textbf{0.830} & 0.721 \\
+ \midrule
+-Hybrid BM25+mpnet & \textbf{0.697} & 0.774 & 0.788 & \textbf{0.730} \\
++Hybrid BM25+mpnet & \textbf{0.698} & 0.772 & 0.786 & \textbf{0.730} \\
+ \bottomrule
+ \end{tabular}
+ \vspace{-4pt}
+ \end{wraptable}
+ 
+-Under the CVE-disjoint evaluation, the hybrid has the highest MRR (0.730), but its difference from BGE-base-v1.5 (0.726) is not significant (paired $\Delta$MRR 0.005, 95\% CI [$-$0.011, 0.020]). Every model scores slightly higher than on Task~1 (e.g., BM25 MRR 0.660 vs.\ 0.636). The Task~3 test queries are a subset of the Task~1 test queries, so the two tasks differ in the constraint they place on training rather than in the difficulty of the evaluation.
++Under the CVE-disjoint evaluation, the hybrid has the highest MRR (0.730), but its difference from BGE-base-v1.5 (0.726) is not significant (paired $\Delta$MRR 0.004, 95\% CI [$-$0.012, 0.020]). Every model scores slightly higher than on Task~1 (e.g., BM25 MRR 0.660 vs.\ 0.636). The Task~3 test queries are a subset of the Task~1 test queries, so the two tasks differ in the constraint they place on training rather than in the difficulty of the evaluation.
+ 
+ \begin{figure}[t]
+ \centering
+@@ -332,11 +336,11 @@
+ \section{Conclusion}
+ \label{sec:discussion}
+ 
+-HackerSignal links 7.45M documents from 64 sources across the CVE lifecycle with temporal splits, CVE-disjoint evaluation, and provenance-aware governance. Our three-task benchmark and model ladder (BM25 through dense and hybrid retrieval at MRR~0.71, BiLSTM at macro-F1~0.87 for 8-class exploit type classification) establishes baselines for cross-source CVE grounding, exploit type classification, and prospective generalization to unseen vulnerabilities.
++HackerSignal links 7.45M documents from 64 sources across the CVE lifecycle with temporal splits, CVE-disjoint evaluation, and provenance-aware governance. Our three-task benchmark and model ladder (BM25 through dense and hybrid retrieval at MRR~0.71, domain-pretrained transformers at macro-F1~0.90 for 8-class exploit type classification) establishes baselines for cross-source CVE grounding, exploit type classification, and prospective generalization to unseen vulnerabilities.
+ 
+ Several limitations bound the current release. First, CVE linkages are metadata-derived (source URLs, CVE regex extraction) rather than expert-adjudicated, introducing noise proportional to source quality. We mitigate this via per-source audit risk scores, but cannot guarantee zero false linkages. Second, although some hacker forums contain non-English posts, we do not evaluate cross-lingual retrieval or multilingual baselines. Prior work suggests non-English forums require dedicated approaches~\citep{ebrahimi2020crosslingual}. Third, we do not evaluate large language model rerankers (e.g., GPT-4, Claude) or retrieval-augmented generation pipelines, which may score higher but at orders-of-magnitude higher compute cost.
+ 
+-Beyond the three tasks benchmarked here, the 6.97M-row hacker community subcorpus opens research directions in exploit code summarization and completion, hacker content extraction and labeling, topic modeling (e.g., LDA over forum-specific vocabularies), community interaction network analysis, cross-lingual CTI transfer across the corpus's multilingual forums, and temporal trend detection in exploit discourse. HackerSignal's code, data, splits, and Croissant metadata are publicly released to support these extensions at \href{https://huggingface.co/datasets/DatasetSubmission/HackerSignal}{\texttt{hf.co/datasets/DatasetSubmission/HackerSignal}} (data) and \href{https://anonymous.4open.science/r/hackersignal-580F/}{\texttt{anonymous.4open.science/r/hackersignal-580F}} (code).
++Beyond the three tasks benchmarked here, the 6.97M-row hacker community subcorpus opens research directions in exploit code summarization and completion, hacker content extraction and labeling, topic modeling (e.g., LDA over forum-specific vocabularies), community interaction network analysis, cross-lingual CTI transfer across the corpus's multilingual forums, and temporal trend detection in exploit discourse. HackerSignal's code, data, splits, and Croissant metadata are publicly released to support these extensions at \href{https://huggingface.co/datasets/BenAmpel/HackerSignal}{\texttt{hf.co/datasets/BenAmpel/HackerSignal}} (data) and \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}} (code).
+ 
+ \begin{thebibliography}{99}
+ \small
+@@ -455,6 +459,12 @@
+ Shakarian, P. (2016). Darknet and Deepnet Mining for Proactive
+ Cybersecurity Threat Intelligence. \textit{IEEE Intelligence and
+ Security Informatics (ISI)}.
++
++\bibitem[Aghaei et~al.(2023)]{aghaei2023securebert}
++Aghaei, E., Niu, X., Shadid, W., \& Al-Shaer, E. (2023). SecureBERT: A Domain-Specific Language Model for Cybersecurity. In \textit{Security and Privacy in Communication Networks (SecureComm 2022)}, pp. 39--56. Springer. \url{https://doi.org/10.1007/978-3-031-25538-0_3}.
++
++\bibitem[Bayer et~al.(2024)]{bayer2024cysecbert}
++Bayer, M., Kuehn, P., Shanehsaz, R., \& Reuter, C. (2024). CySecBERT: A Domain-Adapted Language Model for the Cybersecurity Domain. \textit{ACM Transactions on Privacy and Security}, 27(2), 1--20. \url{https://doi.org/10.1145/3652594}.
+ 
+ \bibitem[Jackaduma(2022)]{secbert2022}
+ Jackaduma. (2022). SecBERT: A Pre-trained Language Model
+@@ -545,7 +555,7 @@
+ \section{Source Collection Details}
+ \label{app:collection}
+ 
+-The full source-by-source matrix and takedown/correction process are in \texttt{docs/release\_governance.md}. Collection scripts are available at \href{https://anonymous.4open.science/r/hackersignal-580F/}{\texttt{anonymous.4open.science/r/hackersignal-580F}} under \texttt{src/etg/collectors/}. The public JSONL release is built from the full research build by enforcing \texttt{release\_mode}: rows from \texttt{metadata\_or\_pointer\_only} sources retain provenance, timestamps, source/thread identifiers, CVE references, text hashes, and text lengths, but \texttt{text} and \texttt{text\_raw} are withheld. Table~\ref{tab:collection-details} provides per-source collection method, access mechanism, license posture, and default release mode.
++The full source-by-source matrix and takedown/correction process are in \texttt{docs/release\_governance.md}. Collection scripts are available at \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}} under \texttt{src/etg/collectors/}. The public JSONL release is built from the full research build by enforcing \texttt{release\_mode}: rows from \texttt{metadata\_or\_pointer\_only} sources retain provenance, timestamps, source/thread identifiers, CVE references, text hashes, and text lengths, but \texttt{text} and \texttt{text\_raw} are withheld. Table~\ref{tab:collection-details} provides per-source collection method, access mechanism, license posture, and default release mode.
+ 
+ \begin{table}[t]
+ \centering
+@@ -573,12 +583,12 @@
+ \section{Audit and Reliability}
+ \label{app:audit-reliability}
+ 
+-We follow the audit framework of~\citet{kapoor2023leakage} and perform three complementary integrity checks. First, for each task, we draw an 80-row stratified random sample (240 rows total, balanced across splits) and provide a structured annotation packet in \texttt{data/audits/} covering (i)~correct CVE assignment, (ii)~temporal split adherence, and (iii)~absence of trivial textual overlap between query and target. Programmatic checks on the sampling frame found no structural errors. Second, we search for exact and near-duplicate text spans between train and test partitions using MinHash (Jaccard threshold $\geq$0.8, 128 permutations). After deduplication during corpus construction, zero train-test pairs exceed the threshold for any task. Finally, we verify that no CVE identifier appears in both the train and test for any task. For Task~3 (temporal generalization), CVE-disjointness is enforced by construction: $|C_{\text{train}} \cap C_{\text{test}}| = 0$, supported programmatically at build time.
++We follow the audit framework of~\citet{kapoor2023leakage} and perform three complementary integrity checks. First, for each task, we draw an 80-row stratified random sample (240 rows total, balanced across splits) and provide a structured annotation packet in \texttt{data/audits/} covering (i)~correct CVE assignment, (ii)~temporal split adherence, and (iii)~absence of trivial textual overlap between query and target. Programmatic checks on the sampling frame found no structural errors. Second, we search for exact and near-duplicate text spans between train and test partitions using MinHash (Jaccard threshold $\geq$0.8, 128 permutations). After deduplication during corpus construction, zero train-test pairs exceed the threshold for any task. Finally, we check gold-CVE overlap between splits. For Task~3 (temporal generalization), CVE-disjointness is enforced by construction: $|C_{\text{train}} \cap C_{\text{test}}| = 0$, supported programmatically at build time. Task~1 does not impose disjointness; 9 of its 1,876 test CVEs (9 of 1,990 test queries) also occur in training.
+ 
+ \section{Model Ladder Details}
+ \label{app:model-ladder}
+ 
+-The full model ladder evaluates six retrieval approaches (Tasks~1 and~3) and eight classification approaches (Task~2). Each model represents a rung on the complexity ladder from lexical to neural to hybrid methods. BM25 uses no learned parameters; bi-encoders (MiniLM, mpnet, BGE, E5) use pre-trained sentence embeddings without task-specific fine-tuning; the hybrid combines BM25 top-100 reranking with dense scores ($\alpha{=}0.7$). For Task~2, the ladder spans bag-of-words classifiers (Decision Tree, TF-IDF + LR, linear SVM), recurrent neural networks (RNN, GRU, LSTM, BiLSTM), and a domain-specific transformer (SecBERT).
++The full model ladder evaluates six retrieval approaches (Tasks~1 and~3) and ten classification approaches (Task~2). Each model represents a rung on the complexity ladder from lexical to neural to hybrid methods. BM25 uses no learned parameters; bi-encoders (MiniLM, mpnet, BGE, E5) use pre-trained sentence embeddings without task-specific fine-tuning; the hybrid combines BM25 top-100 reranking with dense scores ($\alpha{=}0.7$). For Task~2, the ladder spans bag-of-words classifiers (Decision Tree, TF-IDF + LR, linear SVM), recurrent neural networks (RNN, GRU, LSTM, BiLSTM), and three domain-specific transformers (SecBERT, SecureBERT, CySecBERT).
+ 
+ \section{Baseline Hyperparameter Details}
+ \label{app:hyperparams}
+@@ -587,19 +597,19 @@
+ Okapi BM25 via \texttt{rank\_bm25} (BM25Okapi). Tokenization: lowercase whitespace split. Full 340,536-record corpus indexed.
+ 
+ \paragraph{Dense bi-encoders (Tasks 1 and 3).}
+-Four sentence-transformer models evaluated without task-specific fine-tuning: \texttt{all-MiniLM-L6-v2} (22M params, 384-dim), \texttt{all-mpnet-base-v2} (110M, 768-dim), \texttt{BAAI/bge-base-en-v1.5} (110M, 768-dim), and \texttt{intfloat/e5-base-v2} (110M, 768-dim, with ``query:''/``passage:'' prefixes). Batch size 128, max sequence length 512 tokens, $\ell_2$-normalized embeddings, cosine similarity scoring. Corpus encoded in 5K-document chunks on CPU with multi-process pooling.
++Four sentence-transformer models evaluated without task-specific fine-tuning: \texttt{all-MiniLM-L6-v2} (22M params, 384-dim), \texttt{all-mpnet-base-v2} (110M, 768-dim), \texttt{BAAI/bge-base-en-v1.5} (110M, 768-dim), and \texttt{intfloat/e5-base-v2} (110M, 768-dim, with ``query:''/``passage:'' prefixes). Inputs are the first 384 characters of each query and document, max sequence length 512 tokens, batch size 128, $\ell_2$-normalized fp32 embeddings, cosine similarity scoring; BGE is used without its query instruction. MRR is computed over the top 10 (MRR@10), with ties broken by corpus order. Two settings matter: encoding full texts instead of the first 384 characters raises Task~1 MRR for the base-size models by about 0.03 (e.g., BGE 0.744, E5 0.741) and lowers MiniLM by 0.025, and adding BGE's query instruction raises its MRR to 0.725 (Task~1) and 0.737 (Task~3). E5's prefixes change MRR by less than 0.001.
+ 
+ \paragraph{Hybrid BM25 + dense (Tasks 1 and 3).}
+ A combination of normalized BM25 scores and dense cosine similarity with $\alpha{=}0.7$ (dense weight). For efficiency, BM25 retrieves the top 100 candidates per query; dense scores are computed only for the candidate set. Final ranking uses $\alpha \cdot \text{dense} + (1{-}\alpha) \cdot \text{BM25}$.
+ 
+ \paragraph{Bag-of-words classifiers (Task 2).}
+-All BoW classifiers use scikit-learn with \texttt{TfidfVectorizer}(max\_features=50{,}000, ngram\_range=(1,2)) as the feature extractor. \texttt{DecisionTreeClassifier}: max\_depth=30, class\_weight=``balanced''. \texttt{LogisticRegression}: C=1.0, max\_iter=1000, class\_weight=``balanced''. \texttt{LinearSVC}: max\_iter=2000, class\_weight=``balanced''.
++All BoW classifiers use scikit-learn with \texttt{TfidfVectorizer}(max\_features=50{,}000, ngram\_range=(1,2)) as the feature extractor, applied to the first 2,000 characters of each text. \texttt{DecisionTreeClassifier}: max\_depth=30, class\_weight=``balanced''. \texttt{LogisticRegression}: C=1.0, max\_iter=1000, class\_weight=``balanced''. \texttt{LinearSVC}: max\_iter=2000, class\_weight=``balanced''.
+ 
+ \paragraph{Neural classifiers (Task 2).}
+-RNN, GRU, LSTM, and BiLSTM use a word-level vocabulary (min frequency $\geq$3, yielding ${\sim}$19K tokens) with 128-dim embeddings, 128-dim hidden states, max sequence length 300, batch size 128, and Adam optimizer (lr=$10^{-3}$). Class-weighted cross-entropy loss with gradient clipping at 1.0. Trained for 8 epochs with best checkpoint selected by validation macro-F1. SecBERT~\citep{secbert2022} uses \texttt{jackaduma/SecBERT} with max sequence length 256, batch size 16, AdamW (lr=$2{\times}10^{-5}$, weight decay 0.01), linear warmup over 10\% of steps, trained for 3 epochs on a 15K subsample. All neural models use MPS (Apple Silicon) acceleration.
++RNN, GRU, LSTM, and BiLSTM use a word-level vocabulary (min frequency $\geq$3, yielding 175,062 tokens) with 128-dim embeddings, 128-dim hidden states, max sequence length 300 (right-padded), batch size 128, and Adam optimizer (lr=$10^{-3}$). The classifier reads the hidden state at the last non-padding token (both directions for BiLSTM, via packed sequences). Class-weighted cross-entropy loss with gradient clipping at 1.0. Trained for 8 epochs with best checkpoint selected by validation macro-F1. SecBERT~\citep{secbert2022} (\texttt{jackaduma/SecBERT}), SecureBERT~\citep{aghaei2023securebert} (\texttt{ehsanaghaei/SecureBERT}), and CySecBERT~\citep{bayer2024cysecbert} (\texttt{markusbayer/CySecBERT}) are fine-tuned on the first 1,000 characters of each text with max sequence length 256, batch size 16, AdamW (lr=$2{\times}10^{-5}$, weight decay 0.01), linear warmup over 10\% of steps, and unweighted cross-entropy for 3 epochs on a 15K training subsample; the epoch is selected by validation macro-F1. All Task~2 models are run with seeds 42, 43, and 44 (the 15K subsample is drawn per seed); we report the mean and SD. Fine-tuning on all 64,413 training rows is reported in the released results.
+ 
+ \paragraph{Compute.}
+-All baselines ran on a single macOS arm64 workstation (Apple M-series, 16\, GB RAM) with Python 3.12 and PyTorch 2.x. No CUDA GPUs were used. BM25 over 340K corpus: ${\sim}$25 min per task (pure Python). Dense encoding of 340K corpus: ${\sim}$20 min (MiniLM) to ${\sim}$90 min (base-sized models) on CPU. RNN/GRU/LSTM/BiLSTM training: ${\sim}$3 min each (8 epochs on MPS). SecBERT fine-tuning: ${\sim}$90 min (3 epochs, 15K samples on MPS). All baseline code is available at \href{https://anonymous.4open.science/r/hackersignal-580F/}{\texttt{anonymous.4open.science/r/hackersignal-580F}}.
++All baselines ran on one Apple M5 Pro workstation (48\,GB unified memory, macOS 27) with Python 3.12.15, PyTorch 2.14.1 (MPS backend), sentence-transformers 6.2.0, transformers 5.21.0, and scikit-learn 1.9.1; no CUDA GPUs were used. BM25 uses an exact sparse reimplementation of \texttt{rank\_bm25} (maximum score difference $3{\times}10^{-12}$ on a 50-query check): 5--8\,s to index the 340K corpus and 15--25\,s to score each test set. Dense encoding of the 340K corpus took ${\sim}$4\,min (MiniLM) to ${\sim}$30\,min (base-sized models). Task~2 training per seed: BoW 7--40\,s; RNN/GRU/LSTM 5--36\,min; BiLSTM ${\sim}$60\,min; SecBERT ${\sim}$17\,min and SecureBERT/CySecBERT ${\sim}$40--45\,min on the 15K subsample. Per-run timings, seeds, model revisions, and data hashes are in \texttt{results/camera\_ready/provenance.json}. All baseline code is available at \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}}.
+ 
+ \section{Comparison with Prior CTI Datasets}
+ \label{app:comparison}
+@@ -658,12 +668,12 @@
+ \item {\bf Experimental result reproducibility}
+     \item[] Question: Does the paper fully disclose all information needed to reproduce the main experimental results?
+     \item[] Answer: \answerYes{}
+-    \item[] Justification: All baseline hyperparameters are reported in Appendix~\ref{app:hyperparams}. Code is released at \href{https://anonymous.4open.science/r/hackersignal-580F/}{\texttt{anonymous.4open.science/r/hackersignal-580F}}. Data is publicly available on HuggingFace Hub.
++    \item[] Justification: All baseline hyperparameters are reported in Appendix~\ref{app:hyperparams}. Code is released at \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}}. Data is publicly available on HuggingFace Hub.
+ 
+ \item {\bf Open access to data and code}
+     \item[] Question: Does the paper provide open access to the data and code?
+     \item[] Answer: \answerYes{}
+-    \item[] Justification: Dataset released on HuggingFace with provenance metadata, Croissant metadata, and a release-governance addendum. Collection and baseline code released at \href{https://anonymous.4open.science/r/hackersignal-580F/}{\texttt{anonymous.4open.science/r/hackersignal-580F}}. Accessible without personal request to the PI, with pointer-only modes for sources whose terms do not support text mirroring.
++    \item[] Justification: Dataset released on HuggingFace with provenance metadata, Croissant metadata, and a release-governance addendum. Collection and baseline code released at \href{https://github.com/BenAmpel/hackersignal}{\texttt{github.com/BenAmpel/hackersignal}}. Accessible without personal request to the PI, with pointer-only modes for sources whose terms do not support text mirroring.
+ 
+ \item {\bf Experimental setting/details}
+     \item[] Question: Does the paper specify all training and test details necessary to understand the results?
+@@ -672,13 +682,13 @@
+ 
+ \item {\bf Experiment statistical significance}
+     \item[] Question: Does the paper report error bars or statistical significance?
+-    \item[] Answer: \answerNo{}
+-    \item[] Justification: No error bars or significance tests are reported. BM25 and dense-retrieval baselines are fully deterministic given a fixed corpus and queries; BoW classifiers (Decision Tree, LR, SVM) use fixed random seeds. Neural classifiers (RNN, GRU, LSTM, BiLSTM, SecBERT) use fixed seeds, but MPS/GPU training introduces minor nondeterminism. We report single-run point estimates, which is standard practice for dataset-contribution papers where the primary contribution is the benchmark rather than a new model.
++    \item[] Answer: \answerYes{}
++    \item[] Justification: Tables~\ref{tab:task1-results}--\ref{tab:task3-results} report test-set bootstrap 95\% intervals (10,000 resamples for MRR, 2,000 for macro-F1) and paired bootstrap tests for the top two models; Task~2 reports the mean $\pm$ SD over three seeds. BM25 and dense-retrieval baselines are deterministic given a fixed corpus and queries (ties are broken by corpus order). MPS training is not bit-deterministic, which the seed SD captures.
+ 
+ \item {\bf Experiments compute resources}
+     \item[] Question: Does the paper provide sufficient information on compute resources?
+     \item[] Answer: \answerYes{}
+-    \item[] Justification: Baselines were run on a single macOS arm64 workstation with Python 3.12 and PyTorch 2.x. Appendix~\ref{app:hyperparams} reports wall-clock times per model and task.
++    \item[] Justification: Baselines were run on one Apple M5 Pro workstation (48\,GB) with PyTorch 2.14.1 on the MPS backend. Appendix~\ref{app:hyperparams} reports wall-clock times per model and task.
+ 
+ \item {\bf Code of ethics}
+     \item[] Question: Does the research conform with the NeurIPS Code of Ethics?

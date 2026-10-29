@@ -1,0 +1,16 @@
+{
+  "commitment": "C1: keyed HMAC-SHA-256 author pseudonyms",
+  "input": "unified_hacker_communities_neurips_public.jsonl.gz",
+  "output": "unified_hacker_communities_neurips_public_hmac_v1.jsonl.gz",
+  "key_id": "v1",
+  "construction": "author_hash = HMAC-SHA-256(key, \"author_hash::\" + previous unkeyed hex digest of the source-namespaced author string, 64 or 56 hex characters depending on the collector); unified_id recomputed with the release formula over the re-keyed author_hash",
+  "rows": 7447646,
+  "author_hash_rekeyed": 7447646,
+  "author_hash_empty_kept": 0,
+  "old_unified_id_matched_formula": 7447646,
+  "unique_unified_id_old": 7423629,
+  "unique_unified_id_new": 7423629,
+  "input_jsonl_sha256": "bd409acd7ffc37ced54ac8d4808cb0a1339cb7cb8c7dd229e73b32d706805e4f",
+  "output_jsonl_sha256": "f2fd23989993a6b435767c760c0bc11b0351d13bfdbf64de02be79d3e7610576",
+  "seconds": 299
+}
