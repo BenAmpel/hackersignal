@@ -101,7 +101,7 @@ Individuals did not provide study-specific consent. Participants posted to publi
 - Encoding errors replaced with the Unicode replacement character (U+FFFD)
 - Source provenance normalized into `source_dataset`, `source_layer`, `forum_id`, optional thread/category fields, and release-mode manifests
 - Exact duplicates removed across sources by normalized-text SHA-256 fingerprint
-- Near-duplicates removed via MinHash-LSH (128 permutations, 3-char k-shingles, Jaccard > 0.7)
+- Near-duplicates estimated, not removed: 64-bit SimHash over 5-token shingles on a deterministic 3% sample (Hamming distance <= 3) puts about 8.2% of retained rows (~609K) in near-duplicate clusters; users can apply their own threshold
 - Reviewer-facing audit packets and leakage/overlap/quality reports are generated under `data/audits/`
 
 **Was the raw data saved?**

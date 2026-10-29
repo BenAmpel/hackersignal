@@ -19,6 +19,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
+\hypersetup{pdftitle={HackerSignal: A Large-Scale Multi-Source Dataset Linking Hacker Community Discourse to the CVE Vulnerability Lifecycle}, pdfauthor={Benjamin M. Ampel, Sagar Samtani}}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{amsfonts}
@@ -626,7 +627,7 @@ Other web archives & Web scraping & Public & Mixed terms & Pointer \\
 \section{Audit and Reliability}
 \label{app:audit-reliability}
 
-We follow the audit framework of~\citet{kapoor2023leakage} and perform three complementary integrity checks. First, for each task, we draw an 80-row stratified random sample (240 rows total, balanced across splits) and provide a structured annotation packet in \texttt{data/audits/} covering (i)~correct CVE assignment, (ii)~temporal split adherence, and (iii)~absence of trivial textual overlap between query and target. Programmatic checks on the sampling frame found no structural errors. Second, we search for exact and near-duplicate text spans between train and test partitions using MinHash (Jaccard threshold $\geq$0.8, 128 permutations). After deduplication during corpus construction, zero train-test pairs exceed the threshold for any task. Finally, we check gold-CVE overlap between splits. For Task~3 (temporal generalization), CVE-disjointness is enforced by construction: $|C_{\text{train}} \cap C_{\text{test}}| = 0$, supported programmatically at build time. Task~1 does not impose disjointness; 9 of its 1,876 test CVEs (9 of 1,990 test queries) also occur in training.
+We follow the audit framework of~\citet{kapoor2023leakage} and perform three complementary integrity checks. First, for each task, we draw an 80-row stratified random sample (240 rows total, balanced across splits) and provide a structured annotation packet in \texttt{data/audits/} covering (i)~correct CVE assignment, (ii)~temporal split adherence, and (iii)~absence of trivial textual overlap between query and target. Programmatic checks on the sampling frame found no structural errors. Second, we search for near-duplicate text between the training and test splits of each task with MinHash over character 3-shingles (128 permutations, LSH at Jaccard $\geq$0.8, every candidate confirmed by exact Jaccard). No Task~2 test row has a training match. Two Task~1 test queries (of 1,990) have one, at Jaccard 0.80 and 0.82; both are also Task~3 test queries, where their training matches describe different CVEs. Finally, we check gold-CVE overlap between splits. For Task~3 (temporal generalization), CVE-disjointness is enforced by construction: $|C_{\text{train}} \cap C_{\text{test}}| = 0$, supported programmatically at build time. Task~1 does not impose disjointness; 9 of its 1,876 test CVEs (9 of 1,990 test queries) also occur in training.
 
 \section{Model Ladder Details}
 \label{app:model-ladder}
@@ -859,7 +860,7 @@ A complete datasheet is provided in the supplemental material and in the dataset
 \item {\bf Safeguards}
     \item[] Question: Does the paper describe safeguards for responsible release?
     \item[] Answer: \answerYes{}
-    \item[] Justification: Explicit prohibited uses listed in Section~\ref{sec:ethics} and the governance addendum. Author pseudonymization applied at preprocessing time; disputed or terms-ambiguous sources can be downgraded to metadata/pointer-only release.
+    \item[] Justification: Explicit prohibited uses listed in Section~\ref{sec:ethics} and the governance addendum. Author pseudonyms are keyed HMAC-SHA-256 digests applied at release time; disputed or terms-ambiguous sources can be downgraded to metadata/pointer-only release.
 
 \item {\bf Licenses for existing assets}
     \item[] Question: Are existing assets properly credited with licenses?
@@ -882,7 +883,7 @@ A complete datasheet is provided in the supplemental material and in the dataset
     \item[] Justification: Collection of public OSINT data was not classified as human-subjects research under institutional guidelines; the paper still documents privacy safeguards, responsible-use restrictions, and release-mode controls.
 
 \item {\bf Declaration of LLM usage}
-    \item[] Question: Does the paper describe usage of LLMs as an important component of the core methods?
+    \item[] Question: Does the paper describe the usage of LLMs if it is an important, original, or non-standard component of the core methods in this research? Note that if the LLM is used only for writing, editing, or formatting purposes and does not impact the core methodology, scientific rigor, or originality of the research, declaration is not required.
     \item[] Answer: \answerYes{}
     \item[] Justification: LLMs were not used to create benchmark labels. Writing assistance was also used for editing.
 
