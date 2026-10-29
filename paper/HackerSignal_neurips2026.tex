@@ -66,7 +66,7 @@ The hacker-community layer contributes 6.97 million posts but only about 2,000 C
 
 \section{Introduction}
 
-Understanding how cyber threats emerge, propagate, and relate to vulnerabilities is a central challenge in modern applied cybersecurity. Signals that tracks this trajectory is distributed across heterogeneous text-based sources, including: (1) hacker forums where exploits are first discussed, (2) public exploit databases where proof-of-concept code is released, (3) official vulnerability advisories such as the National Vulnerability Database, CISA's Known Exploited Vulnerabilities, and GitHub Advisory where threats are cataloged, and (4) open-source repositories where fixes are committed. Extant public datasets in this domain often span a single or subset of these layers~\citep{crimebb2018} and are usually not publicly released~\citep{ampel2020dtl}. A survey of CTI extraction from text identifies advisory records and threat reports as the dominant labeled sources studied, with exploit-archive and PoC-focused benchmarks remaining scarce~\citep{rahman2023cti}; a companion survey of cybercrime community research corroborates that structured datasets linking forum posts to formal vulnerability records are largely absent from the public literature~\citep{hughes2024cybercrime}. HackerSignal addresses this gap with a temporally structured, multi-source corpus and benchmark spanning the full advisory-to-exploit trajectory, enabling downstream CTI analytics tasks. HackerSignal makes three key contributions:
+Understanding how cyber threats emerge, propagate, and relate to vulnerabilities is a central challenge in modern applied cybersecurity. Signals that track this trajectory are distributed across heterogeneous text-based sources, including: (1) hacker forums where exploits are first discussed, (2) public exploit databases where proof-of-concept code is released, (3) official vulnerability advisories such as the National Vulnerability Database, CISA's Known Exploited Vulnerabilities, and GitHub Advisory where threats are cataloged, and (4) open-source repositories where fixes are committed. Extant public datasets in this domain often span a single or subset of these layers~\citep{crimebb2018} and are usually not publicly released~\citep{ampel2020dtl}. A survey of CTI extraction from text identifies advisory records and threat reports as the dominant labeled sources studied, with exploit-archive and PoC-focused benchmarks remaining scarce~\citep{rahman2023cti}; a companion survey of cybercrime community research corroborates that structured datasets linking forum posts to formal vulnerability records are largely absent from the public literature~\citep{hughes2024cybercrime}. HackerSignal addresses this gap with a temporally structured, multi-source corpus and benchmark spanning the full advisory-to-exploit trajectory, enabling downstream CTI analytics tasks. HackerSignal makes three key contributions:
 
 \begin{enumerate}
   \item \textbf{A temporally grounded CTI corpus} of 7.45M documents from 64 public forum/source identifiers across eight source layers (hacker communities, exploit archives, vulnerability references, exploit Q\&A references, advisories, bug-bounty disclosures, fix commits, and exploitation references), with CVE linkage metadata connecting vulnerability identifiers to the texts that discuss them. The 6.97M-row hacker community subcorpus alone (spanning 56 forums across darkweb marketplaces, security discussion boards, and multilingual hacker communities) supports diverse NLP tasks beyond our three benchmarks, including exploit code summarization, security content classification, topic modeling, community interaction analysis, and cross-lingual CTI extraction.
@@ -279,7 +279,7 @@ Hybrid BM25+mpnet & \textbf{0.679} & 0.753 & 0.768 & 0.711 \\
 
 We choose baselines across three dense retrieval paradigms. BM25 is an unsupervised lexical baseline that serves as an exact-match ceiling. For dense bi-encoders, we selected four models differing in pre-training and architecture: (1) MiniLM-L6-v2 (speed-optimized, distilled 6-layer), (2) all-mpnet-base-v2 (mean-pooled MPNet with contrastive training on 1B+ pairs), (3) BGE-base-v1.5 (instruction-tuned bi-encoder from BAAI for zero-shot transfer), and (4) E5-base-v2 (weakly-supervised contrastive model with task-specific prompts). These span distilled vs. full-size and supervised vs. weakly supervised training, helping assess the impact of pre-training on CVE retrieval. Hybrid BM25+mpnet reranks the BM25 top-100 candidates with a weighted sum of normalized BM25 and dense cosine scores ($\alpha{=}0.7$ on the dense score), testing their complementarity. We measure Recall@$k$ ($ k= {10}$) and MRR, with results in Table~\ref{tab:task1-results}.
 
-All dense models and the hybrid exceed BM25 (MRR 0.636) and cluster tightly (MRR 0.682--0.714). BGE-base-v1.5 has the highest MRR (0.714), but its difference from the hybrid (0.711) is not significant (paired $\Delta$MRR 0.003, 95\% CI [$-$0.013, 0.019]). No single model dominates: the hybrid leads at R@1 (0.679), and BGE and E5 lead at R@5 and R@10. Explicit identifiers are not the main signal: 24.8\% of test queries contain their gold CVE ID, yet removing CVE identifiers changes MRR by at most 0.004 for any model, and removing URLs, version strings, boilerplate, or all four changes it by at most 0.024 on either task (Appendix~\ref{app:shortcuts}). Retrieval quality depends strongly on the query source. Hybrid MRR ranges from 0.95 on GitHub Advisory queries (1,036 of 1,990) to 0.29 on ExploitDB (429), where dense models lead BM25 (0.46 for BGE vs.\ 0.13).
+All dense models and the hybrid exceed BM25 (MRR 0.636) and cluster tightly (MRR 0.682--0.714). BGE-base-v1.5 has the highest MRR (0.714), but its difference from the hybrid (0.711) is not significant (paired $\Delta$MRR 0.003, 95\% CI [$-$0.013, 0.019]). No single model dominates: the hybrid leads at R@1 (0.679), and BGE and E5 lead at R@5 and R@10. Explicit identifiers are not the main signal: 24.8\% of test queries contain their gold CVE ID, yet removing CVE identifiers changes MRR by at most 0.004 for any model, and removing URLs, version strings, boilerplate, or all four changes it by at most 0.024 on either task (Appendix~\ref{app:shortcuts}). Verbatim overlap carries more of the signal: 918 of 1,990 test queries (46.1\%) share a span of at least 100 characters with their gold description. On the other 1,072, E5 (0.548) and BGE (0.541) lead, and the hybrid (0.480) and BM25 (0.373) fall behind (Table~\ref{tab:overlap}). Retrieval quality depends strongly on the query source. Hybrid MRR ranges from 0.95 on GitHub Advisory queries (1,036 of 1,990) to 0.29 on ExploitDB (429), where dense models lead BM25 (0.46 for BGE vs.\ 0.13).
 
 \subsection{Task 2: Exploit Type Classification (ETC)}
 \label{sec:task2}
@@ -697,7 +697,32 @@ MiniLM-L6-v2 & 0.722 & 0.750{\scriptsize$\pm$0.002} & [0.732, 0.767] & 0.028 [0.
 \section{Shortcut and Source Diagnostics}
 \label{app:shortcuts}
 
-Table~\ref{tab:pilot} gives the forum-post grounding pilot (Section~\ref{sec:pilot}) for every zero-shot retriever. Table~\ref{tab:masking} reports MRR for every retrieval model after removing one shortcut family from the queries: CVE identifiers, URLs, version strings, or boilerplate, and all four together. In Task~1, 24.8\% of test queries contain their gold CVE identifier and 49.1\% contain a URL. Table~\ref{tab:per-source} stratifies Task~1 MRR by query source for every model. Task~3 shares these sources and gives nearly identical per-source values (released in \texttt{results/camera\_ready/results.csv}).
+Table~\ref{tab:pilot} gives the forum-post grounding pilot (Section~\ref{sec:pilot}) for every zero-shot retriever. Table~\ref{tab:masking} reports MRR for every retrieval model after removing one shortcut family from the queries: CVE identifiers, URLs, version strings, or boilerplate, and all four together. In Task~1, 24.8\% of test queries contain their gold CVE identifier and 49.1\% contain a URL. Table~\ref{tab:per-source} stratifies Task~1 MRR by query source for every model. Task~3 shares these sources and gives nearly identical per-source values (released in \texttt{results/camera\_ready/results.csv}). Table~\ref{tab:overlap} splits each task's test queries by verbatim overlap with the gold description (a shared span of at least 100 characters; 918 of 1,990 Task~1 and 911 of 1,898 Task~3 queries). Removing from each query every span of 30 or more characters it shares with its gold description lowers BM25 MRR from 0.636 to 0.321 on Task~1 and from 0.660 to 0.335 on Task~3. This stripping uses the gold description, so it is a diagnostic bound rather than a deployable condition.
+
+\begin{table}[ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Test MRR@10 by verbatim overlap with the gold NVD description (a shared span of $\geq$100 characters). $^\dagger$BM25 with every span of $\geq$30 characters shared with the gold description removed from the query (a diagnostic; it uses the gold description).}
+\label{tab:overlap}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{\textbf{Task 1}} & \multicolumn{2}{c}{\textbf{Task 3}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Model} & \textbf{Overlap} ($n$=918) & \textbf{None} ($n$=1,072) & \textbf{Overlap} ($n$=911) & \textbf{None} ($n$=987) \\
+\midrule
+BM25 & 0.942 & 0.373 & 0.943 & 0.399 \\
+MiniLM & 0.925 & 0.523 & 0.926 & 0.534 \\
+mpnet & 0.899 & 0.497 & 0.903 & 0.519 \\
+BGE & 0.916 & 0.541 & 0.918 & 0.549 \\
+E5 & 0.899 & 0.548 & 0.900 & 0.556 \\
+Hybrid & 0.981 & 0.480 & 0.982 & 0.497 \\
+\midrule
+BM25, overlap stripped$^\dagger$ & \multicolumn{2}{c}{0.321} & \multicolumn{2}{c}{0.335} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 \begin{table}[ht]
 \centering
