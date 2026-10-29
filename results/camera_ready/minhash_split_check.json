@@ -1,0 +1,132 @@
+{
+  "method": "MinHash (datasketch), 128 permutations, LSH threshold 0.8, char 3-shingles; candidates confirmed by exact Jaccard >= 0.8",
+  "task1_cve_linkage": {
+    "train_rows": 56692,
+    "val": {
+      "rows": 2584,
+      "lsh_candidates": 407,
+      "rows_with_train_match_ge_0.8": 31,
+      "examples": [
+        {
+          "id": "CVE-2023-29300",
+          "jaccard": 0.81
+        },
+        {
+          "id": "CVE-2023-32434",
+          "jaccard": 0.83
+        },
+        {
+          "id": "CVE-2023-32435",
+          "jaccard": 0.94
+        },
+        {
+          "id": "CVE-2023-32439",
+          "jaccard": 0.866
+        },
+        {
+          "id": "CVE-2023-3079",
+          "jaccard": 0.994
+        }
+      ]
+    },
+    "test": {
+      "rows": 1990,
+      "lsh_candidates": 104,
+      "rows_with_train_match_ge_0.8": 2,
+      "examples": [
+        {
+          "id": "CVE-2026-34621",
+          "jaccard": 0.801
+        },
+        {
+          "id": "CVE-2024-23222",
+          "jaccard": 0.818
+        }
+      ]
+    },
+    "seconds": 24
+  },
+  "task2_exploit_type": {
+    "train_rows": 64413,
+    "val": {
+      "rows": 4735,
+      "lsh_candidates": 23,
+      "rows_with_train_match_ge_0.8": 5,
+      "examples": [
+        {
+          "id": "edb_file_50236",
+          "jaccard": 0.888
+        },
+        {
+          "id": "edb_file_48286",
+          "jaccard": 0.857
+        },
+        {
+          "id": "h1_c4c6168953072ef6d9a2",
+          "jaccard": 0.89
+        },
+        {
+          "id": "h1_5c70fbfb1dfb2584c19f",
+          "jaccard": 0.839
+        },
+        {
+          "id": "h1_d20fdcad394fd448c6ab",
+          "jaccard": 0.854
+        }
+      ]
+    },
+    "test": {
+      "rows": 1735,
+      "lsh_candidates": 3,
+      "rows_with_train_match_ge_0.8": 0,
+      "examples": []
+    },
+    "seconds": 36
+  },
+  "task3_temporal_generalization": {
+    "train_rows": 56833,
+    "val": {
+      "rows": 2535,
+      "lsh_candidates": 407,
+      "rows_with_train_match_ge_0.8": 31,
+      "examples": [
+        {
+          "id": "CVE-2023-29300",
+          "jaccard": 0.81
+        },
+        {
+          "id": "CVE-2023-32434",
+          "jaccard": 0.83
+        },
+        {
+          "id": "CVE-2023-32435",
+          "jaccard": 0.94
+        },
+        {
+          "id": "CVE-2023-32439",
+          "jaccard": 0.866
+        },
+        {
+          "id": "CVE-2023-3079",
+          "jaccard": 0.994
+        }
+      ]
+    },
+    "test": {
+      "rows": 1898,
+      "lsh_candidates": 104,
+      "rows_with_train_match_ge_0.8": 2,
+      "examples": [
+        {
+          "id": "CVE-2026-34621",
+          "jaccard": 0.801
+        },
+        {
+          "id": "CVE-2024-23222",
+          "jaccard": 0.818
+        }
+      ]
+    },
+    "seconds": 21
+  }
+}
